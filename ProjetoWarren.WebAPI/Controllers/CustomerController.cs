@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SmartSchool.WebAPI.Data;
 using SmartSchool.WebAPI.Models;
@@ -45,6 +47,7 @@ namespace SmartSchool.WebAPI.Controllers
         public IActionResult Post(Customer customer)
         {
             _customerService.criaCustomer(customer);
+            Console.WriteLine(customer.Birthdate);
             return Created("~http://localhost:5027/api/Customer", customer);
         }
 
