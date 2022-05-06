@@ -1,16 +1,19 @@
 using System;
 using System.ComponentModel;
 
+
 namespace SmartSchool.WebAPI.Models
 {
 
     public class Customer
     {
         protected Customer() { }
+        
+        Guid g = Guid.NewGuid();
 
-        public Customer(int id, string fullName, string email, string emailConfirmation, string cpf, string cellphone, DateTime birthdate, bool emailSms, bool whatsapp, string country, string city, string postalCode, string address, int number)
+        public Customer(Guid id, string fullName, string email, string emailConfirmation, string cpf, string cellphone, DateTime birthdate, bool emailSms, bool whatsapp, string country, string city, string postalCode, string address, int number)
         {
-            this.Id = id;
+            this.Id = g;
             this.FullName = fullName;
             this.Email = email;
             this.EmailConfirmation = emailConfirmation;
@@ -26,7 +29,8 @@ namespace SmartSchool.WebAPI.Models
             this.Number = number;
         }
 
-        public int Id { get; set; }
+        public static Guid NewGuid { get; }
+        public Guid Id { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
         public string EmailConfirmation { get; set; }

@@ -1,7 +1,9 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace ProjetoWarren.WebAPI
 {
+
     public static class StringExtensions
     {
         public static bool isValidDocument(this string document)
@@ -31,6 +33,6 @@ namespace ProjetoWarren.WebAPI
         {
             return login == confirmation ? true : false;
         }
-
     }
+
 }

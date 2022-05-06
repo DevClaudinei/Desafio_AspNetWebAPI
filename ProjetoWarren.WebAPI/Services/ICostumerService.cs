@@ -1,3 +1,4 @@
+using System;
 using SmartSchool.WebAPI.Models;
 
 namespace SmartSchool.WebAPI.Services
@@ -9,7 +10,7 @@ namespace SmartSchool.WebAPI.Services
 
         void atualizaCustomer(Customer customer);
 
-        void excluiCustomer(int id);
+        void excluiCustomer(Guid id);
     }
 
 }

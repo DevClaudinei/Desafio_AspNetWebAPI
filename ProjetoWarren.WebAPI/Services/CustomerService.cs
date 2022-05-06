@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using SmartSchool.WebAPI.Data;
 using SmartSchool.WebAPI.Models;
@@ -8,7 +9,7 @@ namespace SmartSchool.WebAPI.Services
     public class CustomerService : ICustomerService
     {
         public void criaCustomer(Customer customer)
-        {
+        { 
             SmartContext.ListCustomer.Add(customer);
         }
 
@@ -32,9 +33,9 @@ namespace SmartSchool.WebAPI.Services
             customerFound.Number = customer.Number;
         }
 
-        public void excluiCustomer(int id)
+        public void excluiCustomer(Guid id)
         {
-            var customerFound = SmartContext.ListCustomer.FirstOrDefault(a => a.Id == id);
+            var customerFound = SmartContext.ListCustomer.FirstOrDefault(a => a.Id.Equals(id));
             if (customerFound != null) SmartContext.ListCustomer.Remove(customerFound);
         }
     }

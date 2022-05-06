@@ -26,9 +26,9 @@ namespace SmartSchool.WebAPI.Controllers
         }
 
         [HttpGet("byId/{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(Guid id)
         {
-            var customerFound = SmartContext.ListCustomer.FirstOrDefault(a => a.Id == id);
+            var customerFound = SmartContext.ListCustomer.FirstOrDefault(a => a.Id.Equals(id));
             return customerFound == null ? BadRequest("Customer com o id " + id + " não foi encontrado.") : Ok(customerFound);
         }
 
@@ -45,18 +45,19 @@ namespace SmartSchool.WebAPI.Controllers
         public IActionResult Post(Customer customer)
         {
             _customerService.criaCustomer(customer);
+            
             return Created("~http://localhost:5027/api/Customer", customer);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Customer customer)
+        public IActionResult Put(Guid id, Customer customer)
         {
             _customerService.atualizaCustomer(customer);
             return Ok(customer);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             _customerService.excluiCustomer(id);
             return NoContent();
