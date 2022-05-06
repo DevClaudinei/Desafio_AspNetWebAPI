@@ -22,7 +22,7 @@ namespace SmartSchool.WebAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(SmartContext.ListCustomer);            
+            return Ok(SmartContext.ListCustomer);
         }
 
         [HttpGet("byId/{id}")]
@@ -35,19 +35,16 @@ namespace SmartSchool.WebAPI.Controllers
         [HttpGet("byName")]
         public IActionResult GetByName(string fullName)
         {
-
             var customerFound = SmartContext.ListCustomer.FirstOrDefault(a =>
                 a.FullName.Contains(fullName));
 
             return customerFound == null ? BadRequest("Cliente com o nome: " + fullName + " não foi encontrado.") : Ok(customerFound);
-
         }
 
         [HttpPost]
         public IActionResult Post(Customer customer)
         {
             _customerService.criaCustomer(customer);
-            Console.WriteLine(customer.Birthdate);
             return Created("~http://localhost:5027/api/Customer", customer);
         }
 
