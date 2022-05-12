@@ -11,9 +11,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/ProjetoWarren.WebAPI/bin/Debug/net6.0/ProjetoWarren.WebAPI.dll",
+            "program": "${workspaceFolder}/DesafioWarren.WebAPI/bin/Debug/net6.0/DesafioWarren.WebAPI.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/ProjetoWarren.WebAPI",
+            "cwd": "${workspaceFolder}/DesafioWarren.WebAPI",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
