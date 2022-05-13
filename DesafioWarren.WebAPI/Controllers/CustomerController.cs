@@ -28,7 +28,8 @@ public class CustomerController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(_customerService);
+        var CustomersFound = _customerService.GetCustomers();
+        return Ok(CustomersFound);
     }
 
     [HttpGet("byId/{id}")]

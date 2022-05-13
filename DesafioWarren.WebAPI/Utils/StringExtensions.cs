@@ -26,6 +26,6 @@ public static class StringExtensions
     public static bool IsReachedAdulthood(this DateTime birthdate)
     {
         var CurrentDate = DateTime.Now.Year;
-        return (CurrentDate - birthdate.Year) >= 18 ? true : false;
+        return (CurrentDate - birthdate.Year) >= 18;
     } 
 }

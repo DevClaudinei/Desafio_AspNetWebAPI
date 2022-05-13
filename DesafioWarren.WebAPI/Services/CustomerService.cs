@@ -7,10 +7,7 @@ namespace DesafioWarren.WebAPI.Services;
 
 public class CustomerService : ICustomerService
 {
-
     private IList<Customer> _customers = new List<Customer>();
-
-    public IList<Customer> Customers { get => _customers; set => _customers = value; }
 
     public bool CreateCustomer(Customer customer)
     {
@@ -20,9 +17,12 @@ public class CustomerService : ICustomerService
             customer.Id = Guid.NewGuid();
             _customers.Add(customer);
         }
-        return ComparedCustomerByEmail is not null
-            ? true
-            : false;
+        return ComparedCustomerByEmail is not null;
+    }
+
+    public IList<Customer> GetCustomers()
+    {
+        return _customers;
     }
 
     public Customer GetCustomerByEmail(string Email)
@@ -48,25 +48,23 @@ public class CustomerService : ICustomerService
     public Customer UpdateCustomer(Customer customer)
     {
         var CustomerFound = GetCustomerById(customer.Id);
-        if (CustomerFound is not null)
-        {
-            CustomerFound.Id = customer.Id;
-            CustomerFound.FullName = customer.FullName;
-            CustomerFound.Email = customer.Email;
-            CustomerFound.EmailConfirmation = customer.EmailConfirmation;
-            CustomerFound.Cpf = customer.Cpf;
-            CustomerFound.Cellphone = customer.Cellphone;
-            CustomerFound.Birthdate = customer.Birthdate;
-            CustomerFound.EmailSms = customer.EmailSms;
-            CustomerFound.Whatsapp = customer.Whatsapp;
-            CustomerFound.Country = customer.Country;
-            CustomerFound.City = customer.City;
-            CustomerFound.PostalCode = customer.PostalCode;
-            CustomerFound.Address = customer.Address;
-            CustomerFound.Number = customer.Number;
-            return CustomerFound;    
-        }
-        return null; 
+        if (CustomerFound is null) return null;
+
+        CustomerFound.Id = customer.Id;
+        CustomerFound.FullName = customer.FullName;
+        CustomerFound.Email = customer.Email;
+        CustomerFound.EmailConfirmation = customer.EmailConfirmation;
+        CustomerFound.Cpf = customer.Cpf;
+        CustomerFound.Cellphone = customer.Cellphone;
+        CustomerFound.Birthdate = customer.Birthdate;
+        CustomerFound.EmailSms = customer.EmailSms;
+        CustomerFound.Whatsapp = customer.Whatsapp;
+        CustomerFound.Country = customer.Country;
+        CustomerFound.City = customer.City;
+        CustomerFound.PostalCode = customer.PostalCode;
+        CustomerFound.Address = customer.Address;
+        CustomerFound.Number = customer.Number;
+        return CustomerFound;    
     }
 
     public bool ExcludeCustomer(Guid id)
