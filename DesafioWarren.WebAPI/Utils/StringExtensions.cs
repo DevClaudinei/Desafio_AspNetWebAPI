@@ -23,11 +23,6 @@ public static class StringExtensions
         return Regex.Match(cep, expression).Success;
     }
 
-    public static bool IsBoolValid(this bool check)
-    {
-        return check == true || check == false ? true : false;
-    }
-
     public static bool IsReachedAdulthood(this DateTime birthdate)
     {
         var CurrentDate = DateTime.Now.Year;

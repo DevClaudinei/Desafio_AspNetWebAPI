@@ -7,33 +7,50 @@ namespace DesafioWarren.WebAPI.Services;
 
 public class CustomerService : ICustomerService
 {
-    public List<Customer> ListCustomer { get; set; } = new() { };
 
-    public void CreateCustomer(Customer customer)
+    private IList<Customer> _customers = new List<Customer>();
+
+    public IList<Customer> Customers { get => _customers; set => _customers = value; }
+
+    public bool CreateCustomer(Customer customer)
     {
-        customer.Id = Guid.NewGuid();
-        ListCustomer.Add(customer);
+        var ComparedCustomerByEmail = _customers.FirstOrDefault(x => x.Email.Equals(customer.Email));
+        if (ComparedCustomerByEmail is null)
+        {
+            customer.Id = Guid.NewGuid();
+            _customers.Add(customer);
+        }
+        return ComparedCustomerByEmail is not null
+            ? true
+            : false;
+    }
+
+    public Customer GetCustomerByEmail(string Email)
+    {
+        var ComparedCustomerByEmail = _customers.FirstOrDefault(x => x.Email.Equals(Email));
+        return ComparedCustomerByEmail;
     }
 
     public Customer GetCustomerById(Guid Id)
     {
-        var ComparedCustomerByIds = ListCustomer
+        var ComparedCustomerByIds = _customers
             .FirstOrDefault(a => a.Id.Equals(Id));
         return ComparedCustomerByIds;
     }
 
     public Customer GetCustomerByName(string FullName)
     {
-        var ComparedCustomerByNames = ListCustomer
+        var ComparedCustomerByNames = _customers
             .FirstOrDefault(a => a.FullName.Contains(FullName));
         return ComparedCustomerByNames;
     }
 
-    public bool UpdateCustomer(Customer customer)
+    public Customer UpdateCustomer(Customer customer)
     {
         var CustomerFound = GetCustomerById(customer.Id);
-        try
-        {   
+        if (CustomerFound is not null)
+        {
+            CustomerFound.Id = customer.Id;
             CustomerFound.FullName = customer.FullName;
             CustomerFound.Email = customer.Email;
             CustomerFound.EmailConfirmation = customer.EmailConfirmation;
@@ -47,23 +64,19 @@ public class CustomerService : ICustomerService
             CustomerFound.PostalCode = customer.PostalCode;
             CustomerFound.Address = customer.Address;
             CustomerFound.Number = customer.Number;
-            return true;
+            return CustomerFound;    
         }
-        catch (Exception)
-        {
-            return false;
-        }
+        return null; 
     }
 
     public bool ExcludeCustomer(Guid id)
     {
         var CustomerFound = GetCustomerById(id);
-
         if (CustomerFound != null)
         {
-            ListCustomer.Remove(CustomerFound);
+            _customers.Remove(CustomerFound);
             return true;
         }
-        else return false;
+        return false;
     }
 }

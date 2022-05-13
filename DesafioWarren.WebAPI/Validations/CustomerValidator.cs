@@ -50,19 +50,14 @@ public class CustomerValidator : AbstractValidator<Customer>
             .WithMessage("Birthdate é um campo que não pode ser vazio ou nulo.")
             .Must(x => x.IsReachedAdulthood())
             .WithMessage("Customer precisa ter 18 anos no minimo.");
-            // .LessThanOrEqualTo();
 
         RuleFor(x => x.EmailSms)
             .NotNull()
-            .WithMessage("EmailSms é um campo que não pode ser vazio ou nulo.")
-            .Must(x => x.IsBoolValid())
-            .WithMessage("O campo EmailSms permite apenas 'true' ou 'false'");
+            .WithMessage("EmailSms é um campo que não pode ser vazio ou nulo.");
 
         RuleFor(x => x.Whatsapp)
             .NotNull()
-            .WithMessage("Whatsapp é um campo que não pode ser vazio ou nulo.")
-            .Must(x => x.IsBoolValid())
-            .WithMessage("O campo Whatsapp permite apenas 'true' ou 'false'");
+            .WithMessage("Whatsapp é um campo que não pode ser vazio ou nulo.");
 
         RuleFor(x => x.Country)
             .NotEmpty()
