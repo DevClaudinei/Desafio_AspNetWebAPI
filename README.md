@@ -5,38 +5,37 @@
 <p align="center">Desenvolver o backend utilizando como base as informações enviadas do frontend, informações essas providas do envio de um formulário.
 </p>
 
+## Contexto
+Aqui na Warren seguimos o padrão de arquitetura Onion Architecture, esse desafio tem como objetivo implementar uma arquitetura de software como continuação do desafio anterior separando responsabilidades em camadas além de desacoplar serviços da api.
+
 ## Documentação técnica do desafio
 
 ### Requisições HTTP:
-Para estarmos iniciando nossa aplicação utilizando .NET e estarmos fazendo as requisições para esse servidor, iremos utilizar o postman para estar fazendo as requisições de Post, Get, Patch e Delete.
-  
-### Rotas:
-(/api/customer) => Essa rota receberá uma request no formato de objeto com os dados necessários da etapa 1 e etapa 2: 
+Criaremos 3 camadas sendo elas respectivamente:
 
-- [x] id (Guid)
-- [x] full_name (string)
-- [x] email (string)
-- [x] email_confirmation (string)
-- [x] cpf (string)
-- [x] cellphone (string)
-- [x] birthdate (Date)
-- [x] email_sms (boolean)
-- [x] whatsapp (boolean)
-- [x] country (string)
-- [x] city (string)
-- [x] postal_code (string)
-- [x] address (string)
-- [x] number (number)
+- [x] Camada de Domínio(DomainServices);
+
+- [x] Camada de aplicação(AppServices);
+
+- [x] Camada de entidades de domínio(DomainModels).
+
+Classe de banco de dados passará para camada de domínio(DomainServices).
+Criaremos uma classe(AppService) que será chamada pela api e redirecionará os dados recebidos para camada de domínio(DomainServices).
 
 ### Pontos de atenção
-Esses dados deverão ser salvo em um arquivo mock em um diretório exclusivo para os mocks. Deverá ser salvo em uma variável em memória.
+Camada de api se comunica apenas com camada de aplicação(AppServices), camada de aplicação(AppServices) se comunica com camada de domínio(DomainServices) e outras AppServices.
 
-Validar corretamente os campos, não permitir nulos, strings em lugar onde o tipo é number e demais validações do formulário de acordo com a tipagem dos campos.
+- [x] Classe de banco de dados passará para camada de domínio(DomainServices);
 
-Validação da confirmação de e-mail.
+- [x] CustomerService será equivalente a uma DomainService;
 
-### Retorno da request
-A request deverá ter um retorno, retorno esse que deverá ser retornado através do response, seja esse retorno com sucesso ou com erro, para em um futuro esse retorno ser utilizado no frontend
+- [x] Criaremos uma classe(AppService) que será chamada pela api e redirecionará os dados recebidos para camada de domínio(Banco de dados).
+
+### Critérios para aceitação
+
+- [x] Validações devem pertencer a camada de aplicação;
+
+- [x] Única responsabilidade da api é receber requisições, endereçar requisições a camada de aplicação e retornar status code/response de acordo com o retorno da camada de aplicação.
 
 ## Pré-requisitos
 
@@ -48,16 +47,16 @@ Além disto é bom ter um editor para trabalhar com o código como [Visual Studi
 
 ```bash
 # Clone este repositório
-$ https://github.com/santosclaudinei-warren/AspNetCoreWebAPI
+$ https://github.com/santosclaudinei-warren/Desafio_OnionArchitecture
 
 # Acesse a pasta do projeto no terminal/cmd
-$ cd DesafioWarren.WebAPI
+$ cd Desafio_OnionArchitecture/src/AppServices
 
 # Execute a aplicação
 $ Executar o comando dotnet run 
 
 # O servidor inciará na porta:4231 
-- Utilizando a URL <http://localhost:5208>
+- Utilizando a URL <http://localhost:5160>
 ```
 
 ## 🛠 Tecnologias
@@ -76,8 +75,19 @@ Licensed under the [MIT license](LICENSE).
 
 <b>Claudinei Santos</b>
 
-Sinto que neste desafio consegui fazer a entrega dentro do tempo que estipulei, que foi dividido entre estudo da ddocumentação, tutoriais, curso de criação de API com Asp .NET Core e testes. 
-Depois do code review, pude atentar para alguns detalhes que passaram batido e na refatoração do mesmo tive a oportunidade de melhorar até outros pontos que não foram mencionados na revisão feita pelo sherpa.
+Encontrei dificuldades em:
+
+- [x] Entender a estrutura Onion Architecture;
+- [x] Criar as Class Library através do CLI do .NET;
+- [x] Referenciar as camadas em outra camada;
+
+Consegui compreender um pouco mais da arquitetura depois de superar as dificuldades acima citadas.
+Em meio a minhas horas de estudo pude aprender algumas coisas que eu gostei e acabei implementando no desafio. Como por exemplo:
+
+- [x] Uma Entidade Base;
+- [x] Data de Criação do Customer;
+- [x] Data de Atualização do Customer;
+- [x] Criar um Modulo para cadastrar meus services que fazem injeções de dependencias;
 
 [![Linkedin Badge](https://img.shields.io/badge/-Claudinei-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/claudinei-santos-ti/)](https://www.linkedin.com/in/claudinei-santos-ti/)
 [![Gmail Badge](https://img.shields.io/badge/-santos.devclaudinei@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:santos.devclaudinei@gmail.com)](mailto:claudinei.santos@warren.com.br)
