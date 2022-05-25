@@ -1,41 +1,40 @@
-using System;
+using AppServices;
+using DomainModels;
 using Microsoft.AspNetCore.Mvc;
-using DesafioWarren.WebAPI.Models;
-using DesafioWarren.WebAPI.Services;
 
-namespace DesafioWarren.WebAPI.Controllers;
+namespace OnionArchitecture.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CustomerController : ControllerBase
+public class CustomersController : ControllerBase
 {
-    private readonly ICustomerService _customerService;
+    private readonly ICustomerAppService _appService;
 
-    public CustomerController(ICustomerService customerService)
+    public CustomersController(ICustomerAppService appService)
     {
-        _customerService = customerService;
+        _appService = appService;
     }
 
     [HttpPost]
     public IActionResult Post(Customer customer)
     {
-        var CreatedCustomer = _customerService.CreateCustomer(customer);
+        var CreatedCustomer = _appService.CreateCustomer(customer);
         return CreatedCustomer
-            ? BadRequest($"Não foi possível cadastrar este customer com o Email '[{customer.Email}]' pois este email já esta cadastrado para outro usuário.")
-            : Created("~http://localhost:5208/api/Customer", customer);
+            ? Created("~http://localhost:5160/api/Customers", customer)
+            : BadRequest($"Não foi possível cadastrar este customer. Email '[{customer.Email}]' ou CPF '[{customer.Cpf}] já esta cadastrado para outro usuário.");
     }
 
     [HttpGet]
     public IActionResult Get()
     {
-        var CustomersFound = _customerService.GetCustomers();
+        var CustomersFound = _appService.GetCustomers();
         return Ok(CustomersFound);
     }
 
     [HttpGet("byId/{id}")]
     public IActionResult GetById(Guid id)
     {
-        var CustomerFoundId = _customerService.GetCustomerById(id);
+        var CustomerFoundId = _appService.GetCustomerById(id);
         return CustomerFoundId is null
             ? NotFound($"Customer com o id [{id}] não foi encontrado.")
             : Ok(CustomerFoundId);
@@ -44,7 +43,7 @@ public class CustomerController : ControllerBase
     [HttpGet("byName")]
     public IActionResult GetByName(string fullName)
     {
-        var CustomerFoundName = _customerService.GetCustomerByName(fullName);
+        var CustomerFoundName = _appService.GetCustomerByName(fullName);
         return CustomerFoundName is not null
             ? Ok(CustomerFoundName)
             : NotFound($"Cliente com o nome: [{fullName}] não foi encontrado.");
@@ -54,8 +53,8 @@ public class CustomerController : ControllerBase
     public IActionResult Put(Guid id, Customer customer)
     {
         customer.Id = id;
-        var UpdatedCustomer = _customerService.UpdateCustomer(customer);
-        return UpdatedCustomer is not null 
+        var UpdatedCustomer = _appService.UpdateCustomer(customer);
+        return UpdatedCustomer is not null
             ? Ok(UpdatedCustomer)
             : NotFound($"Não é possível realizar a atualização do customer com o ID [{customer.Id}], pois ele não existe.");
     }
@@ -63,7 +62,7 @@ public class CustomerController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(Guid id)
     {
-        var ExcludedCustomerById = _customerService.ExcludeCustomer(id);
+        var ExcludedCustomerById = _appService.ExcludeCustomer(id);
         return ExcludedCustomerById is true
             ? NoContent()
             : NotFound($"Não é possível realizar a exclusão do cliente com o ID [{id}], pois ele não existe.");

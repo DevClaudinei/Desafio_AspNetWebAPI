@@ -1,11 +1,10 @@
+using DomainModels;
 using FluentValidation;
-using DesafioWarren.WebAPI.Models;
 
-namespace DesafioWarren.WebAPI.Validations;
-
-public class CustomerValidator : AbstractValidator<Customer>
+namespace AppServices;
+public class CustomerValidators : AbstractValidator<Customer>
 {
-    public CustomerValidator()
+    public CustomerValidators()
     {
         RuleFor(x => x.FullName)
             .NotEmpty()

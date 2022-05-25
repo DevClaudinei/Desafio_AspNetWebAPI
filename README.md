@@ -68,6 +68,10 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
 - [Postman](https://www.postman.com/downloads/)
 
+## Readme - Próximo Desafio
+
+[Readme Desafio II](src/Readmes/README2.md)
+
 ## Licença
 
 Licensed under the [MIT license](LICENSE).

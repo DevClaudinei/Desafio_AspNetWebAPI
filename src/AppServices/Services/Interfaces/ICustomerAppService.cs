@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
-using DesafioWarren.WebAPI.Models;
+using DomainModels;
 
-namespace DesafioWarren.WebAPI.Services;
-
-public interface ICustomerService
-{    
+namespace AppServices;
+public interface ICustomerAppService
+{
     bool CreateCustomer(Customer customer);
 
     IList<Customer> GetCustomers();
 
+    Customer GetCustomerByCpf(string Cpf);
+
     Customer GetCustomerByEmail(string Email);
 
-    Customer GetCustomerById(Guid CustomerId);
+    Customer GetCustomerById(Guid Id);
 
     Customer GetCustomerByName(string FullName);
 

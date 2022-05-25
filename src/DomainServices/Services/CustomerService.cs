@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DesafioWarren.WebAPI.Models;
+using DomainModels;
+using DomainServices.Services;
 
-namespace DesafioWarren.WebAPI.Services;
+namespace DomainServices;
 
 public class CustomerService : ICustomerService
 {
@@ -11,18 +12,30 @@ public class CustomerService : ICustomerService
 
     public bool CreateCustomer(Customer customer)
     {
-        var ComparedCustomerByEmail = _customers.FirstOrDefault(x => x.Email.Equals(customer.Email));
-        if (ComparedCustomerByEmail is null)
+        var ComparedCustomerByEmail = GetCustomerByEmail(customer.Email);
+        var ComparedCustomerByCpf = GetCustomerByCpf(customer.Cpf);
+        var ValidCustomer = false;
+
+        if (ComparedCustomerByEmail is null && ComparedCustomerByCpf is null)
         {
             customer.Id = Guid.NewGuid();
+            customer.CreatedAt = DateTime.Now;
+            customer.ModifiedAt = customer.CreatedAt;
             _customers.Add(customer);
+            ValidCustomer = true;
         }
-        return ComparedCustomerByEmail is not null;
+        return ValidCustomer;
     }
 
     public IList<Customer> GetCustomers()
     {
         return _customers;
+    }
+
+    public Customer GetCustomerByCpf(string Cpf)
+    {
+        var ComparedCustomerByCpf = _customers.FirstOrDefault(x => x.Cpf.Equals(Cpf));
+        return ComparedCustomerByCpf;
     }
 
     public Customer GetCustomerByEmail(string Email)
@@ -64,7 +77,8 @@ public class CustomerService : ICustomerService
         CustomerFound.PostalCode = customer.PostalCode;
         CustomerFound.Address = customer.Address;
         CustomerFound.Number = customer.Number;
-        return CustomerFound;    
+        CustomerFound.ModifiedAt = DateTime.Now;
+        return CustomerFound;
     }
 
     public bool ExcludeCustomer(Guid id)
