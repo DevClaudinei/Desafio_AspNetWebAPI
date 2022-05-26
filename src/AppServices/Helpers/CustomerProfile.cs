@@ -1,13 +1,12 @@
 using AutoMapper;
 using DomainModels;
 
-namespace AppServices
+namespace AppServices;
+
+public class CustomerProfile : Profile
 {
-    public class CustomerProfile : Profile
+    public CustomerProfile()
     {
-        public CustomerProfile()
-        {
-            CreateMap<Customer, CustomerViewModel>();
-        }
+        CreateMap<Customer, CustomerViewModel>();
     }
 }

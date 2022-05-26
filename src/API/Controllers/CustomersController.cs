@@ -1,8 +1,9 @@
+using System;
 using AppServices;
 using DomainModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace OnionArchitecture.WebAPI.Controllers;
+namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -18,10 +19,10 @@ public class CustomersController : ControllerBase
     [HttpPost]
     public IActionResult Post(Customer customer)
     {
-        var CreatedCustomer = _appService.CreateCustomer(customer);
-        return CreatedCustomer
-            ? Created("~http://localhost:5160/api/Customers", customer)
-            : BadRequest($"Não foi possível cadastrar este customer. Email '[{customer.Email}]' ou CPF '[{customer.Cpf}] já esta cadastrado para outro usuário.");
+        var createdCustomer = _appService.CreateCustomer(customer); 
+        return createdCustomer.isValid
+        ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
+        : BadRequest(createdCustomer.message);      
     }
 
     [HttpGet]
@@ -35,7 +36,7 @@ public class CustomersController : ControllerBase
     public IActionResult GetById(Guid id)
     {
         var CustomerFoundId = _appService.GetCustomerById(id);
-        return CustomerFoundId is null
+        return CustomerFoundId is false
             ? NotFound($"Customer com o id [{id}] não foi encontrado.")
             : Ok(CustomerFoundId);
     }
@@ -44,7 +45,7 @@ public class CustomersController : ControllerBase
     public IActionResult GetByName(string fullName)
     {
         var CustomerFoundName = _appService.GetCustomerByName(fullName);
-        return CustomerFoundName is not null
+        return CustomerFoundName is true
             ? Ok(CustomerFoundName)
             : NotFound($"Cliente com o nome: [{fullName}] não foi encontrado.");
     }
@@ -55,8 +56,8 @@ public class CustomersController : ControllerBase
         customer.Id = id;
         var UpdatedCustomer = _appService.UpdateCustomer(customer);
         return UpdatedCustomer is not null
-            ? Ok(UpdatedCustomer)
-            : NotFound($"Não é possível realizar a atualização do customer com o ID [{customer.Id}], pois ele não existe.");
+            ? Ok()
+            : NotFound($"Não é possível realizar a atualização do customer com o ID [{id}], pois ele não existe.");
     }
 
     [HttpDelete("{id}")]

@@ -1,7 +1,7 @@
 using System;
 
 namespace DomainModels;
-public class Customer : BaseCustomer
+public class Customer : BaseModel
 {
     protected Customer() { }
 
@@ -35,7 +35,7 @@ public class Customer : BaseCustomer
         Address = address.Trim();
         Number = number;
     }
-
+    
     public string FullName { get; set; }
     public string Email { get; set; }
     public string EmailConfirmation { get; set; }

@@ -10,21 +10,14 @@ public class CustomerService : ICustomerService
 {
     private IList<Customer> _customers = new List<Customer>();
 
-    public bool CreateCustomer(Customer customer)
+    public (bool isValid, string message) CreateCustomer(Customer customer)
     {
-        var ComparedCustomerByEmail = GetCustomerByEmail(customer.Email);
-        var ComparedCustomerByCpf = GetCustomerByCpf(customer.Cpf);
-        var ValidCustomer = false;
+        if (CustomerForEmailAlreadyExists(customer.Email)) return (false, $"Cliente para o email: {customer.Email} já existe.");
+        if (CustomerForCpfAlreadyExists(customer.Cpf)) return (false, $"Cliente para o cpf: {customer.Cpf} já existe.");
 
-        if (ComparedCustomerByEmail is null && ComparedCustomerByCpf is null)
-        {
-            customer.Id = Guid.NewGuid();
-            customer.CreatedAt = DateTime.Now;
-            customer.ModifiedAt = customer.CreatedAt;
-            _customers.Add(customer);
-            ValidCustomer = true;
-        }
-        return ValidCustomer;
+        _customers.Add(customer);
+        
+        return (true, null);
     }
 
     public IList<Customer> GetCustomers()
@@ -32,16 +25,14 @@ public class CustomerService : ICustomerService
         return _customers;
     }
 
-    public Customer GetCustomerByCpf(string Cpf)
+    public bool CustomerForCpfAlreadyExists(string cpf)
     {
-        var ComparedCustomerByCpf = _customers.FirstOrDefault(x => x.Cpf.Equals(Cpf));
-        return ComparedCustomerByCpf;
+        return _customers.Any(x => x.Cpf.Equals(cpf));
     }
 
-    public Customer GetCustomerByEmail(string Email)
+    public bool CustomerForEmailAlreadyExists(string email)
     {
-        var ComparedCustomerByEmail = _customers.FirstOrDefault(x => x.Email.Equals(Email));
-        return ComparedCustomerByEmail;
+        return _customers.Any(x => x.Email.Equals(email));
     }
 
     public Customer GetCustomerById(Guid Id)
@@ -51,19 +42,19 @@ public class CustomerService : ICustomerService
         return ComparedCustomerByIds;
     }
 
-    public Customer GetCustomerByName(string FullName)
+    public Customer GetCustomerByName(string fullName)
     {
         var ComparedCustomerByNames = _customers
-            .FirstOrDefault(a => a.FullName.Contains(FullName));
+            .FirstOrDefault(a => a.FullName.Contains(fullName));
         return ComparedCustomerByNames;
     }
 
     public Customer UpdateCustomer(Customer customer)
     {
+
         var CustomerFound = GetCustomerById(customer.Id);
         if (CustomerFound is null) return null;
 
-        CustomerFound.Id = customer.Id;
         CustomerFound.FullName = customer.FullName;
         CustomerFound.Email = customer.Email;
         CustomerFound.EmailConfirmation = customer.EmailConfirmation;
@@ -77,7 +68,8 @@ public class CustomerService : ICustomerService
         CustomerFound.PostalCode = customer.PostalCode;
         CustomerFound.Address = customer.Address;
         CustomerFound.Number = customer.Number;
-        CustomerFound.ModifiedAt = DateTime.Now;
+        CustomerFound.ModifiedAt = DateTime.UtcNow;
+        
         return CustomerFound;
     }
 

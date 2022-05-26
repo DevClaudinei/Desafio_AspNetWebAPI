@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using DomainModels;
 
 namespace AppServices;
+
 public interface ICustomerAppService
 {
-    bool CreateCustomer(Customer customer);
+    (bool isValid, string message) CreateCustomer(Customer customer);
 
-    IList<Customer> GetCustomers();
+    IEnumerable<CustomerViewModel> GetCustomers();
 
-    Customer GetCustomerByCpf(string Cpf);
+    bool GetCustomerByCpf(string cpf);
 
-    Customer GetCustomerByEmail(string Email);
+    bool GetCustomerByEmail(string email);
 
-    Customer GetCustomerById(Guid Id);
+    bool GetCustomerById(Guid id);
 
-    Customer GetCustomerByName(string FullName);
+    bool GetCustomerByName(string fullName);
 
     Customer UpdateCustomer(Customer customer);
 

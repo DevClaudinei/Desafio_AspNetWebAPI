@@ -1,19 +1,15 @@
-using AppServices;
-using AutoMapper;
+using API.Configurations;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-builder.Services.AddServices();
-builder.Services.AddAutoMapper(typeof(CustomerProfile));
-// builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-// var mapperConfig = new MapperConfiguration(cfg =>
-// {
-//     cfg.AddProfile(new CustomerProfile());
-// });
-// builder.Services.AddSingleton(mapperConfig.CreateMapper());
+builder.Services.AddServicesConfiguration();
+builder.Services.AddAutoMapperConfiguration();
+builder.Services.AddMvcConfiguration();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

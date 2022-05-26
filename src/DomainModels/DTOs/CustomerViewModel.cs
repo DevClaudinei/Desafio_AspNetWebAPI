@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace DomainModels;
 public class CustomerViewModel
@@ -8,6 +9,4 @@ public class CustomerViewModel
     public string Email { get; set; }
     public string Country { get; set; }
     public string City { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime ModifiedAt { get; set; }
 }

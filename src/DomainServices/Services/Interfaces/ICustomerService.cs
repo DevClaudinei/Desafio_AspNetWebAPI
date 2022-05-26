@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using DomainModels;
 
 namespace DomainServices.Services;
+
 public interface ICustomerService
 {
-    bool CreateCustomer(DomainModels.Customer customer);
+    (bool isValid, string message) CreateCustomer(Customer customer);
 
     IList<Customer> GetCustomers();
 
-    Customer GetCustomerByCpf(string Email);
+    bool CustomerForCpfAlreadyExists(string cpf);
 
-    Customer GetCustomerByEmail(string Email);
+    bool CustomerForEmailAlreadyExists(string email);
 
     Customer GetCustomerById(Guid CustomerId);
 
     Customer GetCustomerByName(string FullName);
 
-    Customer UpdateCustomer(DomainModels.Customer customer);
+    Customer UpdateCustomer(Customer customer);
 
     bool ExcludeCustomer(Guid id);
 }

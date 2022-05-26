@@ -17,43 +17,44 @@ public class CustomerAppService : ICustomerAppService
         _mapper = mapper;
     }
 
-    public bool CreateCustomer(Customer customer)
+    public (bool isValid, string message) CreateCustomer(Customer customer)
     {
+        customer.Id = Guid.NewGuid();
         var CreatedCustomer = _customerService.CreateCustomer(customer);
-        if (CreatedCustomer is false) return false;
-        return CreatedCustomer;
+        if (CreatedCustomer.isValid) return (true, customer.Id.ToString());
+        return (false, CreatedCustomer.message);
         
     }
 
-    public IList<Customer> GetCustomers()
+    public IEnumerable<CustomerViewModel> GetCustomers()
     {
         var CustomersFound = _customerService.GetCustomers();
-        var CustomerMapper = _mapper.Map<CustomerViewModel>(CustomersFound);
-        return (IList<Customer>)CustomerMapper;
+        // return CustomersFound;
+        return _mapper.Map<IEnumerable<CustomerViewModel>>(CustomersFound);
     }
 
-    public Customer GetCustomerByCpf(string Cpf)
+    public bool GetCustomerByCpf(string cpf)
     {
-        var FoundCustomer = _customerService.GetCustomerByCpf(Cpf);
-        return FoundCustomer;
+        return _customerService.CustomerForCpfAlreadyExists(cpf);
     }
 
-    public Customer GetCustomerByEmail(string Email)
+    public bool GetCustomerByEmail(string email)
     {
-        var FoundCustomer = _customerService.GetCustomerByEmail(Email);
-        return FoundCustomer;
+        return _customerService.CustomerForEmailAlreadyExists(email);
     }
 
-    public Customer GetCustomerById(Guid Id)
+    bool ICustomerAppService.GetCustomerById(Guid id)
     {
-        var FoundCustomer = _customerService.GetCustomerById(Id);
-        return FoundCustomer;
+        var FoundCustomer = _customerService.GetCustomerById(id);
+        if (FoundCustomer is null) return false;
+        return true;
     }
 
-    public Customer GetCustomerByName(string FullName)
+    bool ICustomerAppService.GetCustomerByName(string fullName)
     {
-        var FoundCustomer = _customerService.GetCustomerByName(FullName);
-        return FoundCustomer;
+        var FoundCustomer = _customerService.GetCustomerByName(fullName);
+        if (FoundCustomer is null) return false;
+        return true;
     }
 
     public Customer UpdateCustomer(Customer customer)
