@@ -1,6 +1,7 @@
 using System;
 
 namespace DomainModels;
+
 public class Customer : BaseModel
 {
     protected Customer() { }

@@ -70,7 +70,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 ## Readme - Próximo Desafio
 
-[Readme Desafio II](src/Readmes/README2.md)
+[Readme Desafio II](Readmes/README2.md)
 
 ## Licença
 

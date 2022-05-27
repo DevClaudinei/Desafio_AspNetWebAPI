@@ -1,7 +1,7 @@
 using System;
-using System.Text.Json.Serialization;
 
 namespace DomainModels;
+
 public class CustomerViewModel
 {
     public Guid Id { get; set; }

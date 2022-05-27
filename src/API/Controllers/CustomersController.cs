@@ -21,8 +21,8 @@ public class CustomersController : ControllerBase
     {
         var createdCustomer = _appService.CreateCustomer(customer); 
         return createdCustomer.isValid
-        ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
-        : BadRequest(createdCustomer.message);      
+            ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
+            : BadRequest(createdCustomer.message);      
     }
 
     [HttpGet]
@@ -36,8 +36,8 @@ public class CustomersController : ControllerBase
     public IActionResult GetById(Guid id)
     {
         var CustomerFoundId = _appService.GetCustomerById(id);
-        return CustomerFoundId is false
-            ? NotFound($"Customer com o id [{id}] não foi encontrado.")
+        return CustomerFoundId is null
+            ? NotFound($"Customer para o id [{id}] não foi encontrado.")
             : Ok(CustomerFoundId);
     }
 
@@ -45,9 +45,9 @@ public class CustomersController : ControllerBase
     public IActionResult GetByName(string fullName)
     {
         var CustomerFoundName = _appService.GetCustomerByName(fullName);
-        return CustomerFoundName is true
+        return CustomerFoundName is not null
             ? Ok(CustomerFoundName)
-            : NotFound($"Cliente com o nome: [{fullName}] não foi encontrado.");
+            : NotFound($"Cliente para o nome: [{fullName}] não foi encontrado.");
     }
 
     [HttpPut("{id}")]
@@ -57,7 +57,7 @@ public class CustomersController : ControllerBase
         var UpdatedCustomer = _appService.UpdateCustomer(customer);
         return UpdatedCustomer is not null
             ? Ok()
-            : NotFound($"Não é possível realizar a atualização do customer com o ID [{id}], pois ele não existe.");
+            : NotFound($"Cliente não encontrado para o ID [{id}].");
     }
 
     [HttpDelete("{id}")]
@@ -66,6 +66,6 @@ public class CustomersController : ControllerBase
         var ExcludedCustomerById = _appService.ExcludeCustomer(id);
         return ExcludedCustomerById is true
             ? NoContent()
-            : NotFound($"Não é possível realizar a exclusão do cliente com o ID [{id}], pois ele não existe.");
+            : NotFound($"Cliente não encontrado para o ID [{id}].");
     }
 }

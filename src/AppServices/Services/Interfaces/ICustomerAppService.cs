@@ -14,9 +14,9 @@ public interface ICustomerAppService
 
     bool GetCustomerByEmail(string email);
 
-    bool GetCustomerById(Guid id);
+    CustomerViewModel GetCustomerById(Guid id);
 
-    bool GetCustomerByName(string fullName);
+    CustomerViewModel GetCustomerByName(string fullName);
 
     Customer UpdateCustomer(Customer customer);
 

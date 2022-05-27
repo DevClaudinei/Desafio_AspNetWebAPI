@@ -22,14 +22,13 @@ public class CustomerAppService : ICustomerAppService
         customer.Id = Guid.NewGuid();
         var CreatedCustomer = _customerService.CreateCustomer(customer);
         if (CreatedCustomer.isValid) return (true, customer.Id.ToString());
-        return (false, CreatedCustomer.message);
-        
+
+        return (false, CreatedCustomer.message); 
     }
 
     public IEnumerable<CustomerViewModel> GetCustomers()
     {
         var CustomersFound = _customerService.GetCustomers();
-        // return CustomersFound;
         return _mapper.Map<IEnumerable<CustomerViewModel>>(CustomersFound);
     }
 
@@ -43,18 +42,20 @@ public class CustomerAppService : ICustomerAppService
         return _customerService.CustomerForEmailAlreadyExists(email);
     }
 
-    bool ICustomerAppService.GetCustomerById(Guid id)
+    CustomerViewModel ICustomerAppService.GetCustomerById(Guid id)
     {
         var FoundCustomer = _customerService.GetCustomerById(id);
-        if (FoundCustomer is null) return false;
-        return true;
+        if (FoundCustomer is null) return null;
+
+        return _mapper.Map<CustomerViewModel>(FoundCustomer);
     }
 
-    bool ICustomerAppService.GetCustomerByName(string fullName)
+    CustomerViewModel ICustomerAppService.GetCustomerByName(string fullName)
     {
         var FoundCustomer = _customerService.GetCustomerByName(fullName);
-        if (FoundCustomer is null) return false;
-        return true;
+        if (FoundCustomer is null) return null;
+
+        return _mapper.Map<CustomerViewModel>(FoundCustomer);
     }
 
     public Customer UpdateCustomer(Customer customer)
