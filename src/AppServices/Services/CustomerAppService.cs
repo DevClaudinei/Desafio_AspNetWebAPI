@@ -22,7 +22,7 @@ public class CustomerAppService : ICustomerAppService
         customer.Id = Guid.NewGuid();
         var CreatedCustomer = _customerService.CreateCustomer(customer);
         if (CreatedCustomer.isValid) return (true, customer.Id.ToString());
-
+        
         return (false, CreatedCustomer.message); 
     }
 
@@ -61,7 +61,7 @@ public class CustomerAppService : ICustomerAppService
     public Customer UpdateCustomer(Customer customer)
     {
         var UpdatedCustomer = _customerService.UpdateCustomer(customer);
-        return UpdatedCustomer;
+        return _mapper.Map<Customer>(UpdatedCustomer);
     }
 
     public bool ExcludeCustomer(Guid id)

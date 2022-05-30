@@ -1,6 +1,8 @@
 using System;
 using AppServices;
+using AutoMapper;
 using DomainModels;
+using DomainModels.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -10,19 +12,21 @@ namespace API.Controllers;
 public class CustomersController : ControllerBase
 {
     private readonly ICustomerAppService _appService;
+    private readonly IMapper _mapper;
 
-    public CustomersController(ICustomerAppService appService)
+    public CustomersController(ICustomerAppService appService, IMapper mapper)
     {
         _appService = appService;
+        _mapper = mapper;
     }
 
     [HttpPost]
-    public IActionResult Post(Customer customer)
+    public IActionResult Post(CustomerToCreate customerToCreate)
     {
-        var createdCustomer = _appService.CreateCustomer(customer); 
+        var createdCustomer = _appService.CreateCustomer(_mapper.Map<Customer>(customerToCreate));
         return createdCustomer.isValid
             ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
-            : BadRequest(createdCustomer.message);      
+            : BadRequest(createdCustomer.message);
     }
 
     [HttpGet]
@@ -51,10 +55,10 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(Guid id, Customer customer)
+    public IActionResult Put(Guid id, CustomerToUpdate customerToUpdate)
     {
-        customer.Id = id;
-        var UpdatedCustomer = _appService.UpdateCustomer(customer);
+        customerToUpdate.Id = id;
+        var UpdatedCustomer = _appService.UpdateCustomer(_mapper.Map<Customer>(customerToUpdate));
         return UpdatedCustomer is not null
             ? Ok()
             : NotFound($"Cliente não encontrado para o ID [{id}].");
@@ -64,7 +68,7 @@ public class CustomersController : ControllerBase
     public IActionResult Delete(Guid id)
     {
         var ExcludedCustomerById = _appService.ExcludeCustomer(id);
-        return ExcludedCustomerById is true
+        return ExcludedCustomerById
             ? NoContent()
             : NotFound($"Cliente não encontrado para o ID [{id}].");
     }
