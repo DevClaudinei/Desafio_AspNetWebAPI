@@ -1,7 +1,6 @@
 using System;
 using AppServices;
 using AutoMapper;
-using DomainModels;
 using DomainModels.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,18 +11,16 @@ namespace API.Controllers;
 public class CustomersController : ControllerBase
 {
     private readonly ICustomerAppService _appService;
-    private readonly IMapper _mapper;
 
     public CustomersController(ICustomerAppService appService, IMapper mapper)
     {
         _appService = appService;
-        _mapper = mapper;
     }
 
     [HttpPost]
     public IActionResult Post(CustomerToCreate customerToCreate)
     {
-        var createdCustomer = _appService.CreateCustomer(_mapper.Map<Customer>(customerToCreate));
+        var createdCustomer = _appService.CreateCustomer(customerToCreate);
         return createdCustomer.isValid
             ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
             : BadRequest(createdCustomer.message);
@@ -58,7 +55,7 @@ public class CustomersController : ControllerBase
     public IActionResult Put(Guid id, CustomerToUpdate customerToUpdate)
     {
         customerToUpdate.Id = id;
-        var UpdatedCustomer = _appService.UpdateCustomer(_mapper.Map<Customer>(customerToUpdate));
+        var UpdatedCustomer = _appService.UpdateCustomer(customerToUpdate);
         return UpdatedCustomer is not null
             ? Ok()
             : NotFound($"Cliente não encontrado para o ID [{id}].");

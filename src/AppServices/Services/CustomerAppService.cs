@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using AutoMapper;
 using DomainModels;
+using DomainModels.Models;
 using DomainServices.Services;
 
 namespace AppServices;
@@ -17,11 +18,11 @@ public class CustomerAppService : ICustomerAppService
         _mapper = mapper;
     }
 
-    public (bool isValid, string message) CreateCustomer(Customer customer)
+    public (bool isValid, string message) CreateCustomer(CustomerToCreate customerToCreate)
     {
-        customer.Id = Guid.NewGuid();
-        var CreatedCustomer = _customerService.CreateCustomer(customer);
-        if (CreatedCustomer.isValid) return (true, customer.Id.ToString());
+        customerToCreate.Id = Guid.NewGuid();
+        var CreatedCustomer = _customerService.CreateCustomer(_mapper.Map<Customer>(customerToCreate));
+        if (CreatedCustomer.isValid) return (true, customerToCreate.Id.ToString());
         
         return (false, CreatedCustomer.message); 
     }
@@ -58,10 +59,10 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<CustomerViewModel>(FoundCustomer);
     }
 
-    public Customer UpdateCustomer(Customer customer)
+    public Customer UpdateCustomer(CustomerToUpdate customerToUpdate)
     {
-        var UpdatedCustomer = _customerService.UpdateCustomer(customer);
-        return _mapper.Map<Customer>(UpdatedCustomer);
+        var updatedCustomer = _customerService.UpdateCustomer(_mapper.Map<Customer>(customerToUpdate));
+        return _mapper.Map<Customer>(updatedCustomer); 
     }
 
     public bool ExcludeCustomer(Guid id)

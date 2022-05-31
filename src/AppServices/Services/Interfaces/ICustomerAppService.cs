@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using DomainModels;
+using DomainModels.Models;
 
 namespace AppServices;
 
 public interface ICustomerAppService
 {
-    (bool isValid, string message) CreateCustomer(Customer customer);
+    (bool isValid, string message) CreateCustomer(CustomerToCreate customerToCreate);
 
     IEnumerable<CustomerViewModel> GetCustomers();
 
@@ -18,7 +19,7 @@ public interface ICustomerAppService
 
     CustomerViewModel GetCustomerByName(string fullName);
 
-    Customer UpdateCustomer(Customer customer);
+    Customer UpdateCustomer(CustomerToUpdate customerToUpdate);
 
     bool ExcludeCustomer(Guid id);
 }
