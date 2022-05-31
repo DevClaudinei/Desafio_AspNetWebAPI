@@ -1,6 +1,6 @@
+using Application.Models;
 using AutoMapper;
 using DomainModels;
-using DomainModels.Models;
 
 namespace AppServices;
 

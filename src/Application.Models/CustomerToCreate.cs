@@ -1,7 +1,6 @@
 using System;
 
-namespace DomainModels.Models;
-
+namespace Application.Models;
 public class CustomerToCreate
 {
     public CustomerToCreate(
@@ -18,7 +17,8 @@ public class CustomerToCreate
         string city,
         string postalCode,
         string address,
-        int number)
+        int number
+    )
     {
         this.Id = id;
         this.FullName = fullName;
@@ -35,7 +35,7 @@ public class CustomerToCreate
         this.Address = address;
         this.Number = number;
     }
-    
+
     public Guid Id { get; set; }
     public string FullName { get; set; }
     public string Email { get; set; }

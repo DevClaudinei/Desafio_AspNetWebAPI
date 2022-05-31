@@ -7,19 +7,20 @@ public class Customer : BaseModel
     protected Customer() { }
 
     public Customer(
-    string fullName,
-    string email,
-    string emailConfirmation,
-    string cpf,
-    string cellphone,
-    DateTime birthdate,
-    bool emailSms,
-    bool whatsapp,
-    string country,
-    string city,
-    string postalCode,
-    string address,
-    int number)
+        string fullName,
+        string email,
+        string emailConfirmation,
+        string cpf,
+        string cellphone,
+        DateTime birthdate,
+        bool emailSms,
+        bool whatsapp,
+        string country,
+        string city,
+        string postalCode,
+        string address,
+        int number
+    )
     {
         FullName = fullName.Trim();
         Email = email.Trim();
@@ -36,7 +37,7 @@ public class Customer : BaseModel
         Address = address.Trim();
         Number = number;
     }
-    
+
     public string FullName { get; set; }
     public string Email { get; set; }
     public string EmailConfirmation { get; set; }

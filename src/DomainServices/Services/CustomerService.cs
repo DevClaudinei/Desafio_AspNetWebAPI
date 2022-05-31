@@ -73,7 +73,7 @@ public class CustomerService : ICustomerService
         return CustomerFound;
     }
 
-    public bool ExcludeCustomer(Guid id)
+    public bool DeleteCustomer(Guid id)
     {
         var CustomerFound = GetCustomerById(id);
         if (CustomerFound != null)

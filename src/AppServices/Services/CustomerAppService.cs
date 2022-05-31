@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Application.Models;
 using AutoMapper;
 using DomainModels;
-using DomainModels.Models;
 using DomainServices.Services;
 
 namespace AppServices;
@@ -14,7 +14,7 @@ public class CustomerAppService : ICustomerAppService
 
     public CustomerAppService(ICustomerService customerService, IMapper mapper)
     {
-        _customerService = customerService;
+        _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         _mapper = mapper;
     }
 
@@ -33,17 +33,17 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<IEnumerable<CustomerViewModel>>(CustomersFound);
     }
 
-    public bool GetCustomerByCpf(string cpf)
+    public bool CheckForAClientWithCpf(string cpf)
     {
         return _customerService.CustomerForCpfAlreadyExists(cpf);
     }
 
-    public bool GetCustomerByEmail(string email)
+    public bool CheckForAClientWithEmail(string email)
     {
         return _customerService.CustomerForEmailAlreadyExists(email);
     }
 
-    CustomerViewModel ICustomerAppService.GetCustomerById(Guid id)
+    public CustomerViewModel GetCustomerById(Guid id)
     {
         var FoundCustomer = _customerService.GetCustomerById(id);
         if (FoundCustomer is null) return null;
@@ -51,7 +51,7 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<CustomerViewModel>(FoundCustomer);
     }
 
-    CustomerViewModel ICustomerAppService.GetCustomerByName(string fullName)
+    public CustomerViewModel GetCustomerByName(string fullName)
     {
         var FoundCustomer = _customerService.GetCustomerByName(fullName);
         if (FoundCustomer is null) return null;
@@ -61,13 +61,14 @@ public class CustomerAppService : ICustomerAppService
 
     public Customer UpdateCustomer(CustomerToUpdate customerToUpdate)
     {
-        var updatedCustomer = _customerService.UpdateCustomer(_mapper.Map<Customer>(customerToUpdate));
+        var conversationBetweenEntities = _mapper.Map<Customer>(customerToUpdate);
+        var updatedCustomer = _customerService.UpdateCustomer(conversationBetweenEntities);
         return _mapper.Map<Customer>(updatedCustomer); 
     }
 
-    public bool ExcludeCustomer(Guid id)
+    public bool DeleteCustomer(Guid id)
     {
-        var DeletedCustomer = _customerService.ExcludeCustomer(id);
+        var DeletedCustomer = _customerService.DeleteCustomer(id);
         return DeletedCustomer;
     }
 }

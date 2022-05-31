@@ -20,5 +20,5 @@ public interface ICustomerService
 
     Customer UpdateCustomer(Customer customer);
 
-    bool ExcludeCustomer(Guid id);
+    bool DeleteCustomer(Guid id);
 }

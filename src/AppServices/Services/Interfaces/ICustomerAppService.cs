@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Application.Models;
 using DomainModels;
-using DomainModels.Models;
 
 namespace AppServices;
 
@@ -11,9 +11,9 @@ public interface ICustomerAppService
 
     IEnumerable<CustomerViewModel> GetCustomers();
 
-    bool GetCustomerByCpf(string cpf);
+    bool CheckForAClientWithCpf(string cpf);
 
-    bool GetCustomerByEmail(string email);
+    bool CheckForAClientWithEmail(string email);
 
     CustomerViewModel GetCustomerById(Guid id);
 
@@ -21,5 +21,5 @@ public interface ICustomerAppService
 
     Customer UpdateCustomer(CustomerToUpdate customerToUpdate);
 
-    bool ExcludeCustomer(Guid id);
+    bool DeleteCustomer(Guid id);
 }

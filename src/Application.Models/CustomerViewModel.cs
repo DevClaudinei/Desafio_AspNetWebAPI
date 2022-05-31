@@ -1,6 +1,6 @@
 using System;
 
-namespace DomainModels;
+namespace Application.Models;
 
 public class CustomerViewModel
 {

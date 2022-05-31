@@ -1,13 +1,12 @@
 using System;
 
-namespace DomainModels.Models;
+namespace Application.Models;
 
 public class CustomerToUpdate
 {
     public CustomerToUpdate() { }
 
     public CustomerToUpdate(
-        Guid id,
         string fullName,
         string email,
         string emailConfirmation,
@@ -20,10 +19,9 @@ public class CustomerToUpdate
         string city,
         string postalCode,
         string address,
-        int number,
-        DateTime modifiedAt)
+        int number
+    )
     {
-        Id = id;
         FullName = fullName;
         Email = email;
         EmailConfirmation = emailConfirmation;
@@ -37,7 +35,6 @@ public class CustomerToUpdate
         PostalCode = postalCode;
         Address = address;
         Number = number;
-        ModifiedAt = modifiedAt;
     }
 
     public Guid Id { get; set; }
@@ -54,5 +51,4 @@ public class CustomerToUpdate
     public string PostalCode { get; set; }
     public string Address { get; set; }
     public int Number { get; set; }
-    public DateTime? ModifiedAt { get; set; } = null;
 }

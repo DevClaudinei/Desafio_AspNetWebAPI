@@ -1,7 +1,7 @@
 using System;
+using Application.Models;
 using AppServices;
 using AutoMapper;
-using DomainModels.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -14,7 +14,7 @@ public class CustomersController : ControllerBase
 
     public CustomersController(ICustomerAppService appService, IMapper mapper)
     {
-        _appService = appService;
+        _appService = appService ?? throw new ArgumentNullException(nameof(appService));
     }
 
     [HttpPost]
@@ -33,7 +33,7 @@ public class CustomersController : ControllerBase
         return Ok(CustomersFound);
     }
 
-    [HttpGet("byId/{id}")]
+    [HttpGet("{id}")]
     public IActionResult GetById(Guid id)
     {
         var CustomerFoundId = _appService.GetCustomerById(id);
@@ -42,7 +42,7 @@ public class CustomersController : ControllerBase
             : Ok(CustomerFoundId);
     }
 
-    [HttpGet("byName")]
+    [HttpGet("name")]
     public IActionResult GetByName(string fullName)
     {
         var CustomerFoundName = _appService.GetCustomerByName(fullName);
@@ -64,7 +64,7 @@ public class CustomersController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(Guid id)
     {
-        var ExcludedCustomerById = _appService.ExcludeCustomer(id);
+        var ExcludedCustomerById = _appService.DeleteCustomer(id);
         return ExcludedCustomerById
             ? NoContent()
             : NotFound($"Cliente não encontrado para o ID [{id}].");
