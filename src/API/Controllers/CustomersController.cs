@@ -1,6 +1,6 @@
 using System;
 using Application.Models;
-using AppServices;
+using AppServices.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +18,9 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Post(CustomerToCreate customerToCreate)
+    public IActionResult Post(CreateCustomerRequest createCustomerRequest)
     {
-        var createdCustomer = _appService.CreateCustomer(customerToCreate);
+        var createdCustomer = _appService.Create(createCustomerRequest);
         return createdCustomer.isValid
             ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
             : BadRequest(createdCustomer.message);
@@ -29,44 +29,44 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var CustomersFound = _appService.GetCustomers();
-        return Ok(CustomersFound);
+        var customersFound = _appService.Get();
+        return Ok(customersFound);
     }
 
     [HttpGet("{id}")]
     public IActionResult GetById(Guid id)
     {
-        var CustomerFoundId = _appService.GetCustomerById(id);
-        return CustomerFoundId is null
-            ? NotFound($"Customer para o id [{id}] não foi encontrado.")
-            : Ok(CustomerFoundId);
+        var customerFoundId = _appService.GetCustomerById(id);
+        return customerFoundId is null
+            ? NotFound($"Customer para o id: {id} não foi encontrado.")
+            : Ok(customerFoundId);
     }
 
-    [HttpGet("name")]
+    [HttpGet("name/{fullName}")]
     public IActionResult GetByName(string fullName)
     {
-        var CustomerFoundName = _appService.GetCustomerByName(fullName);
-        return CustomerFoundName is not null
-            ? Ok(CustomerFoundName)
-            : NotFound($"Cliente para o nome: [{fullName}] não foi encontrado.");
+        var customerFoundName = _appService.GetCustomerByName(fullName);
+        return customerFoundName is not null
+            ? Ok(customerFoundName)
+            : NotFound($"Cliente para o nome: {fullName} não foi encontrado.");
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(Guid id, CustomerToUpdate customerToUpdate)
+    public IActionResult Put(Guid id, UpdateCustomerRequest updateCustomerRequest)
     {
-        customerToUpdate.Id = id;
-        var UpdatedCustomer = _appService.UpdateCustomer(customerToUpdate);
-        return UpdatedCustomer is not null
+        updateCustomerRequest.Id = id;
+        var updatedCustomer = _appService.Update(updateCustomerRequest);
+        return updatedCustomer is not null
             ? Ok()
-            : NotFound($"Cliente não encontrado para o ID [{id}].");
+            : NotFound($"Cliente não encontrado para o ID: {id}.");
     }
 
     [HttpDelete("{id}")]
     public IActionResult Delete(Guid id)
     {
-        var ExcludedCustomerById = _appService.DeleteCustomer(id);
-        return ExcludedCustomerById
+        var excludedCustomerById = _appService.Delete(id);
+        return excludedCustomerById
             ? NoContent()
-            : NotFound($"Cliente não encontrado para o ID [{id}].");
+            : NotFound($"Cliente não encontrado para o ID: {id}.");
     }
 }

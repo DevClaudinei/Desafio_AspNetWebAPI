@@ -2,11 +2,11 @@ using System;
 
 namespace Application.Models;
 
-public class CustomerToUpdate
+public class UpdateCustomerRequest
 {
-    public CustomerToUpdate() { }
+    public UpdateCustomerRequest() { }
 
-    public CustomerToUpdate(
+    public UpdateCustomerRequest(
         string fullName,
         string email,
         string emailConfirmation,

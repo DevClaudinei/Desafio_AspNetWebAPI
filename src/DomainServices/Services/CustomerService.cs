@@ -14,10 +14,10 @@ public class CustomerService : ICustomerService
     {
         if (CustomerForEmailAlreadyExists(customer.Email)) return (false, $"Cliente para o email: {customer.Email} já existe.");
         if (CustomerForCpfAlreadyExists(customer.Cpf)) return (false, $"Cliente para o cpf: {customer.Cpf} já existe.");
-
+        customer.Id = Guid.NewGuid();
         _customers.Add(customer);
         
-        return (true, null);
+        return (true, customer.Id.ToString());
     }
 
     public IList<Customer> GetCustomers()
@@ -37,48 +37,48 @@ public class CustomerService : ICustomerService
 
     public Customer GetCustomerById(Guid Id)
     {
-        var ComparedCustomerByIds = _customers
+        var comparedCustomerByIds = _customers
             .FirstOrDefault(a => a.Id.Equals(Id));
-        return ComparedCustomerByIds;
+        return comparedCustomerByIds;
     }
 
     public Customer GetCustomerByName(string fullName)
     {
-        var ComparedCustomerByNames = _customers
+        var comparedCustomerByNames = _customers
             .FirstOrDefault(a => a.FullName.Contains(fullName));
-        return ComparedCustomerByNames;
+        return comparedCustomerByNames;
     }
 
     public Customer UpdateCustomer(Customer customer)
     {
 
-        var CustomerFound = GetCustomerById(customer.Id);
-        if (CustomerFound is null) return null;
+        var customerFound = GetCustomerById(customer.Id);
+        if (customerFound is null) return null;
 
-        CustomerFound.FullName = customer.FullName;
-        CustomerFound.Email = customer.Email;
-        CustomerFound.EmailConfirmation = customer.EmailConfirmation;
-        CustomerFound.Cpf = customer.Cpf;
-        CustomerFound.Cellphone = customer.Cellphone;
-        CustomerFound.Birthdate = customer.Birthdate;
-        CustomerFound.EmailSms = customer.EmailSms;
-        CustomerFound.Whatsapp = customer.Whatsapp;
-        CustomerFound.Country = customer.Country;
-        CustomerFound.City = customer.City;
-        CustomerFound.PostalCode = customer.PostalCode;
-        CustomerFound.Address = customer.Address;
-        CustomerFound.Number = customer.Number;
-        CustomerFound.ModifiedAt = DateTime.UtcNow;
+        customerFound.FullName = customer.FullName;
+        customerFound.Email = customer.Email;
+        customerFound.EmailConfirmation = customer.EmailConfirmation;
+        customerFound.Cpf = customer.Cpf;
+        customerFound.Cellphone = customer.Cellphone;
+        customerFound.Birthdate = customer.Birthdate;
+        customerFound.EmailSms = customer.EmailSms;
+        customerFound.Whatsapp = customer.Whatsapp;
+        customerFound.Country = customer.Country;
+        customerFound.City = customer.City;
+        customerFound.PostalCode = customer.PostalCode;
+        customerFound.Address = customer.Address;
+        customerFound.Number = customer.Number;
+        customerFound.ModifiedAt = DateTime.UtcNow;
         
-        return CustomerFound;
+        return customerFound;
     }
 
     public bool DeleteCustomer(Guid id)
     {
-        var CustomerFound = GetCustomerById(id);
-        if (CustomerFound != null)
+        var customerFound = GetCustomerById(id);
+        if (customerFound != null)
         {
-            _customers.Remove(CustomerFound);
+            _customers.Remove(customerFound);
             return true;
         }
         return false;

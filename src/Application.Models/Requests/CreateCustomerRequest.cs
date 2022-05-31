@@ -1,10 +1,9 @@
 using System;
 
 namespace Application.Models;
-public class CustomerToCreate
+public class CreateCustomerRequest
 {
-    public CustomerToCreate(
-        Guid id,
+    public CreateCustomerRequest(
         string fullName,
         string email,
         string emailConfirmation,
@@ -20,7 +19,6 @@ public class CustomerToCreate
         int number
     )
     {
-        this.Id = id;
         this.FullName = fullName;
         this.Email = email;
         this.EmailConfirmation = emailConfirmation;
@@ -36,7 +34,6 @@ public class CustomerToCreate
         this.Number = number;
     }
 
-    public Guid Id { get; set; }
     public string FullName { get; set; }
     public string Email { get; set; }
     public string EmailConfirmation { get; set; }
@@ -50,5 +47,4 @@ public class CustomerToCreate
     public string PostalCode { get; set; }
     public string Address { get; set; }
     public int Number { get; set; }
-    public readonly DateTime CreatedAt = DateTime.UtcNow;
 }

@@ -2,14 +2,14 @@ using Application.Models;
 using AutoMapper;
 using DomainModels;
 
-namespace AppServices;
+namespace AppServices.Profiles;
 
 public class CustomerProfile : Profile
 {
     public CustomerProfile()
     {
-        CreateMap<Customer, CustomerViewModel>();
-        CreateMap<CustomerToUpdate, Customer>();
-        CreateMap<CustomerToCreate, Customer>();
+        CreateMap<Customer, CustomerResult>();
+        CreateMap<UpdateCustomerRequest, Customer>();
+        CreateMap<CreateCustomerRequest, Customer>();
     }
 }

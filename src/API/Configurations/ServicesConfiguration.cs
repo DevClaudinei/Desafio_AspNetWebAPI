@@ -1,4 +1,4 @@
-using AppServices;
+using AppServices.Services;
 using DomainServices;
 using DomainServices.Services;
 using Microsoft.Extensions.DependencyInjection;

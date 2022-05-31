@@ -5,7 +5,7 @@ using AutoMapper;
 using DomainModels;
 using DomainServices.Services;
 
-namespace AppServices;
+namespace AppServices.Services;
 
 public class CustomerAppService : ICustomerAppService
 {
@@ -15,60 +15,60 @@ public class CustomerAppService : ICustomerAppService
     public CustomerAppService(ICustomerService customerService, IMapper mapper)
     {
         _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
-        _mapper = mapper;
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public (bool isValid, string message) CreateCustomer(CustomerToCreate customerToCreate)
+    public (bool isValid, string message) Create(CreateCustomerRequest createCustomerRequest)
     {
-        customerToCreate.Id = Guid.NewGuid();
-        var CreatedCustomer = _customerService.CreateCustomer(_mapper.Map<Customer>(customerToCreate));
-        if (CreatedCustomer.isValid) return (true, customerToCreate.Id.ToString());
-        
-        return (false, CreatedCustomer.message); 
+        var customer = _mapper.Map<Customer>(createCustomerRequest);
+        var createdCustomer = _customerService.CreateCustomer(customer);
+        if (createdCustomer.isValid) return (true, createdCustomer.message);
+
+        return (false, createdCustomer.message);
     }
 
-    public IEnumerable<CustomerViewModel> GetCustomers()
+    public IEnumerable<CustomerResult> Get()
     {
-        var CustomersFound = _customerService.GetCustomers();
-        return _mapper.Map<IEnumerable<CustomerViewModel>>(CustomersFound);
+        var customersFound = _customerService.GetCustomers();
+        return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
 
-    public bool CheckForAClientWithCpf(string cpf)
+    public bool AnyCustomerForCpf(string cpf)
     {
         return _customerService.CustomerForCpfAlreadyExists(cpf);
     }
 
-    public bool CheckForAClientWithEmail(string email)
+    public bool AnyCustomerForEmail(string email)
     {
         return _customerService.CustomerForEmailAlreadyExists(email);
     }
 
-    public CustomerViewModel GetCustomerById(Guid id)
+    public CustomerResult GetCustomerById(Guid id)
     {
-        var FoundCustomer = _customerService.GetCustomerById(id);
-        if (FoundCustomer is null) return null;
+        var foundCustomer = _customerService.GetCustomerById(id);
+        if (foundCustomer is null) return null;
 
-        return _mapper.Map<CustomerViewModel>(FoundCustomer);
+        return _mapper.Map<CustomerResult>(foundCustomer);
     }
 
-    public CustomerViewModel GetCustomerByName(string fullName)
+    public CustomerResult GetCustomerByName(string fullName)
     {
-        var FoundCustomer = _customerService.GetCustomerByName(fullName);
-        if (FoundCustomer is null) return null;
+        var foundCustomer = _customerService.GetCustomerByName(fullName);
+        if (foundCustomer is null) return null;
 
-        return _mapper.Map<CustomerViewModel>(FoundCustomer);
+        return _mapper.Map<CustomerResult>(foundCustomer);
     }
 
-    public Customer UpdateCustomer(CustomerToUpdate customerToUpdate)
+    public Customer Update(UpdateCustomerRequest updateCustomerRequest)
     {
-        var conversationBetweenEntities = _mapper.Map<Customer>(customerToUpdate);
+        var conversationBetweenEntities = _mapper.Map<Customer>(updateCustomerRequest);
         var updatedCustomer = _customerService.UpdateCustomer(conversationBetweenEntities);
-        return _mapper.Map<Customer>(updatedCustomer); 
+        return _mapper.Map<Customer>(updatedCustomer);
     }
 
-    public bool DeleteCustomer(Guid id)
+    public bool Delete(Guid id)
     {
-        var DeletedCustomer = _customerService.DeleteCustomer(id);
-        return DeletedCustomer;
+        var deletedCustomer = _customerService.DeleteCustomer(id);
+        return deletedCustomer;
     }
 }

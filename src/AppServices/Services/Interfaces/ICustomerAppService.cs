@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using Application.Models;
 using DomainModels;
 
-namespace AppServices;
+namespace AppServices.Services;
 
 public interface ICustomerAppService
 {
-    (bool isValid, string message) CreateCustomer(CustomerToCreate customerToCreate);
+    (bool isValid, string message) Create(CreateCustomerRequest createCustomerRequest);
 
-    IEnumerable<CustomerViewModel> GetCustomers();
+    IEnumerable<CustomerResult> Get();
 
-    bool CheckForAClientWithCpf(string cpf);
+    bool AnyCustomerForCpf(string cpf);
 
-    bool CheckForAClientWithEmail(string email);
+    bool AnyCustomerForEmail(string email);
 
-    CustomerViewModel GetCustomerById(Guid id);
+    CustomerResult GetCustomerById(Guid id);
 
-    CustomerViewModel GetCustomerByName(string fullName);
+    CustomerResult GetCustomerByName(string fullName);
 
-    Customer UpdateCustomer(CustomerToUpdate customerToUpdate);
+    Customer Update(UpdateCustomerRequest updateCustomerRequest);
 
-    bool DeleteCustomer(Guid id);
+    bool Delete(Guid id);
 }
