@@ -11,15 +11,11 @@ public interface ICustomerAppService
 
     IEnumerable<CustomerResult> Get();
 
-    bool AnyCustomerForCpf(string cpf);
-
-    bool AnyCustomerForEmail(string email);
-
     CustomerResult GetCustomerById(Guid id);
 
     CustomerResult GetCustomerByName(string fullName);
 
-    Customer Update(UpdateCustomerRequest updateCustomerRequest);
+    (bool isValid, string message) Update(UpdateCustomerRequest updateCustomerRequest);
 
     bool Delete(Guid id);
 }

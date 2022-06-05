@@ -10,15 +10,11 @@ public interface ICustomerService
 
     IList<Customer> GetCustomers();
 
-    bool CustomerForCpfAlreadyExists(string cpf);
+    Customer GetById(Guid CustomerId);
 
-    bool CustomerForEmailAlreadyExists(string email);
+    Customer GetByFullName(string FullName);
 
-    Customer GetCustomerById(Guid CustomerId);
+    (bool isValid, string message) Update(Customer customer);
 
-    Customer GetCustomerByName(string FullName);
-
-    Customer UpdateCustomer(Customer customer);
-
-    bool DeleteCustomer(Guid id);
+    bool Delete(Guid id);
 }

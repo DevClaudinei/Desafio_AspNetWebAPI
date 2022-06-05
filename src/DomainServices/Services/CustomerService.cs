@@ -12,11 +12,12 @@ public class CustomerService : ICustomerService
 
     public (bool isValid, string message) CreateCustomer(Customer customer)
     {
-        if (CustomerForEmailAlreadyExists(customer.Email)) return (false, $"Cliente para o email: {customer.Email} já existe.");
-        if (CustomerForCpfAlreadyExists(customer.Cpf)) return (false, $"Cliente para o cpf: {customer.Cpf} já existe.");
+        var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
+            ;
+
         customer.Id = Guid.NewGuid();
         _customers.Add(customer);
-        
+
         return (true, customer.Id.ToString());
     }
 
@@ -25,57 +26,55 @@ public class CustomerService : ICustomerService
         return _customers;
     }
 
-    public bool CustomerForCpfAlreadyExists(string cpf)
+    private (bool exists, string errorMessage) VerifyCustomerAlreadyExists(Customer customer)
     {
-        return _customers.Any(x => x.Cpf.Equals(cpf));
+        var messageTemplate = "Customer already exists for {0}: {1}";
+        if (_customers.Any(x => x.Email.Equals(customer.Email)))
+        {
+            return (true, string.Format(messageTemplate, "Email", customer.Email));
+        }
+
+        if (_customers.Any(x => x.Cpf.Equals(customer.Cpf)))
+        {
+            return (true, string.Format(messageTemplate, "Cpf", customer.Cpf));
+        }
+
+        return default;
     }
 
-    public bool CustomerForEmailAlreadyExists(string email)
-    {
-        return _customers.Any(x => x.Email.Equals(email));
-    }
-
-    public Customer GetCustomerById(Guid Id)
+    public Customer GetById(Guid Id)
     {
         var comparedCustomerByIds = _customers
             .FirstOrDefault(a => a.Id.Equals(Id));
         return comparedCustomerByIds;
     }
 
-    public Customer GetCustomerByName(string fullName)
+    public Customer GetByFullName(string fullName)
     {
         var comparedCustomerByNames = _customers
             .FirstOrDefault(a => a.FullName.Contains(fullName));
         return comparedCustomerByNames;
     }
 
-    public Customer UpdateCustomer(Customer customer)
+    public (bool isValid, string message) Update(Customer customer)
     {
+        var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
 
-        var customerFound = GetCustomerById(customer.Id);
-        if (customerFound is null) return null;
+        if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
-        customerFound.FullName = customer.FullName;
-        customerFound.Email = customer.Email;
-        customerFound.EmailConfirmation = customer.EmailConfirmation;
-        customerFound.Cpf = customer.Cpf;
-        customerFound.Cellphone = customer.Cellphone;
-        customerFound.Birthdate = customer.Birthdate;
-        customerFound.EmailSms = customer.EmailSms;
-        customerFound.Whatsapp = customer.Whatsapp;
-        customerFound.Country = customer.Country;
-        customerFound.City = customer.City;
-        customerFound.PostalCode = customer.PostalCode;
-        customerFound.Address = customer.Address;
-        customerFound.Number = customer.Number;
-        customerFound.ModifiedAt = DateTime.UtcNow;
+        var customerExists = _customers.FirstOrDefault(x => x.Id.Equals(customer.Id));
+        var indexCustomer = _customers.IndexOf(customerExists);
         
-        return customerFound;
+        if (customerExists is null) return (false, $"Cliente não encontrado para o ID: {customer.Id}.");
+
+        _customers[indexCustomer] = customer;
+
+        return (true, customer.Id.ToString());
     }
 
-    public bool DeleteCustomer(Guid id)
+    public bool Delete(Guid id)
     {
-        var customerFound = GetCustomerById(id);
+        var customerFound = GetById(id);
         if (customerFound != null)
         {
             _customers.Remove(customerFound);

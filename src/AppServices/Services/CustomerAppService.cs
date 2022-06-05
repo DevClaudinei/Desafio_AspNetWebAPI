@@ -33,42 +33,31 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
 
-    public bool AnyCustomerForCpf(string cpf)
-    {
-        return _customerService.CustomerForCpfAlreadyExists(cpf);
-    }
-
-    public bool AnyCustomerForEmail(string email)
-    {
-        return _customerService.CustomerForEmailAlreadyExists(email);
-    }
-
     public CustomerResult GetCustomerById(Guid id)
     {
-        var foundCustomer = _customerService.GetCustomerById(id);
-        if (foundCustomer is null) return null;
+        var customer = _customerService.GetById(id);
+        if (customer is null) return null;
 
-        return _mapper.Map<CustomerResult>(foundCustomer);
+        return _mapper.Map<CustomerResult>(customer);
     }
 
     public CustomerResult GetCustomerByName(string fullName)
     {
-        var foundCustomer = _customerService.GetCustomerByName(fullName);
-        if (foundCustomer is null) return null;
+        var customer = _customerService.GetByFullName(fullName);
+        if (customer is null) return null;
 
-        return _mapper.Map<CustomerResult>(foundCustomer);
+        return _mapper.Map<CustomerResult>(customer);
     }
 
-    public Customer Update(UpdateCustomerRequest updateCustomerRequest)
+    public (bool isValid, string message) Update(UpdateCustomerRequest updateCustomerRequest)
     {
-        var conversationBetweenEntities = _mapper.Map<Customer>(updateCustomerRequest);
-        var updatedCustomer = _customerService.UpdateCustomer(conversationBetweenEntities);
-        return _mapper.Map<Customer>(updatedCustomer);
+        var customerToUpdate = _mapper.Map<Customer>(updateCustomerRequest);
+        return _customerService.Update(customerToUpdate);
     }
 
     public bool Delete(Guid id)
     {
-        var deletedCustomer = _customerService.DeleteCustomer(id);
+        var deletedCustomer = _customerService.Delete(id);
         return deletedCustomer;
     }
 }

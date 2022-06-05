@@ -2,9 +2,9 @@ using DomainModels;
 using FluentValidation;
 
 namespace AppServices;
-public class CustomerValidators : AbstractValidator<Customer>
+public class CustomerValidator : AbstractValidator<Customer>
 {
-    public CustomerValidators()
+    public CustomerValidator()
     {
         RuleFor(x => x.FullName)
             .NotEmpty()

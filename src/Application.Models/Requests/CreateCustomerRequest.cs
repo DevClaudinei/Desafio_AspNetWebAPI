@@ -19,19 +19,19 @@ public class CreateCustomerRequest
         int number
     )
     {
-        this.FullName = fullName;
-        this.Email = email;
-        this.EmailConfirmation = emailConfirmation;
-        this.Cpf = cpf;
-        this.Cellphone = cellphone;
-        this.Birthdate = birthdate;
-        this.EmailSms = emailSms;
-        this.Whatsapp = whatsapp;
-        this.Country = country;
-        this.City = city;
-        this.PostalCode = postalCode;
-        this.Address = address;
-        this.Number = number;
+        FullName = fullName;
+        Email = email;
+        EmailConfirmation = emailConfirmation;
+        Cpf = cpf;
+        Cellphone = cellphone;
+        Birthdate = birthdate;
+        EmailSms = emailSms;
+        Whatsapp = whatsapp;
+        Country = country;
+        City = city;
+        PostalCode = postalCode;
+        Address = address;
+        Number = number;
     }
 
     public string FullName { get; set; }

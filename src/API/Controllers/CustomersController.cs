@@ -56,9 +56,9 @@ public class CustomersController : ControllerBase
     {
         updateCustomerRequest.Id = id;
         var updatedCustomer = _appService.Update(updateCustomerRequest);
-        return updatedCustomer is not null
+        return updatedCustomer.isValid
             ? Ok()
-            : NotFound($"Cliente não encontrado para o ID: {id}.");
+            : NotFound(updatedCustomer.message);
     }
 
     [HttpDelete("{id}")]
