@@ -44,8 +44,7 @@ public class CustomerService : ICustomerService
 
     public Customer GetById(Guid Id)
     {
-        var comparedCustomerByIds = _customers
-            .FirstOrDefault(a => a.Id.Equals(Id));
+        var comparedCustomerByIds = _customers.FirstOrDefault(a => a.Id.Equals(Id));
         return comparedCustomerByIds;
     }
 
