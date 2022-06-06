@@ -1,5 +1,6 @@
 using Application.Models;
 using FluentValidation;
+using FluentValidation.Validators;
 
 namespace AppServices.Validations;
 public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
@@ -13,12 +14,7 @@ public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
         RuleFor(x => x.Email)
             .NotEmpty()
             .NotNull()
-            .EmailAddress();
-
-        RuleFor(x => x.EmailConfirmation)
-            .NotEmpty()
-            .NotNull()
-            .EmailAddress();
+            .EmailAddress(EmailValidationMode.Net4xRegex);
 
         RuleFor(x => x)
         .Must(x => x.EmailConfirmation == x.Email)

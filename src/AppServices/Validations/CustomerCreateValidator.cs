@@ -6,7 +6,6 @@ namespace AppServices.Validations;
 
 public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
 {
-    [System.Obsolete]
     public CustomerCreateValidator()
     {
         RuleFor(x => x.FullName)
@@ -14,11 +13,6 @@ public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
             .NotNull();
 
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .NotNull()
-            .EmailAddress(EmailValidationMode.Net4xRegex);
-
-        RuleFor(x => x.EmailConfirmation)
             .NotEmpty()
             .NotNull()
             .EmailAddress(EmailValidationMode.Net4xRegex);
