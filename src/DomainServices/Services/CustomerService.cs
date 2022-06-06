@@ -13,7 +13,6 @@ public class CustomerService : ICustomerService
     public (bool isValid, string message) CreateCustomer(Customer customer)
     {
         var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
-        ;
 
         customer.Id = Guid.NewGuid();
         _customers.Add(customer);
@@ -44,15 +43,13 @@ public class CustomerService : ICustomerService
 
     public Customer GetById(Guid Id)
     {
-        var comparedCustomerByIds = _customers
-            .FirstOrDefault(a => a.Id.Equals(Id));
+        var comparedCustomerByIds = _customers.FirstOrDefault(a => a.Id.Equals(Id));
         return comparedCustomerByIds;
     }
 
     public Customer GetByFullName(string fullName)
     {
-        var comparedCustomerByNames = _customers
-            .FirstOrDefault(a => a.FullName.Contains(fullName));
+        var comparedCustomerByNames = _customers.FirstOrDefault(a => a.FullName.Contains(fullName));
         return comparedCustomerByNames;
     }
 
