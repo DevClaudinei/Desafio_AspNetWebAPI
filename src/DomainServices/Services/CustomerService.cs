@@ -49,8 +49,7 @@ public class CustomerService : ICustomerService
 
     public Customer GetByFullName(string fullName)
     {
-        var comparedCustomerByNames = _customers
-            .FirstOrDefault(a => a.FullName.Contains(fullName));
+        var comparedCustomerByNames = _customers.FirstOrDefault(a => a.FullName.Contains(fullName));
         return comparedCustomerByNames;
     }
 
