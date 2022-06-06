@@ -13,7 +13,6 @@ public class CustomerService : ICustomerService
     public (bool isValid, string message) CreateCustomer(Customer customer)
     {
         var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
-            ;
 
         customer.Id = Guid.NewGuid();
         _customers.Add(customer);
