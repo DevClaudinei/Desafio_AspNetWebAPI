@@ -13,7 +13,7 @@ public class CustomerService : ICustomerService
     public (bool isValid, string message) CreateCustomer(Customer customer)
     {
         var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
-            ;
+        ;
 
         customer.Id = Guid.NewGuid();
         _customers.Add(customer);
@@ -62,11 +62,12 @@ public class CustomerService : ICustomerService
 
         if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
-        var customerExists = _customers.FirstOrDefault(x => x.Id.Equals(customer.Id));
-        var indexCustomer = _customers.IndexOf(customerExists);
-        
-        if (customerExists is null) return (false, $"Cliente não encontrado para o ID: {customer.Id}.");
+        var indexCustomer = _customers.IndexOf(_customers.FirstOrDefault(x => x.Id.Equals(customer.Id)));
 
+        if (indexCustomer is -1)
+        {
+            return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
+        }
         _customers[indexCustomer] = customer;
 
         return (true, customer.Id.ToString());
