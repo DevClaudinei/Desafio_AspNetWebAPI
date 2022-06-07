@@ -1,23 +1,15 @@
-using System;
-using System.ComponentModel;
-using FluentValidation.AspNetCore;
+using API.Configurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using DesafioWarren.WebAPI.Validations;
-using DesafioWarren.WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-
-builder.Services.AddSingleton<ICustomerService, CustomerService>()
-
-.AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<CustomerValidator>());
-
-TypeDescriptor.AddAttributes(typeof(DateTime), new TypeConverterAttribute(typeof(DateTimeConverter)));
+builder.Services.AddServicesConfiguration();
+builder.Services.AddAutoMapperConfiguration();
+builder.Services.AddMvcConfiguration();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

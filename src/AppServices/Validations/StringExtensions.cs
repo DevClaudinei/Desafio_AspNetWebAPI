@@ -1,8 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace DesafioWarren.WebAPI;
-
+namespace AppServices;
 public static class StringExtensions
 {
     public static bool IsValidDocument(this string document)
@@ -27,5 +26,5 @@ public static class StringExtensions
     {
         var CurrentDate = DateTime.Now.Year;
         return (CurrentDate - birthdate.Year) >= 18;
-    } 
+    }
 }

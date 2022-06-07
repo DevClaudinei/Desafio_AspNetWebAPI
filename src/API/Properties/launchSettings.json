@@ -4,17 +4,17 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:54115",
-      "sslPort": 44317
+      "applicationUrl": "http://localhost:49247",
+      "sslPort": 44349
     }
   },
   "profiles": {
-    "DesafioWarren.WebAPI": {
+    "OnionArchitecture.WebAPI": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5208",
+      "applicationUrl": "http://localhost:5160",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
