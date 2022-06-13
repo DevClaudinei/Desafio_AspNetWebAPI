@@ -10,7 +10,8 @@ public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
     {
         RuleFor(x => x.FullName)
             .NotEmpty()
-            .NotNull();
+            .NotNull()
+            .Must(x => x.validateFields());
 
         RuleFor(x => x.Email)
             .NotEmpty()
@@ -24,6 +25,9 @@ public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
         RuleFor(x => x.Cpf)
             .NotEmpty()
             .NotNull()
+            .Length(11)
+            .Matches("[0-9]{11}")
+            .WithMessage("Documento inválido! CPF precisa estar no formato 'XXXXXXXXXXX'")
             .Must(x => x.IsValidDocument());
 
         RuleFor(x => x.Cellphone)
