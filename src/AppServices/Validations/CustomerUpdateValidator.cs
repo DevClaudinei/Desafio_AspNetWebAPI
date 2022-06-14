@@ -18,29 +18,29 @@ public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
 
         RuleFor(x => x)
         .Must(x => x.EmailConfirmation == x.Email)
-        .WithMessage("Email e EmailConfirmation precisam ter informações identicas.");
+        .WithMessage("Email e EmailConfirmation precisam ter informações idênticas.");
 
         RuleFor(x => x.Cpf)
             .NotEmpty()
             .NotNull()
             .Must(x => x.IsValidDocument());
 
-        RuleFor(x => x.Cellphone)
+        RuleFor(x => x.CellPhone)
             .NotEmpty()
             .NotNull()
             .Must(x => x.IsCellphone())
             .WithMessage("O Cellphone precisa estar no formato '(XX) XXXXX-XXXX'");
 
-        RuleFor(x => x.Birthdate)
+        RuleFor(x => x.DateOfBirth)
             .NotEmpty()
             .NotNull()
             .Must(x => x.IsReachedAdulthood())
-            .WithMessage("Customer precisa ter 18 anos no minimo.");
+            .WithMessage("Customer precisa ter 18 anos no mínimo.");
 
         RuleFor(x => x.EmailSms)
             .NotNull();
 
-        RuleFor(x => x.Whatsapp)
+        RuleFor(x => x.WhatsApp)
             .NotNull();
 
         RuleFor(x => x.Country)

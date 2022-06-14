@@ -1,13 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FluentValidation;
 
 namespace AppServices;
 public static class StringExtensions
 {
     public static bool IsValidDocument(this string document)
     {
+        if (document.Length != 11) return false;
+
         var firstDigitChecker = 0;
         for (int i = 0; i < document.Length - 2; i++)
         {
@@ -36,10 +38,10 @@ public static class StringExtensions
         return (int)char.GetNumericValue(cpf, indexValue);
     }
 
-    public static bool IsCellphone(this string celnum)
+    public static bool IsCellphone(this string celPhoneNumber)
     {
         var expression = "^\\((?:[14689][1-9]|2[12478]|3[1234578]|5[1345]|7[134579])\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$";
-        return Regex.Match(celnum, expression).Success;
+        return Regex.Match(celPhoneNumber, expression).Success;
     }
 
     public static bool IsPostalCode(this string cep)
@@ -48,37 +50,18 @@ public static class StringExtensions
         return Regex.Match(cep, expression).Success;
     }
 
-    public static bool IsReachedAdulthood(this DateTime birthdate)
+    public static bool IsReachedAdulthood(this DateTime dateOfBirth)
     {
-        var ageCustomer = new DateTime(DateTime.Now.Subtract(birthdate).Ticks).Year - 1;
-        return ageCustomer >= 18
-            ? true
-            : false;
+        var ageCustomer = new DateTime(DateTime.Now.Subtract(dateOfBirth).Ticks).Year - 1;
+        return ageCustomer >= 18;
     }
 
-    public static bool validateFields(this string fields)
-    {
-        List<string> partsOfFields = new();
-        var piecesOfFields = fields.Trim().Split(" ").ToList();
-        var fieldsAreValid = validatesIfFieldsHaveInvalidCharacters(piecesOfFields);
-        var countEmptySpaces = piecesOfFields.Where(x => x.Equals("")).ToList();
+    public static bool ContainsEmptySpace(this string fields)
+        => fields.Split(" ").Any(x => x == string.Empty);
 
-        if (piecesOfFields.Count > 1 && countEmptySpaces.Count == 0 && fieldsAreValid) return true;
+    public static bool AnyInvalidLetter(this string value)
+        => value.Replace(" ", string.Empty).Any(x => !char.IsLetter(x));
 
-        return default;
-    }
-
-    public static bool validatesIfFieldsHaveInvalidCharacters(this List<string> fields)
-    {
-        var fieldsAreValid = fields.Where(x => x != "").ToList();
-        var result = true;
-
-        foreach (var field in fieldsAreValid)
-        {
-            var x = field.ToLower().Where(x => x >= 'a' && x <= 'z').ToList();
-            if (x.Count != field.Length) return false;
-        }
-
-        return result;
-    }
+    public static bool PartsOfString(this string fields)
+        => !fields.Split(" ").Where(x => x.Length < 2).Any();
 }

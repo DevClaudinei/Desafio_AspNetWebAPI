@@ -11,7 +11,14 @@ public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
         RuleFor(x => x.FullName)
             .NotEmpty()
             .NotNull()
-            .Must(x => x.validateFields());
+            .Must(x => x.Split(" ").Length > 1)
+            .WithMessage("FullName não contém ao menos um sobrenome")
+            .Must(x => !x.ContainsEmptySpace())
+            .WithMessage("FullName contém espaços demasiados")
+            .Must(x => !x.AnyInvalidLetter())
+            .WithMessage("FullName contém caracteres especiais")
+            .Must(x => x.PartsOfString())
+            .WithMessage("FullName é inválido. Nome e/ou sobrenome devem conter duas letras ou mais.");
 
         RuleFor(x => x.Email)
             .NotEmpty()
@@ -19,33 +26,30 @@ public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
             .EmailAddress(EmailValidationMode.Net4xRegex);
 
         RuleFor(x => x)
-        .Must(x => x.EmailConfirmation == x.Email)
-        .WithMessage("Email e EmailConfirmation precisam ter informações identicas.");
+            .Must(x => x.EmailConfirmation == x.Email)
+            .WithMessage("Email e EmailConfirmation precisam ter informações idênticas.");
 
         RuleFor(x => x.Cpf)
             .NotEmpty()
             .NotNull()
-            .Length(11)
-            .Matches("[0-9]{11}")
-            .WithMessage("Documento inválido! CPF precisa estar no formato 'XXXXXXXXXXX'")
             .Must(x => x.IsValidDocument());
 
-        RuleFor(x => x.Cellphone)
+        RuleFor(x => x.CellPhone)
             .NotEmpty()
             .NotNull()
             .Must(x => x.IsCellphone())
             .WithMessage("O Cellphone precisa estar no formato '(XX) XXXXX-XXXX'");
 
-        RuleFor(x => x.Birthdate)
+        RuleFor(x => x.DateOfBirth)
             .NotEmpty()
             .NotNull()
             .Must(x => x.IsReachedAdulthood())
-            .WithMessage("Customer precisa ter 18 anos no minimo.");
+            .WithMessage("Customer precisa ter 18 anos no mínimo.");
 
         RuleFor(x => x.EmailSms)
             .NotNull();
 
-        RuleFor(x => x.Whatsapp)
+        RuleFor(x => x.WhatsApp)
             .NotNull();
 
         RuleFor(x => x.Country)
