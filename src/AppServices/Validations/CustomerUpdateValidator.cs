@@ -14,9 +14,9 @@ public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
             .WithMessage("FullName deve conter ao menos um sobrenome")
             .Must(x => !x.ContainsEmptySpace())
             .WithMessage("FullName não deve conter espaços em branco")
-            .Must(x => !x.AnyInvalidLetter())
+            .Must(x => !x.AnySymbolOrSpecialCharacter())
             .WithMessage("FullName não deve conter caracteres especiais")
-            .Must(x => x.ValidateNumberOfCharactersInFirstAndLastName())
+            .Must(x => x.HasAtLeastTwoCharactersForEachWord())
             .WithMessage("FullName inválido. Nome e/ou sobrenome devem conter ao menos duas letras ou mais");
 
         RuleFor(x => x.Email)

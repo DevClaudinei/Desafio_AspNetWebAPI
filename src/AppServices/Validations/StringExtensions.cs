@@ -59,9 +59,9 @@ public static class StringExtensions
     public static bool ContainsEmptySpace(this string fields)
         => fields.Split(" ").Any(x => x == string.Empty);
 
-    public static bool AnyInvalidLetter(this string value)
+    public static bool AnySymbolOrSpecialCharacter(this string value)
         => value.Replace(" ", string.Empty).Any(x => !char.IsLetter(x));
 
-    public static bool ValidateNumberOfCharactersInFirstAndLastName(this string fields)
+    public static bool HasAtLeastTwoCharactersForEachWord(this string fields)
         => !fields.Split(" ").Where(x => x.Length < 2).Any();
 }
