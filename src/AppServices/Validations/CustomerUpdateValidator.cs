@@ -9,7 +9,15 @@ public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
     {
         RuleFor(x => x.FullName)
             .NotEmpty()
-            .NotNull();
+            .NotNull()
+            .Must(x => x.Split(" ").Length > 1)
+            .WithMessage("FullName deve conter ao menos um sobrenome")
+            .Must(x => !x.ContainsEmptySpace())
+            .WithMessage("FullName não deve conter espaços em branco")
+            .Must(x => !x.AnyInvalidLetter())
+            .WithMessage("FullName não deve conter caracteres especiais")
+            .Must(x => x.ValidateNumberOfCharactersInFirstAndLastName())
+            .WithMessage("FullName inválido. Nome e/ou sobrenome devem conter ao menos duas letras ou mais");
 
         RuleFor(x => x.Email)
             .NotEmpty()
@@ -34,7 +42,7 @@ public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
         RuleFor(x => x.DateOfBirth)
             .NotEmpty()
             .NotNull()
-            .Must(x => x.IsReachedAdulthood())
+            .Must(x => x.HasReachedAdulthood())
             .WithMessage("Customer precisa ter 18 anos no mínimo.");
 
         RuleFor(x => x.EmailSms)

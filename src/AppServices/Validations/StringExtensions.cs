@@ -50,7 +50,7 @@ public static class StringExtensions
         return Regex.Match(cep, expression).Success;
     }
 
-    public static bool IsReachedAdulthood(this DateTime dateOfBirth)
+    public static bool HasReachedAdulthood(this DateTime dateOfBirth)
     {
         var ageCustomer = new DateTime(DateTime.Now.Subtract(dateOfBirth).Ticks).Year - 1;
         return ageCustomer >= 18;
@@ -62,6 +62,6 @@ public static class StringExtensions
     public static bool AnyInvalidLetter(this string value)
         => value.Replace(" ", string.Empty).Any(x => !char.IsLetter(x));
 
-    public static bool PartsOfString(this string fields)
+    public static bool ValidateNumberOfCharactersInFirstAndLastName(this string fields)
         => !fields.Split(" ").Where(x => x.Length < 2).Any();
 }
