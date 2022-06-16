@@ -14,6 +14,8 @@ public class CustomerService : ICustomerService
     {
         var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
 
+        if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
+
         customer.Id = Guid.NewGuid();
         _customers.Add(customer);
 
