@@ -36,10 +36,10 @@ public static class StringExtensions
         return (int)char.GetNumericValue(cpf, indexValue);
     }
 
-    public static bool IsCellphone(this string celnum)
+    public static bool IsCellphone(this string celNum)
     {
         var expression = "^\\((?:[14689][1-9]|2[12478]|3[1234578]|5[1345]|7[134579])\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$";
-        return Regex.Match(celnum, expression).Success;
+        return Regex.Match(celNum, expression).Success;
     }
 
     public static bool IsPostalCode(this string cep)
@@ -48,9 +48,9 @@ public static class StringExtensions
         return Regex.Match(cep, expression).Success;
     }
 
-    public static bool IsReachedAdulthood(this DateTime birthdate)
+    public static bool IsReachedAdulthood(this DateTime dateOfBirth)
     {
-        var ageCustomer = new DateTime(DateTime.Now.Subtract(birthdate).Ticks).Year - 1;
+        var ageCustomer = new DateTime(DateTime.Now.Subtract(dateOfBirth).Ticks).Year - 1;
         return ageCustomer >= 18
             ? true
             : false;

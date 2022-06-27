@@ -1,0 +1,20 @@
+version: '3.4'
+services:
+  db:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password --general_log=ON --bind_address=0.0.0.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=CustomerDB
+      - MYSQL_ROOT_HOST='localhost'
+      - MYSQL_USER=claudinei
+      - MYSQL_PASSWORD=123456
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./Infrastructure.Data/DB:/var/lib/mysql
+
+volumes:
+  db:
+    driver: local
