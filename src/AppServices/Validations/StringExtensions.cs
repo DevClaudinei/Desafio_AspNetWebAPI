@@ -1,13 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FluentValidation;
 
 namespace AppServices;
 public static class StringExtensions
 {
     public static bool IsValidDocument(this string document)
     {
+        if (document.Length != 11) return false;
+
         var firstDigitChecker = 0;
         for (int i = 0; i < document.Length - 2; i++)
         {
@@ -56,29 +58,12 @@ public static class StringExtensions
             : false;
     }
 
-    public static bool validateFields(this string fields)
-    {
-        List<string> partsOfFields = new();
-        var piecesOfFields = fields.Trim().Split(" ").ToList();
-        var fieldsAreValid = validatesIfFieldsHaveInvalidCharacters(piecesOfFields);
-        var countEmptySpaces = piecesOfFields.Where(x => x.Equals("")).ToList();
+    public static bool ContainsEmptySpace(this string fields)
+        => fields.Split(" ").Any(x => x == string.Empty);
 
-        if (piecesOfFields.Count > 1 && countEmptySpaces.Count == 0 && fieldsAreValid) return true;
+    public static bool AnySymbolOrSpecialCharacter(this string value)
+        => value.Replace(" ", string.Empty).Any(x => !char.IsLetter(x));
 
-        return default;
-    }
-
-    public static bool validatesIfFieldsHaveInvalidCharacters(this List<string> fields)
-    {
-        var fieldsAreValid = fields.Where(x => x != "").ToList();
-        var result = true;
-
-        foreach (var field in fieldsAreValid)
-        {
-            var x = field.ToLower().Where(x => x >= 'a' && x <= 'z').ToList();
-            if (x.Count != field.Length) return false;
-        }
-
-        return result;
-    }
+    public static bool HasAtLeastTwoCharactersForEachWord(this string fields)
+        => !fields.Split(" ").Where(x => x.Length < 2).Any();
 }

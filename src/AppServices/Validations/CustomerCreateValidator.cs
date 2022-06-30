@@ -11,7 +11,14 @@ public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
         RuleFor(x => x.FullName)
             .NotEmpty()
             .NotNull()
-            .Must(x => x.validateFields());
+            .Must(x => x.Split(" ").Length > 1)
+            .WithMessage("FullName deve conter ao menos um sobrenome")
+            .Must(x => !x.ContainsEmptySpace())
+            .WithMessage("FullName não deve conter espaços em branco")
+            .Must(x => !x.AnySymbolOrSpecialCharacter())
+            .WithMessage("FullName não deve conter caracteres especiais")
+            .Must(x => x.HasAtLeastTwoCharactersForEachWord())
+            .WithMessage("FullName inválido. Nome e/ou sobrenome devem conter ao menos duas letras ou mais");
 
         RuleFor(x => x.Email)
             .NotEmpty()
@@ -25,9 +32,6 @@ public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
         RuleFor(x => x.Cpf)
             .NotEmpty()
             .NotNull()
-            .Length(11)
-            .Matches("[0-9]{11}")
-            .WithMessage("Documento inválido! CPF precisa estar no formato 'XXXXXXXXXXX'")
             .Must(x => x.IsValidDocument());
 
         RuleFor(x => x.Cellphone)
