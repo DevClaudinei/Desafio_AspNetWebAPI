@@ -13,7 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddServicesConfiguration();
 builder.Services.AddAutoMapperConfiguration();
 builder.Services.AddMvcConfiguration();
-builder.Services.AddDbConfiguration();
+// builder.Services.AddDbConfiguration();
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+{
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+            Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.29-mysql"), b => b.MigrationsAssembly("Infrastructure"));
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

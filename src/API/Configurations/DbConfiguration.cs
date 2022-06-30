@@ -15,7 +15,7 @@ public static class DbConfiguration
         services.AddDbContext<ApplicationDbContext>(options => 
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Infrastructure"));
+            options.UseMySql(connectionString, ServerVersion.Parse("8.0.29-mysql"), b => b.MigrationsAssembly("Infrastructure"));
         });
     }
 }

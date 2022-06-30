@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using DomainModels;
 using DomainServices.Services;
+using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DomainServices;
 
 public class CustomerService : ICustomerService
 {
-    private IList<Customer> _customers = new List<Customer>();
+    private readonly ApplicationDbContext _context;
+
+    public CustomerService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
 
     public (bool isValid, string message) CreateCustomer(Customer customer)
     {
@@ -16,26 +23,21 @@ public class CustomerService : ICustomerService
 
         if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
-        customer.Id = Guid.NewGuid();
-        _customers.Add(customer);
+        _context.Customers.Add(customer);
+        _context.SaveChanges();
 
         return (true, customer.Id.ToString());
-    }
-
-    public IList<Customer> GetCustomers()
-    {
-        return _customers;
     }
 
     private (bool exists, string errorMessage) VerifyCustomerAlreadyExists(Customer customer)
     {
         var messageTemplate = "Customer already exists for {0}: {1}";
-        if (_customers.Any(x => x.Email.Equals(customer.Email)))
+        if (_context.Customers.Any(x => x.Email.Equals(customer.Email)))
         {
             return (true, string.Format(messageTemplate, "Email", customer.Email));
         }
 
-        if (_customers.Any(x => x.Cpf.Equals(customer.Cpf)))
+        if (_context.Customers.Any(x => x.Cpf.Equals(customer.Cpf)))
         {
             return (true, string.Format(messageTemplate, "Cpf", customer.Cpf));
         }
@@ -43,15 +45,20 @@ public class CustomerService : ICustomerService
         return default;
     }
 
+    public IEnumerable<Customer> GetCustomers()
+    {
+        return _context.Customers;
+    }
+
     public Customer GetById(Guid Id)
     {
-        var comparedCustomerByIds = _customers.FirstOrDefault(a => a.Id.Equals(Id));
+        var comparedCustomerByIds = _context.Customers.AsNoTracking().FirstOrDefault(a => a.Id.Equals(Id));
         return comparedCustomerByIds;
     }
 
     public Customer GetByFullName(string fullName)
     {
-        var comparedCustomerByNames = _customers.FirstOrDefault(a => a.FullName.Contains(fullName));
+        var comparedCustomerByNames = _context.Customers.FirstOrDefault(a => a.FullName.Contains(fullName));
         return comparedCustomerByNames;
     }
 
@@ -61,13 +68,12 @@ public class CustomerService : ICustomerService
 
         if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
-        var indexCustomer = _customers.IndexOf(_customers.FirstOrDefault(x => x.Id.Equals(customer.Id)));
+        var updatedCustomer = GetById(customer.Id);
 
-        if (indexCustomer is -1)
-        {
-            return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
-        }
-        _customers[indexCustomer] = customer;
+        if (updatedCustomer is null) return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
+
+        _context.Update(customer);
+        _context.SaveChanges();
 
         return (true, customer.Id.ToString());
     }
@@ -77,7 +83,9 @@ public class CustomerService : ICustomerService
         var customerFound = GetById(id);
         if (customerFound != null)
         {
-            _customers.Remove(customerFound);
+            _context.Customers.Remove(customerFound);
+            _context.SaveChanges();
+            
             return true;
         }
         return false;
