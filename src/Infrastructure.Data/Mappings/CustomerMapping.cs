@@ -14,12 +14,11 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
 
         builder.Property(x => x.Id)
             .ValueGeneratedOnAdd()
-            .HasColumnName("Id")
-            .HasColumnType("Guid");
+            .HasColumnName("Id");
 
         builder.Property(x => x.FullName)
             .IsRequired()
-            .HasColumnName("Name");
+            .HasColumnName("FullName");
 
         builder.Property(x => x.Email)
             .IsRequired()

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220630211719_Sofrencia")]
+    [Migration("20220701183422_Sofrencia")]
     partial class Sofrencia
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,22 +29,27 @@ namespace Infrastructure.Migrations
                         .HasColumnName("Id");
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("Address");
 
                     b.Property<string>("Cellphone")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("CellPhone");
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("City");
 
                     b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("Country");
 
                     b.Property<string>("Cpf")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("Cpf");
 
@@ -57,10 +62,12 @@ namespace Infrastructure.Migrations
                         .HasColumnName("DateOfBirth");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("Email");
 
                     b.Property<string>("EmailConfirmation")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("EmailConfirmation");
 
@@ -69,10 +76,12 @@ namespace Infrastructure.Migrations
                         .HasColumnName("EmailSms");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("Name");
+                        .HasColumnName("FullName");
 
                     b.Property<DateTime?>("ModifiedAt")
+                        .IsRequired()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("ModifiedAt");
 
@@ -81,6 +90,7 @@ namespace Infrastructure.Migrations
                         .HasColumnName("Number");
 
                     b.Property<string>("PostalCode")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("PostalCode");
 

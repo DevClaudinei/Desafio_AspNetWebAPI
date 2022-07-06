@@ -42,7 +42,7 @@ public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
         RuleFor(x => x.DateOfBirth)
             .NotEmpty()
             .NotNull()
-            .Must(x => x.HasReachedAdulthood())
+            .Must(x => x.IsReachedAdulthood())
             .WithMessage("Customer precisa ter 18 anos no mínimo.");
 
         RuleFor(x => x.EmailSms)

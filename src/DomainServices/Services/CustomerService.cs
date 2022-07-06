@@ -8,13 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DomainServices;
 
-public class CustomerService : ICustomerService
+public class CustomerService<T> : ICustomerService<T> where T : Customer
 {
     private readonly ApplicationDbContext _context;
+    private readonly DbSet<T> entities;
 
     public CustomerService(ApplicationDbContext context)
     {
         _context = context;
+        entities = _context.Set<T>();
     }
 
     public (bool isValid, string message) CreateCustomer(Customer customer)
@@ -23,6 +25,7 @@ public class CustomerService : ICustomerService
 
         if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
+        customer.ModifiedAt = DateTime.UtcNow;
         _context.Customers.Add(customer);
         _context.SaveChanges();
 
@@ -45,21 +48,20 @@ public class CustomerService : ICustomerService
         return default;
     }
 
-    public IEnumerable<Customer> GetCustomers()
+    public IEnumerable<T> GetCustomers()
     {
-        return _context.Customers;
+        var customers = entities.AsEnumerable();
+        return customers;
     }
 
-    public Customer GetById(Guid Id)
+    public T GetById(Guid Id)
     {
-        var comparedCustomerByIds = _context.Customers.AsNoTracking().FirstOrDefault(a => a.Id.Equals(Id));
-        return comparedCustomerByIds;
+        return entities.AsNoTracking().SingleOrDefault(a => a.Id.Equals(Id));
     }
 
-    public Customer GetByFullName(string fullName)
+    public T GetByFullName(string fullName)
     {
-        var comparedCustomerByNames = _context.Customers.FirstOrDefault(a => a.FullName.Contains(fullName));
-        return comparedCustomerByNames;
+        return entities.SingleOrDefault(a => a.FullName.Equals(fullName));
     }
 
     public (bool isValid, string message) Update(Customer customer)
@@ -72,6 +74,7 @@ public class CustomerService : ICustomerService
 
         if (updatedCustomer is null) return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
 
+        customer.ModifiedAt = DateTime.UtcNow;
         _context.Update(customer);
         _context.SaveChanges();
 
