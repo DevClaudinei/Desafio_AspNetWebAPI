@@ -15,5 +15,4 @@ public class ApplicationDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){}
 
     public DbSet<Customer> Customers { get; set; }
-
 }

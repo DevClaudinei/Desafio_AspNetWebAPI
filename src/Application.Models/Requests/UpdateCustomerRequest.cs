@@ -11,7 +11,7 @@ public class UpdateCustomerRequest
         string email,
         string emailConfirmation,
         string cpf,
-        string cellPhone,
+        string cellphone,
         DateTime dateOfBirth,
         bool emailSms,
         bool whatsApp,
@@ -26,7 +26,7 @@ public class UpdateCustomerRequest
         Email = email;
         EmailConfirmation = emailConfirmation;
         Cpf = cpf;
-        CellPhone = cellPhone;
+        CellPhone = cellphone;
         DateOfBirth = dateOfBirth;
         EmailSms = emailSms;
         WhatsApp = whatsApp;

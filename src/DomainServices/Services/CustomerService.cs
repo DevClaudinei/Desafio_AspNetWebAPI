@@ -8,15 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DomainServices;
 
-public class CustomerService<T> : ICustomerService<T> where T : Customer
+public class CustomerService : ICustomerService
 {
     private readonly ApplicationDbContext _context;
-    private readonly DbSet<T> entities;
+    private readonly DbSet<Customer> entities;
 
     public CustomerService(ApplicationDbContext context)
     {
         _context = context;
-        entities = _context.Set<T>();
+        entities = _context.Set<Customer>();
     }
 
     public (bool isValid, string message) CreateCustomer(Customer customer)
@@ -48,18 +48,18 @@ public class CustomerService<T> : ICustomerService<T> where T : Customer
         return default;
     }
 
-    public IEnumerable<T> GetCustomers()
+    public IEnumerable<Customer> GetCustomers()
     {
         var customers = entities.AsEnumerable();
         return customers;
     }
 
-    public T GetById(Guid Id)
+    public Customer GetById(Guid Id)
     {
         return entities.AsNoTracking().SingleOrDefault(a => a.Id.Equals(Id));
     }
 
-    public T GetByFullName(string fullName)
+    public Customer GetByFullName(string fullName)
     {
         return entities.SingleOrDefault(a => a.FullName.Equals(fullName));
     }
