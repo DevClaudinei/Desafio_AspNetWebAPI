@@ -9,10 +9,10 @@ namespace AppServices.Services;
 
 public class CustomerAppService : ICustomerAppService
 {
-    private readonly ICustomerService<Customer> _customerService;
+    private readonly ICustomerService _customerService;
     private readonly IMapper _mapper;
 
-    public CustomerAppService(ICustomerService<Customer> customerService, IMapper mapper)
+    public CustomerAppService(ICustomerService customerService, IMapper mapper)
     {
         _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -29,7 +29,7 @@ public class CustomerAppService : ICustomerAppService
 
     public IEnumerable<CustomerResult> Get()
     {
-        var customersFound = _customerService.GetCustomers();
+        var customersFound = _customerService.GetAll();
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
 

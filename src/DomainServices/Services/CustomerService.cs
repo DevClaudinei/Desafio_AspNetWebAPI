@@ -8,15 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DomainServices;
 
-public class CustomerService<T> : ICustomerService<T> where T : Customer
+public class CustomerService : ICustomerService
 {
     private readonly ApplicationDbContext _context;
-    private readonly DbSet<T> entities;
 
     public CustomerService(ApplicationDbContext context)
     {
-        _context = context;
-        entities = _context.Set<T>();
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public (bool isValid, string message) CreateCustomer(Customer customer)
@@ -25,7 +23,6 @@ public class CustomerService<T> : ICustomerService<T> where T : Customer
 
         if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
-        customer.ModifiedAt = DateTime.UtcNow;
         _context.Customers.Add(customer);
         _context.SaveChanges();
 
@@ -48,20 +45,20 @@ public class CustomerService<T> : ICustomerService<T> where T : Customer
         return default;
     }
 
-    public IEnumerable<T> GetCustomers()
+    public IEnumerable<Customer> GetAll()
     {
-        var customers = entities.AsEnumerable();
+        var customers = _context.Customers.AsEnumerable();
         return customers;
     }
 
-    public T GetById(Guid Id)
+    public Customer GetById(Guid Id)
     {
-        return entities.AsNoTracking().SingleOrDefault(a => a.Id.Equals(Id));
+        return _context.Customers.AsNoTracking().SingleOrDefault(x => x.Id.Equals(Id));
     }
 
-    public T GetByFullName(string fullName)
+    public Customer GetByFullName(string fullName)
     {
-        return entities.SingleOrDefault(a => a.FullName.Equals(fullName));
+        return _context.Customers.SingleOrDefault(a => a.FullName.Equals(fullName));
     }
 
     public (bool isValid, string message) Update(Customer customer)
@@ -71,11 +68,10 @@ public class CustomerService<T> : ICustomerService<T> where T : Customer
         if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
         var updatedCustomer = GetById(customer.Id);
-
+        customer.CreatedAt = updatedCustomer.CreatedAt;
         if (updatedCustomer is null) return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
 
-        customer.ModifiedAt = DateTime.UtcNow;
-        _context.Update(customer);
+        _context.Customers.Update(customer);
         _context.SaveChanges();
 
         return (true, customer.Id.ToString());

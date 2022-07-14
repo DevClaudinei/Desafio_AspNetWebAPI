@@ -9,7 +9,7 @@ public static class ServicesConfiguration
 {
     public static void AddServicesConfiguration(this IServiceCollection services)
     {
-        services.AddScoped(typeof(ICustomerService<>), typeof(CustomerService<>));
+        services.AddTransient<ICustomerService, CustomerService>();
 
         services.AddTransient<ICustomerAppService, CustomerAppService>();
     }

@@ -26,8 +26,8 @@ public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
             .EmailAddress(EmailValidationMode.Net4xRegex);
 
         RuleFor(x => x)
-        .Must(x => x.EmailConfirmation == x.Email)
-        .WithMessage("Email e EmailConfirmation precisam ter informações idênticas.");
+            .Must(x => x.EmailConfirmation == x.Email)
+            .WithMessage("Email e EmailConfirmation precisam ter informações idênticas.");
 
         RuleFor(x => x.Cpf)
             .NotEmpty()

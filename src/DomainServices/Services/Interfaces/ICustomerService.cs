@@ -4,15 +4,15 @@ using DomainModels;
 
 namespace DomainServices.Services;
 
-public interface ICustomerService<T> where T : Customer 
+public interface ICustomerService
 {
     (bool isValid, string message) CreateCustomer(Customer customer);
 
-    IEnumerable<T> GetCustomers();
+    IEnumerable<Customer> GetAll();
 
-    T GetById(Guid CustomerId);
+    Customer GetById(Guid CustomerId);
 
-    T GetByFullName(string FullName);
+    Customer GetByFullName(string FullName);
 
     (bool isValid, string message) Update(Customer customer);
 

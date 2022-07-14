@@ -1,5 +1,6 @@
 using DomainModels;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Infrastructure.Data;
 
@@ -9,10 +10,8 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new CustomerMapping());
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("Infrastructure.Data"));
     }
-    
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){}
 
     public DbSet<Customer> Customers { get; set; }
 
