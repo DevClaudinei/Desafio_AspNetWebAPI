@@ -18,23 +18,25 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
 
         builder.Property(x => x.FullName)
             .IsRequired()
+            .HasMaxLength(100)
             .HasColumnName("FullName");
 
         builder.Property(x => x.Email)
             .IsRequired()
+            .HasMaxLength(70)
             .HasColumnName("Email");
 
-        builder.Property(x => x.EmailConfirmation)
-            .IsRequired()
-            .HasColumnName("EmailConfirmation");
+        builder.Ignore(x => x.EmailConfirmation);
 
         builder.Property(x => x.Cpf)
             .IsRequired()
+            .HasMaxLength(11)
             .HasColumnName("Cpf");
 
         builder.Property(x => x.Cellphone)
             .IsRequired()
-            .HasColumnName("CellPhone");
+            .HasMaxLength(15)
+            .HasColumnName("Cellphone");
 
         builder.Property(x => x.DateOfBirth)
             .IsRequired()
@@ -50,18 +52,22 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
 
         builder.Property(x => x.Country)
             .IsRequired()
+            .HasMaxLength(50)
             .HasColumnName("Country");
 
         builder.Property(x => x.City)
             .IsRequired()
+            .HasMaxLength(50)
             .HasColumnName("City");
 
         builder.Property(x => x.PostalCode)
             .IsRequired()
+            .HasMaxLength(9)
             .HasColumnName("PostalCode");
 
         builder.Property(x => x.Address)
             .IsRequired()
+            .HasMaxLength(200)
             .HasColumnName("Address");
 
         builder.Property(x => x.Number)
@@ -70,10 +76,13 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
 
         builder.Property(x => x.CreatedAt)
             .IsRequired()
-            .HasColumnName("CreatedAt");
+            .HasColumnType("TIMESTAMP")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP()")
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.ModifiedAt)
-            .IsRequired()
-            .HasColumnName("ModifiedAt");
+            .HasColumnType("TIMESTAMP")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()")
+            .ValueGeneratedOnUpdate();
         }
 }

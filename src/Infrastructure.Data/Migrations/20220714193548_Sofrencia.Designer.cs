@@ -8,17 +8,17 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220701183422_Sofrencia")]
+    [Migration("20220714193548_Sofrencia")]
     partial class Sofrencia
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("DomainModels.Customer", b =>
@@ -30,32 +30,38 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
                         .HasColumnName("Address");
 
                     b.Property<string>("Cellphone")
                         .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("CellPhone");
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar(15)")
+                        .HasColumnName("Cellphone");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("City");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("Country");
 
                     b.Property<string>("Cpf")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(11)
+                        .HasColumnType("varchar(11)")
                         .HasColumnName("Cpf");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("CreatedAt");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP()");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime(6)")
@@ -63,13 +69,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(70)
+                        .HasColumnType("varchar(70)")
                         .HasColumnName("Email");
-
-                    b.Property<string>("EmailConfirmation")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("EmailConfirmation");
 
                     b.Property<bool>("EmailSms")
                         .HasColumnType("tinyint(1)")
@@ -77,13 +79,14 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("FullName");
 
                     b.Property<DateTime?>("ModifiedAt")
-                        .IsRequired()
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("ModifiedAt");
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()");
 
                     b.Property<int>("Number")
                         .HasColumnType("int")
@@ -91,7 +94,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(9)
+                        .HasColumnType("varchar(9)")
                         .HasColumnName("PostalCode");
 
                     b.Property<bool>("WhatsApp")
