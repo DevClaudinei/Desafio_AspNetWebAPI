@@ -50,12 +50,10 @@ public static class StringExtensions
         return Regex.Match(cep, expression).Success;
     }
 
-    public static bool IsReachedAdulthood(this DateTime dateOfBirth)
+    public static bool HasReachedAdulthood(this DateTime dateOfBirth)
     {
         var ageCustomer = new DateTime(DateTime.Now.Subtract(dateOfBirth).Ticks).Year - 1;
-        return ageCustomer >= 18
-            ? true
-            : false;
+        return ageCustomer >= 18;
     }
 
     public static bool ContainsEmptySpace(this string fields)
