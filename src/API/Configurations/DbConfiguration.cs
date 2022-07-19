@@ -12,8 +12,8 @@ public static class DbConfiguration
         services.AddDbContext<ApplicationDbContext>(options => 
         {
             options.UseMySql(configuration.GetConnectionString("DefaultConnection"),
-            Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.29-mysql"),
-            b => b.MigrationsAssembly("Infrastructure"));
+                            ServerVersion.Parse("8.0.29-mysql"),
+                            b => b.MigrationsAssembly("Infrastructure"));
         });
     }
 }
