@@ -35,16 +35,16 @@ public class CreateCustomerRequest
     }
 
     public string FullName { get; }
-    public string Email { get; }
-    public string EmailConfirmation { get; }
-    public string Cpf { get; }
-    public string Cellphone { get; }
-    public DateTime DateOfBirth { get; }
-    public bool EmailSms { get; }
-    public bool WhatsApp { get; }
-    public string Country { get; }
-    public string City { get; }
-    public string PostalCode { get; }
-    public string Address { get; }
-    public int Number { get; }
+    public string Email { get; set; }
+    public string EmailConfirmation { get; set; }
+    public string Cpf { get; set; }
+    public string Cellphone { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public bool EmailSms { get; set; }
+    public bool WhatsApp { get; set; }
+    public string Country { get; set; }
+    public string City { get; set; }
+    public string PostalCode { get; set; }
+    public string Address { get; set; }
+    public int Number { get; set; }
 }
