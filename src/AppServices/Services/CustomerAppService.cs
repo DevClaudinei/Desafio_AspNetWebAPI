@@ -29,7 +29,7 @@ public class CustomerAppService : ICustomerAppService
 
     public IEnumerable<CustomerResult> Get()
     {
-        var customersFound = _customerService.GetCustomers();
+        var customersFound = _customerService.GetAll();
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
 

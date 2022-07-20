@@ -1,0 +1,10 @@
+version: '3.4'
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      - MYSQL_DATABASE=CustomerDB
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - '3306:3306'

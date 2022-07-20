@@ -34,7 +34,7 @@ public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
             .NotNull()
             .Must(x => x.IsValidDocument());
 
-        RuleFor(x => x.CellPhone)
+        RuleFor(x => x.Cellphone)
             .NotEmpty()
             .NotNull()
             .Must(x => x.IsCellphone())

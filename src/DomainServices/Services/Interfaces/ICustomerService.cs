@@ -8,7 +8,7 @@ public interface ICustomerService
 {
     (bool isValid, string message) CreateCustomer(Customer customer);
 
-    IList<Customer> GetCustomers();
+    IEnumerable<Customer> GetAll();
 
     Customer GetById(Guid CustomerId);
 

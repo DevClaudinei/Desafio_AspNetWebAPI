@@ -11,7 +11,7 @@ public class Customer : BaseModel
         string email,
         string emailConfirmation,
         string cpf,
-        string cellPhone,
+        string cellphone,
         DateTime dateOfBirth,
         bool emailSms,
         bool whatsApp,
@@ -26,7 +26,7 @@ public class Customer : BaseModel
         Email = email.Trim();
         EmailConfirmation = emailConfirmation.Trim();
         Cpf = cpf.Trim();
-        CellPhone = cellPhone;
+        Cellphone = cellphone;
         DateOfBirth = dateOfBirth;
         EmailSms = emailSms;
         WhatsApp = whatsApp;
@@ -42,7 +42,7 @@ public class Customer : BaseModel
     public string Email { get; set; }
     public string EmailConfirmation { get; set; }
     public string Cpf { get; set; }
-    public string CellPhone { get; set; }
+    public string Cellphone { get; set; }
     public DateTime DateOfBirth { get; set; }
     public bool EmailSms { get; set; }
     public bool WhatsApp { get; set; }
