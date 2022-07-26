@@ -1,7 +1,5 @@
 using AppServices.Services;
 using DomainServices;
-using DomainServices.GenericRepositories;
-using DomainServices.GenericRepositories.Interface;
 using DomainServices.Services;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +15,6 @@ public static class ServicesConfiguration
 
         services.AddTransient<ICustomerAppService, CustomerAppService>();
 
-        services.AddScoped<DbContext, ApplicationDbContext>();
-        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddTransient<DbContext, ApplicationDbContext>();
     }
 }

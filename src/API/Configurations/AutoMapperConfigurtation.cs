@@ -13,8 +13,8 @@ public static class AutoMapperConfiguration
             throw new ArgumentNullException(nameof(services));
         }
 
-        var assemblies = new[] { Assembly.Load("AppServices") };
+        var assembly = Assembly.Load("AppServices");
 
-        services.AddAutoMapper((serviceProvider, mapperConfiguration) => mapperConfiguration.AddMaps(assemblies), assemblies);
+        services.AddAutoMapper((serviceProvider, mapperConfiguration) => mapperConfiguration.AddMaps(assembly), assembly);
     }
 }
