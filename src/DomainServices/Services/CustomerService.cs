@@ -35,17 +35,15 @@ public class CustomerService : ICustomerService
 
     private (bool exists, string errorMessage) VerifyCustomerAlreadyExists(Customer customer)
     {
-        var messageTemplate = "Customer already exists for {0}: {1}";
         var repository = _repositoryFactory.Repository<Customer>();
-
-
-
-        if (repository.Any(x => x.Equals(customer.Email)))
+        var messageTemplate = "Customer already exists for {0}: {1}";
+        
+        if (repository.Any(x => x.Email.Equals(customer.Email)))
         {
             return (true, string.Format(messageTemplate, "Email", customer.Email));
         }
 
-        if (repository.Any(x => x.Equals(customer.Cpf)))
+        if (repository.Any(x => x.Cpf.Equals(customer.Cpf)))
         {
             return (true, string.Format(messageTemplate, "Cpf", customer.Cpf));
         }
@@ -91,6 +89,9 @@ public class CustomerService : ICustomerService
 
         if (repository is null) return (false, customerAlreadyExists.errorMessage);
 
+        repository.Update(customer);
+        _unitOfWork.SaveChanges();
+
         return (true, customer.Id.ToString());
     }
 
@@ -103,6 +104,8 @@ public class CustomerService : ICustomerService
 
             if (repository is null) return false;
 
+            repository.Remove(customerFound);
+            _unitOfWork.SaveChanges();
             return true;
         }
         return false;
