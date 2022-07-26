@@ -1,23 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DomainModels;
-using DomainServices.GenericRepositories.Interface;
 using DomainServices.Services;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
-using Infrastructure.Data;
 
 namespace DomainServices;
 
 public class CustomerService : ICustomerService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IGenericRepository<Customer> _genericRepository;
-
-    public CustomerService(ApplicationDbContext context, IUnitOfWork unitOfWork, IGenericRepository<Customer> genericRepository)
+    private readonly IRepositoryFactory _repositoryFactory;
+    
+    public CustomerService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _genericRepository = genericRepository; 
+        _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
     public (bool isValid, string message) CreateCustomer(Customer customer)
@@ -26,9 +23,12 @@ public class CustomerService : ICustomerService
         
         if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
-        var customerToCreate = _genericRepository.Insert(customer);
+        var repository = _unitOfWork.Repository<Customer>();
 
-        if (customerToCreate is false) return (false, customerAlreadyExists.errorMessage);
+        if (repository is null) return (false, customerAlreadyExists.errorMessage);
+
+        repository.Add(customer);
+        _unitOfWork.SaveChanges();
 
         return (true, customer.Id.ToString());
     }
@@ -36,15 +36,16 @@ public class CustomerService : ICustomerService
     private (bool exists, string errorMessage) VerifyCustomerAlreadyExists(Customer customer)
     {
         var messageTemplate = "Customer already exists for {0}: {1}";
-        var repository = _unitOfWork.Repository<Customer>();
-        
+        var repository = _repositoryFactory.Repository<Customer>();
 
-        if (repository.Any(x => x.Email.Equals(customer.Email)))
+
+
+        if (repository.Any(x => x.Equals(customer.Email)))
         {
             return (true, string.Format(messageTemplate, "Email", customer.Email));
         }
 
-        if (repository.Any(x => x.Cpf.Equals(customer.Cpf)))
+        if (repository.Any(x => x.Equals(customer.Cpf)))
         {
             return (true, string.Format(messageTemplate, "Cpf", customer.Cpf));
         }
@@ -54,18 +55,25 @@ public class CustomerService : ICustomerService
 
     public IEnumerable<Customer> GetAll()
     {
-        return _genericRepository.GetAll();
+        var repository = _repositoryFactory.Repository<Customer>();
+        var query = repository.MultipleResultQuery();
+        return repository.Search(query); 
     }
 
     public Customer GetById(Guid id)
     {
-        return _genericRepository.GetById(id);
+        var repository = _repositoryFactory.Repository<Customer>();
+        var customerFound = repository.SingleResultQuery()
+            .AndFilter(x => x.Id.Equals(id));
+        return repository.SingleOrDefault(customerFound);
     }
 
     public Customer GetByFullName(string fullName)
     {
-        var x = _genericRepository.GetByName(fullName).Cast<Customer>();
-        return (Customer)x;
+        var repository = _repositoryFactory.Repository<Customer>();
+        var customerFound = repository.SingleResultQuery()
+            .AndFilter(x => x.FullName.Equals(fullName));
+        return repository.SingleOrDefault(customerFound);
     }
 
     public (bool isValid, string message) Update(Customer customer)
@@ -79,9 +87,9 @@ public class CustomerService : ICustomerService
 
         if (updatedCustomer is null) return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
 
-        var customerToUpdate = _genericRepository.Update(customer);
+        var repository = _unitOfWork.Repository<Customer>();
 
-        if (customerToUpdate is false) return (false, customerAlreadyExists.errorMessage);
+        if (repository is null) return (false, customerAlreadyExists.errorMessage);
 
         return (true, customer.Id.ToString());
     }
@@ -91,9 +99,9 @@ public class CustomerService : ICustomerService
         var customerFound = GetById(id);
         if (customerFound != null)
         {
-            var customerToDelete = _genericRepository.Delete(id);
+            var repository = _unitOfWork.Repository<Customer>();
 
-            if (customerToDelete is false) return false;
+            if (repository is null) return false;
 
             return true;
         }
