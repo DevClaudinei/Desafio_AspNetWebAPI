@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220721163755_Sofrencia")]
+    [Migration("20220727174959_Sofrencia")]
     partial class Sofrencia
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
