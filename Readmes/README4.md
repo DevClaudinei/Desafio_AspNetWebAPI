@@ -54,6 +54,10 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 - [.NET](https://dotnet.microsoft.com/en-us/)
 - [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
+- [EntityFramework](https://docs.microsoft.com/pt-br/ef/)
+- [AutoMapper](https://automapper.org/)
+- [Docker](https://www.docker.com/)
+- [MySQL WorkBench](https://www.mysql.com/products/workbench/)
 - [Postman](https://www.postman.com/downloads/)
 
 ## Readme - Próximo Desafio
