@@ -29,7 +29,6 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.EnableAutoHistory();
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("Infrastructure.Data"));
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DomainModels;
 using DomainServices.Services;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
+using Infrastructure.Data;
 
 namespace DomainServices;
 
@@ -35,9 +36,9 @@ public class CustomerService : ICustomerService
 
     private (bool exists, string errorMessage) VerifyCustomerAlreadyExists(Customer customer)
     {
-        var repository = _repositoryFactory.Repository<Customer>();
         var messageTemplate = "Customer already exists for {0}: {1}";
-        
+        var repository = _repositoryFactory.Repository<Customer>();
+
         if (repository.Any(x => x.Email.Equals(customer.Email)))
         {
             return (true, string.Format(messageTemplate, "Email", customer.Email));
@@ -97,17 +98,7 @@ public class CustomerService : ICustomerService
 
     public bool Delete(Guid id)
     {
-        var customerFound = GetById(id);
-        if (customerFound != null)
-        {
-            var repository = _unitOfWork.Repository<Customer>();
-
-            if (repository is null) return false;
-
-            repository.Remove(customerFound);
-            _unitOfWork.SaveChanges();
-            return true;
-        }
-        return false;
+        var repository = _unitOfWork.Repository<Customer>();
+        return repository.Remove(x => x.Id.Equals(id)) > 0;
     }
 }
