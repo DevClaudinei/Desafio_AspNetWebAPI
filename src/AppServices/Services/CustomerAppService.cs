@@ -41,12 +41,12 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<CustomerResult>(customer);
     }
 
-    public CustomerResult GetCustomerByName(string fullName)
+    public IEnumerable<CustomerResult> GetAllCustomerByName(string fullName)
     {
-        var customer = _customerService.GetByFullName(fullName);
+        var customer = _customerService.GetAllByFullName(fullName);
         if (customer is null) return null;
 
-        return _mapper.Map<CustomerResult>(customer);
+        return _mapper.Map< IEnumerable<CustomerResult>>(customer);
     }
 
     public (bool isValid, string message) Update(UpdateCustomerRequest updateCustomerRequest)

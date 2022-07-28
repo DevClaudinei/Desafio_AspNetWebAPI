@@ -10,9 +10,9 @@ public interface ICustomerService
 
     IEnumerable<Customer> GetAll();
 
-    Customer GetById(Guid CustomerId);
+    Customer GetById(Guid id);
 
-    Customer GetByFullName(string FullName);
+    IEnumerable<Customer> GetAllByFullName(string fullName);
 
     (bool isValid, string message) Update(Customer customer);
 

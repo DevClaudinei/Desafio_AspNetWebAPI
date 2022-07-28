@@ -13,7 +13,7 @@ public static class DbConfiguration
         {
             options.UseMySql(configuration.GetConnectionString("DefaultConnection"),
                             ServerVersion.Parse("8.0.29-mysql"),
-                            b => b.MigrationsAssembly("Infrastructure"));
+                            b => b.MigrationsAssembly("Infrastructure.Data"));
         });
     }
 }

@@ -43,9 +43,9 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("name/{fullName}")]
-    public IActionResult GetByName(string fullName)
+    public IActionResult GetAllByName(string fullName)
     {
-        var customerFoundName = _appService.GetCustomerByName(fullName);
+        var customerFoundName = _appService.GetAllCustomerByName(fullName);
         return customerFoundName is not null
             ? Ok(customerFoundName)
             : NotFound($"Cliente para o nome: {fullName} não foi encontrado.");

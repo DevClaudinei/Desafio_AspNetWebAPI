@@ -11,6 +11,7 @@ builder.Services.AddServicesConfiguration();
 builder.Services.AddAutoMapperConfiguration();
 builder.Services.AddMvcConfiguration();
 builder.Services.AddDbConfiguration(builder.Configuration);
+builder.Services.AddUnitOfWorkConfiguration();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
