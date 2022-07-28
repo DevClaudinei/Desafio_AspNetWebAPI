@@ -15,6 +15,6 @@ public static class ServicesConfiguration
 
         services.AddTransient<ICustomerAppService, CustomerAppService>();
 
-        services.AddTransient<DbContext, ApplicationDbContext>();
+        services.AddTransient<DbContext, ApplicationDbContext>();   
     }
 }
