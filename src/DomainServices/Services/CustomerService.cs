@@ -12,7 +12,7 @@ public class CustomerService : ICustomerService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
     
-    public CustomerService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
+    public CustomerService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
@@ -25,8 +25,6 @@ public class CustomerService : ICustomerService
         if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
         var repository = _unitOfWork.Repository<Customer>();
-
-        if (repository is null) return (false, customerAlreadyExists.errorMessage);
 
         repository.Add(customer);
         _unitOfWork.SaveChanges();
@@ -67,12 +65,13 @@ public class CustomerService : ICustomerService
         return repository.SingleOrDefault(customerFound);
     }
 
-    public Customer GetByFullName(string fullName)
+    public IEnumerable<Customer> GetByFullName(string fullName)
     {
         var repository = _repositoryFactory.Repository<Customer>();
-        var customerFound = repository.SingleResultQuery()
-            .AndFilter(x => x.FullName.Equals(fullName));
-        return repository.SingleOrDefault(customerFound);
+        var query = repository.MultipleResultQuery()
+            .AndFilter(x => x.FullName.Contains(fullName));
+        
+        return repository.Search(query);
     }
 
     public (bool isValid, string message) Update(Customer customer)
@@ -87,8 +86,6 @@ public class CustomerService : ICustomerService
         if (updatedCustomer is null) return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
 
         var repository = _unitOfWork.Repository<Customer>();
-
-        if (repository is null) return (false, customerAlreadyExists.errorMessage);
 
         repository.Update(customer);
         _unitOfWork.SaveChanges();

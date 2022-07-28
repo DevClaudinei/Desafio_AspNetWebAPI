@@ -12,7 +12,7 @@ public interface ICustomerService
 
     Customer GetById(Guid id);
 
-    Customer GetByFullName(string fullName);
+    IEnumerable<Customer> GetByFullName(string fullName);
 
     (bool isValid, string message) Update(Customer customer);
 
