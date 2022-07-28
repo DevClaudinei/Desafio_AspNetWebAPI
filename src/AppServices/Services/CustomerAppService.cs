@@ -43,7 +43,7 @@ public class CustomerAppService : ICustomerAppService
 
     public IEnumerable<CustomerResult> GetCustomerByName(string fullName)
     {
-        var customer = _customerService.GetByFullName(fullName);
+        var customer = _customerService.GetAllByFullName(fullName);
         if (customer is null) return null;
 
         return _mapper.Map< IEnumerable<CustomerResult>>(customer);

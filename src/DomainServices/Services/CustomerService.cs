@@ -65,7 +65,7 @@ public class CustomerService : ICustomerService
         return repository.SingleOrDefault(customerFound);
     }
 
-    public IEnumerable<Customer> GetByFullName(string fullName)
+    public IEnumerable<Customer> GetAllByFullName(string fullName)
     {
         var repository = _repositoryFactory.Repository<Customer>();
         var query = repository.MultipleResultQuery()
