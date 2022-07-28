@@ -41,7 +41,7 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<CustomerResult>(customer);
     }
 
-    public IEnumerable<CustomerResult> GetCustomerByName(string fullName)
+    public IEnumerable<CustomerResult> GetAllCustomerByName(string fullName)
     {
         var customer = _customerService.GetAllByFullName(fullName);
         if (customer is null) return null;
