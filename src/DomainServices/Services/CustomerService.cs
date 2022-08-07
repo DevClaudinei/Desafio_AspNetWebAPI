@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DomainModels;
+using DomainModels.Entities;
 using DomainServices.Services;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
