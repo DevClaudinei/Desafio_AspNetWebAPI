@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Application.Models;
 using AutoMapper;
-using DomainModels;
+using DomainModels.Entities;
 using DomainServices.Services;
 
 namespace AppServices.Services;
@@ -46,7 +46,7 @@ public class CustomerAppService : ICustomerAppService
         var customer = _customerService.GetAllByFullName(fullName);
         if (customer is null) return null;
 
-        return _mapper.Map< IEnumerable<CustomerResult>>(customer);
+        return _mapper.Map<IEnumerable<CustomerResult>>(customer);
     }
 
     public (bool isValid, string message) Update(UpdateCustomerRequest updateCustomerRequest)
