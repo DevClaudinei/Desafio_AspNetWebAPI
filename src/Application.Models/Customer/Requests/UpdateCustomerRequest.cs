@@ -4,7 +4,7 @@ namespace Application.Models;
 
 public class UpdateCustomerRequest
 {
-    public UpdateCustomerRequest() { }
+    protected UpdateCustomerRequest() { }
 
     public UpdateCustomerRequest(
         string fullName,
