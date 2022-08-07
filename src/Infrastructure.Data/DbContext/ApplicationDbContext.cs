@@ -1,4 +1,4 @@
-using DomainModels;
+using DomainModels.Entities;
 using EntityFrameworkCore.AutoHistory.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -33,4 +33,7 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Customer> Customers { get; set; }
+    public DbSet<CustomerBankInfo> CustomerBankInfos { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Portfolio> Portfolios { get; set; }
 }
