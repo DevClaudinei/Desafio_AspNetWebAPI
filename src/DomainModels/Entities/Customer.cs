@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace DomainModels.Entities;
 
@@ -52,4 +53,5 @@ public class Customer : BaseModel
     public string Address { get; set; }
     public int Number { get; set; }
     public CustomerBankInfo CustomerBankInfo { get; set; }
+    public virtual ICollection<Portfolio> Portfolios { get; set; }
 }
