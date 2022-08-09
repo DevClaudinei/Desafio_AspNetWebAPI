@@ -1,4 +1,7 @@
+using Application.Models.Portfolio.Response;
+using Application.Models.Response;
 using System;
+using System.Collections.Generic;
 
 namespace Application.Models;
 
@@ -10,4 +13,6 @@ public class CustomerResult
     public string Cpf { get; init; }
     public string Country { get; init; }
     public string City { get; init; }
+    public CustomerBankInfoResult CustomerBankInfo { get; init; } 
+    public ICollection<PortfolioResult> Portfolios { get; init; }
 }

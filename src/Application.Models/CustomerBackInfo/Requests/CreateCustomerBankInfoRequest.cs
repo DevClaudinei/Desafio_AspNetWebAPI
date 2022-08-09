@@ -1,4 +1,3 @@
-using Application.Models.Response;
 using System;
 
 namespace Application.Models;
