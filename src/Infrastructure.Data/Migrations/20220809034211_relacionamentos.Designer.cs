@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220806002654_Relacionamentos")]
-    partial class Relacionamentos
+    [Migration("20220809034211_relacionamentos")]
+    partial class relacionamentos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

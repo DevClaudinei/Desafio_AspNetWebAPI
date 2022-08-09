@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class Relacionamentos : Migration
+    public partial class relacionamentos : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

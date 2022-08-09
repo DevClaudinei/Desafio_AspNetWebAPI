@@ -9,7 +9,11 @@ public class PortfolioMapping : IEntityTypeConfiguration<Portfolio>
     public void Configure(EntityTypeBuilder<Portfolio> builder)
     {
         builder.ToTable("Portfolios");
-        
+
+        builder.Property(x => x.Id)
+            .IsRequired()
+            .ValueGeneratedOnAdd();
+
         builder.Property(x => x.TotalBalance)
             .IsRequired();
     }
