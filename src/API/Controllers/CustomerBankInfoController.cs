@@ -5,8 +5,8 @@ using System;
 
 namespace API.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class CustomerBankInfoController : ControllerBase
 {
     private readonly ICustomerBankInfoAppService _appService;
@@ -16,7 +16,6 @@ public class CustomerBankInfoController : ControllerBase
         _appService = appService ?? throw new System.ArgumentNullException(nameof(appService));
     }
 
-    // POST api/<CustomerBankInfoController>
     [HttpPost]
     public IActionResult Post(CreateCustomerBankInfoRequest createCustomerBackInfoRequest)
     {
@@ -26,7 +25,6 @@ public class CustomerBankInfoController : ControllerBase
             : BadRequest(createdCustomerBackInfo.message);
     }
     
-    // GET: api/<CustomerBankInfoController>
     [HttpGet]
     public IActionResult Get()
     {
@@ -34,7 +32,6 @@ public class CustomerBankInfoController : ControllerBase
         return Ok(customersBankInfoFound);
     }
     
-    // GET api/<CustomerBankInfoController>/5
     [HttpGet("{id}")]
     public IActionResult Get(Guid id)
     {
@@ -44,8 +41,8 @@ public class CustomerBankInfoController : ControllerBase
             : Ok(customersBankInfoFound);
     }
 
-    [HttpGet("name/{account}")]
-    public IActionResult GetAllByName(string account)
+    [HttpGet("account/{account}")]
+    public IActionResult GetByAccount(string account)
     {
         var customerFoundName = _appService.GetAllCustomerBackInfoByAccount(account);
         return customerFoundName is not null
@@ -53,7 +50,6 @@ public class CustomerBankInfoController : ControllerBase
             : NotFound($"Cliente para o nome: {account} não foi encontrado.");
     }
 
-    // PUT api/<CustomerBankInfoController>/5
     [HttpPut("{id}")]
     public IActionResult Put(Guid id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
@@ -64,7 +60,6 @@ public class CustomerBankInfoController : ControllerBase
             : NotFound(updatedCustomerBankInfo.message);
     }
 
-    // DELETE api/<CustomerBankInfoController>/5
     [HttpDelete("{id}")]
     public IActionResult Delete(Guid id)
     {

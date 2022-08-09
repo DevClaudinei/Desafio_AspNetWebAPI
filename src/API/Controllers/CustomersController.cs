@@ -2,6 +2,7 @@ using System;
 using Application.Models;
 using AppServices.Services;
 using AutoMapper;
+using DomainModels.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -21,6 +22,15 @@ public class CustomersController : ControllerBase
     public IActionResult Post(CreateCustomerRequest createCustomerRequest)
     {
         var createdCustomer = _appService.Create(createCustomerRequest);
+        return createdCustomer.isValid
+            ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
+            : BadRequest(createdCustomer.message);
+    }
+
+    [HttpPost("{id}")]
+    public IActionResult Post(Guid id, Portfolio portfolio)
+    {
+        var createdCustomer = _appService.CreatePortfolio(portfolio);
         return createdCustomer.isValid
             ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
             : BadRequest(createdCustomer.message);
