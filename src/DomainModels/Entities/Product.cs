@@ -7,12 +7,12 @@ public class Product
     protected Product() { }
 
     public Product(
+        Guid productId,
         string symbol,
         int quotes,
         decimal unitPrice,
         decimal netValue,
-        DateTime convertedAt,
-        Guid productId
+        DateTime convertedAt
     )
     {
         Symbol = symbol;
