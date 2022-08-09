@@ -27,6 +27,14 @@ public class CustomerAppService : ICustomerAppService
         return (false, createdCustomer.message);
     }
 
+    public (bool isValid, string message) CreatePortfolio(Portfolio portfolio)
+    {
+        var createdPortfolio = _customerService.CreatePortfolio(portfolio);
+        if (createdPortfolio.isValid) return (true, createdPortfolio.message);
+
+        return (false, createdPortfolio.message);
+    }
+
     public IEnumerable<CustomerResult> Get()
     {
         var customersFound = _customerService.GetAll();
@@ -60,4 +68,5 @@ public class CustomerAppService : ICustomerAppService
         var deletedCustomer = _customerService.Delete(id);
         return deletedCustomer;
     }
+
 }
