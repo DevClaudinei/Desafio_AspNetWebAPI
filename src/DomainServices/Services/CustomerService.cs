@@ -4,6 +4,7 @@ using DomainModels.Entities;
 using DomainServices.Services;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DomainServices;
 
@@ -32,6 +33,16 @@ public class CustomerService : ICustomerService
         return (true, customer.Id.ToString());
     }
 
+    public (bool isValid, string message) CreatePortfolio(Portfolio portfolio)
+    {
+        var repository = _unitOfWork.Repository<Portfolio>();
+        
+        repository.Add(portfolio);
+        _unitOfWork.SaveChanges();
+
+        return (true, portfolio.Id.ToString());
+    }
+
     private (bool exists, string errorMessage) VerifyCustomerAlreadyExists(Customer customer)
     {
         var messageTemplate = "Customer already exists for {0}: {1}";
@@ -53,7 +64,9 @@ public class CustomerService : ICustomerService
     public IEnumerable<Customer> GetAll()
     {
         var repository = _repositoryFactory.Repository<Customer>();
-        var query = repository.MultipleResultQuery();
+        var query = repository.MultipleResultQuery()
+            .Include(source => source.Include(x => x.CustomerBankInfo)
+            .Include(x => x.CustomerBankInfo));
         return repository.Search(query); 
     }
 
@@ -98,4 +111,5 @@ public class CustomerService : ICustomerService
         var repository = _unitOfWork.Repository<Customer>();
         return repository.Remove(x => x.Id.Equals(id)) > 0;
     }
+
 }

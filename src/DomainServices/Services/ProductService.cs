@@ -1,35 +1,30 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
-using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 
 namespace DomainServices.Services;
 
-public class CustomerBankInfoService : ICustomerBankInfoService
+public class ProductService : IProductService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
 
-    public CustomerBankInfoService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
+    public ProductService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public (bool isValid, string message) CreateCustomerBankInfo(CustomerBankInfo customerBankInfo)
+    public (bool isValid, string message) CreateProduct(Product product)
     {
-        var customerBankInfoAlreadyExists = VerifyCustomerBankInfoAlreadyExists(customerBankInfo);
-
-        if (customerBankInfoAlreadyExists.exists) return (false, customerBankInfoAlreadyExists.errorMessage);
-
-       var repository = _unitOfWork.Repository<CustomerBankInfo>();
-
-        repository.Add(customerBankInfo);
+        var repository = _unitOfWork.Repository<Product>();
+        
+        repository.Add(product);
         _unitOfWork.SaveChanges();
 
-        return (true, customerBankInfo.Id.ToString());
+        return (true, product.ProductId.ToString());
     }
 
     private (bool exists, string errorMessage) VerifyCustomerBankInfoAlreadyExists(CustomerBankInfo customerBankInfo)
@@ -50,45 +45,46 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         return default;
     }
 
-    public IEnumerable<CustomerBankInfo> GetAllCustomerBankInfo()
+    public IEnumerable<Product> GetAllProducts()
     {
-        var repository = _repositoryFactory.Repository<CustomerBankInfo>();
+        var repository = _repositoryFactory.Repository<Product>();
         var query = repository.MultipleResultQuery();
 
         return repository.Search(query);
     }
 
-    public CustomerBankInfo GetCustomerBankInfoByAccount(string account)
+    public Product GetAllProducsBySymbol(string symbol)
     {
-        var repository = _repositoryFactory.Repository<CustomerBankInfo>();
+        var repository = _repositoryFactory.Repository<Product>();
         var query = repository.SingleResultQuery()
-            .AndFilter(x => x.Account.Equals(account));
+            .AndFilter(x => x.Symbol.Equals(symbol));
 
         return repository.SingleOrDefault(query);
     }
 
-    public CustomerBankInfo GetCustomerBankInfoById(Guid id)
+    public Product GetProductById(Guid id)
     {
-        var repository = _repositoryFactory.Repository<CustomerBankInfo>();
+        var repository = _repositoryFactory.Repository<Product>();
         var query = repository.SingleResultQuery()
-            .AndFilter(x => x.Id.Equals(id));
+            .AndFilter(x => x.ProductId.Equals(id));
 
         return repository.SingleOrDefault(query);
     }
 
-    public (bool isValid, string message) UpdateCustomerBankInfo(CustomerBankInfo customerBankInfo)
+    public (bool isValid, string message) UpdateProduct(Product product)
     {
-        var repository = _unitOfWork.Repository<CustomerBankInfo>();
+        var repository = _unitOfWork.Repository<Product>();
 
-        repository.Update(customerBankInfo);
+        repository.Update(product);
         _unitOfWork.SaveChanges();
 
-        return (true, customerBankInfo.Id.ToString());
+        return (true, product.ProductId.ToString());
     }
+
     public bool Delete(Guid id)
     {
-        var repository = _unitOfWork.Repository<CustomerBankInfo>();
+        var repository = _unitOfWork.Repository<Product>();
 
-        return repository.Remove(x => x.Id.Equals(id)) > 0;
+        return repository.Remove(x => x.ProductId.Equals(id)) > 0;
     }
 }
