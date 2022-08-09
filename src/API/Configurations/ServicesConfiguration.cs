@@ -1,4 +1,5 @@
 using AppServices.Services;
+using AppServices.Services.Interfaces;
 using DomainServices;
 using DomainServices.Services;
 using DomainServices.Services.Interfaces;
@@ -17,6 +18,8 @@ public static class ServicesConfiguration
         services.AddTransient<ICustomerBankInfoService, CustomerBankInfoService>();
 
         services.AddTransient<ICustomerAppService, CustomerAppService>();
+
+        services.AddTransient<ICustomerBankInfoAppService, CustomerBankInfoAppService>();
 
         services.AddTransient<DbContext, ApplicationDbContext>();   
     }
