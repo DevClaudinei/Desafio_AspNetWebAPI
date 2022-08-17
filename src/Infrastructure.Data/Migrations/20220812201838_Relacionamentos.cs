@@ -1,12 +1,11 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class relacionamentos : Migration
+    public partial class Relacionamentos : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,6 +47,24 @@ namespace Infrastructure.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Symbol = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Quotes = table.Column<int>(type: "int", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    NetValue = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    ConvertedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "CustomerBankInfos",
                 columns: table => new
                 {
@@ -77,9 +94,9 @@ namespace Infrastructure.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     TotalBalance = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    CustomerId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    CreatedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP()"),
+                    ModifiedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()")
                 },
                 constraints: table =>
                 {
@@ -88,31 +105,31 @@ namespace Infrastructure.Data.Migrations
                         name: "FK_Portfolios_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "PortfolioProduct",
                 columns: table => new
                 {
-                    ProductId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Symbol = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Quotes = table.Column<int>(type: "int", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    NetValue = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    ConvertedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    PortfolioId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    PortfoliosId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ProductsId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.ProductId);
+                    table.PrimaryKey("PK_PortfolioProduct", x => new { x.PortfoliosId, x.ProductsId });
                     table.ForeignKey(
-                        name: "FK_Products_Portfolios_PortfolioId",
-                        column: x => x.PortfolioId,
+                        name: "FK_PortfolioProduct_Portfolios_PortfoliosId",
+                        column: x => x.PortfoliosId,
                         principalTable: "Portfolios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PortfolioProduct_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -125,14 +142,14 @@ namespace Infrastructure.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_PortfolioProduct_ProductsId",
+                table: "PortfolioProduct",
+                column: "ProductsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Portfolios_CustomerId",
                 table: "Portfolios",
                 column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_PortfolioId",
-                table: "Products",
-                column: "PortfolioId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -141,10 +158,13 @@ namespace Infrastructure.Data.Migrations
                 name: "CustomerBankInfos");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "PortfolioProduct");
 
             migrationBuilder.DropTable(
                 name: "Portfolios");
+
+            migrationBuilder.DropTable(
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Customers");

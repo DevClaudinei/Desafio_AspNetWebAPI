@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220809034211_relacionamentos")]
-    partial class relacionamentos
+    [Migration("20220812201838_Relacionamentos")]
+    partial class Relacionamentos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -148,13 +148,17 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP()");
 
-                    b.Property<Guid?>("CustomerId")
+                    b.Property<Guid>("CustomerId")
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()");
 
                     b.Property<decimal>("TotalBalance")
                         .HasColumnType("decimal(65,30)");
@@ -168,35 +172,47 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("DomainModels.Entities.Product", b =>
                 {
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("ConvertedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP()");
 
                     b.Property<decimal>("NetValue")
                         .HasColumnType("decimal(65,30)");
-
-                    b.Property<Guid>("PortfolioId")
-                        .HasColumnType("char(36)");
 
                     b.Property<int>("Quotes")
                         .HasColumnType("int");
 
                     b.Property<string>("Symbol")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("ProductId");
-
-                    b.HasIndex("PortfolioId");
+                    b.HasKey("Id");
 
                     b.ToTable("Products", (string)null);
+                });
+
+            modelBuilder.Entity("PortfolioProduct", b =>
+                {
+                    b.Property<Guid>("PortfoliosId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ProductsId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("PortfoliosId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("PortfolioProduct");
                 });
 
             modelBuilder.Entity("DomainModels.Entities.CustomerBankInfo", b =>
@@ -214,18 +230,24 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("DomainModels.Entities.Customer", null)
                         .WithMany("Portfolios")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("DomainModels.Entities.Product", b =>
+            modelBuilder.Entity("PortfolioProduct", b =>
                 {
-                    b.HasOne("DomainModels.Entities.Portfolio", "Portfolio")
-                        .WithMany("Products")
-                        .HasForeignKey("PortfolioId")
+                    b.HasOne("DomainModels.Entities.Portfolio", null)
+                        .WithMany()
+                        .HasForeignKey("PortfoliosId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Portfolio");
+                    b.HasOne("DomainModels.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DomainModels.Entities.Customer", b =>
@@ -233,11 +255,6 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("CustomerBankInfo");
 
                     b.Navigation("Portfolios");
-                });
-
-            modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
