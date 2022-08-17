@@ -109,6 +109,14 @@ public class CustomerService : ICustomerService
     public bool Delete(Guid id)
     {
         var repository = _unitOfWork.Repository<Customer>();
+        var portfoliRepository = _unitOfWork.Repository<Portfolio>();
+        var customerBankInfoRepository = _unitOfWork.Repository<CustomerBankInfo>();
+
+        var x = customerBankInfoRepository.SingleResultQuery().AndFilter(x => x.AccountBalance > 0);
+        var y = portfoliRepository.SingleResultQuery().AndFilter(x => x.TotalBalance > 0);
+
+        if (x != null || y != null) return false;
+
         return repository.Remove(x => x.Id.Equals(id)) > 0;
     }
 

@@ -1,6 +1,7 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
+using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 
@@ -11,7 +12,7 @@ public class ProductService : IProductService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
 
-    public ProductService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
+    public ProductService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
@@ -19,12 +20,13 @@ public class ProductService : IProductService
 
     public (bool isValid, string message) CreateProduct(Product product)
     {
+        //product.NetValue = product.Quotes * product.UnitPrice;
         var repository = _unitOfWork.Repository<Product>();
-        
+
         repository.Add(product);
         _unitOfWork.SaveChanges();
 
-        return (true, product.ProductId.ToString());
+        return (true, product.Id.ToString());
     }
 
     private (bool exists, string errorMessage) VerifyCustomerBankInfoAlreadyExists(CustomerBankInfo customerBankInfo)
@@ -66,25 +68,31 @@ public class ProductService : IProductService
     {
         var repository = _repositoryFactory.Repository<Product>();
         var query = repository.SingleResultQuery()
-            .AndFilter(x => x.ProductId.Equals(id));
+            .AndFilter(x => x.Id.Equals(id));
 
         return repository.SingleOrDefault(query);
     }
 
     public (bool isValid, string message) UpdateProduct(Product product)
     {
+        var updatedProduct = GetProductById(product.Id);
+        product.ConvertedAt = updatedProduct.ConvertedAt;
+        //product.NetValue = product.Quotes * product.UnitPrice;
+
+        if (updatedProduct is null) return (false, $"Cliente não encontrado para o Id: {product.Id}.");
+
         var repository = _unitOfWork.Repository<Product>();
 
         repository.Update(product);
         _unitOfWork.SaveChanges();
 
-        return (true, product.ProductId.ToString());
+        return (true, product.Id.ToString());
     }
 
     public bool Delete(Guid id)
     {
         var repository = _unitOfWork.Repository<Product>();
 
-        return repository.Remove(x => x.ProductId.Equals(id)) > 0;
+        return repository.Remove(x => x.Id.Equals(id)) > 0;
     }
 }

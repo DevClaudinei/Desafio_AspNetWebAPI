@@ -4,6 +4,8 @@ using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
+using System.Security.Principal;
 
 namespace DomainServices.Services;
 
@@ -24,7 +26,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
 
         if (customerBankInfoAlreadyExists.exists) return (false, customerBankInfoAlreadyExists.errorMessage);
 
-       var repository = _unitOfWork.Repository<CustomerBankInfo>();
+        var repository = _unitOfWork.Repository<CustomerBankInfo>();
 
         repository.Add(customerBankInfo);
         _unitOfWork.SaveChanges();
@@ -78,17 +80,27 @@ public class CustomerBankInfoService : ICustomerBankInfoService
 
     public (bool isValid, string message) UpdateCustomerBankInfo(CustomerBankInfo customerBankInfo)
     {
+        var updatedCustomerBankInfo = GetCustomerBankInfoByAccount(customerBankInfo.Account);
+        if (updatedCustomerBankInfo is null) return (false, $"CustomerBankInfo not found by Account: {customerBankInfo.Account}.");
+
+        customerBankInfo.CreatedAt = updatedCustomerBankInfo.CreatedAt;
         var repository = _unitOfWork.Repository<CustomerBankInfo>();
 
+        if (customerBankInfo.AccountBalance < 0) return (false, $"CustomerBankInfo cannot update balance for negative amounts.");
         repository.Update(customerBankInfo);
         _unitOfWork.SaveChanges();
 
         return (true, customerBankInfo.Id.ToString());
     }
-    public bool Delete(Guid id)
+    public (bool isValid, string message) Delete(Guid id)
     {
+        var messageTemplate = "The {0}: {1} cannot be closed as it still has a balance";
+        var checkIfAccountHasBalance = GetCustomerBankInfoById(id);
+        if (checkIfAccountHasBalance.AccountBalance > 0) 
+            return (false, string.Format(messageTemplate, "Account", checkIfAccountHasBalance.Account));
+
         var repository = _unitOfWork.Repository<CustomerBankInfo>();
 
-        return repository.Remove(x => x.Id.Equals(id)) > 0;
+        return (repository.Remove(x => x.Id.Equals(id)) > 0, "");
     }
 }

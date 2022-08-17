@@ -11,5 +11,5 @@ public interface ICustomerBankInfoService
     CustomerBankInfo GetCustomerBankInfoById(Guid id);
     CustomerBankInfo GetCustomerBankInfoByAccount(string account);
     (bool isValid, string message) UpdateCustomerBankInfo(CustomerBankInfo customerBankInfo);
-    bool Delete(Guid id);
+    (bool isValid, string message) Delete(Guid id);
 }
