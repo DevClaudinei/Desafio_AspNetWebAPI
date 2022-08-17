@@ -17,9 +17,17 @@ public static class ServicesConfiguration
 
         services.AddTransient<ICustomerBankInfoService, CustomerBankInfoService>();
 
+        services.AddTransient<IProductService, ProductService>();
+
+        services.AddTransient<IPortfolioService, PortfolioService>();
+
         services.AddTransient<ICustomerAppService, CustomerAppService>();
 
         services.AddTransient<ICustomerBankInfoAppService, CustomerBankInfoAppService>();
+
+        services.AddTransient<IProductAppService, ProductAppService>();
+
+        services.AddTransient<IPortfolioAppService, PortfolioAppService>();
 
         services.AddTransient<DbContext, ApplicationDbContext>();   
     }
