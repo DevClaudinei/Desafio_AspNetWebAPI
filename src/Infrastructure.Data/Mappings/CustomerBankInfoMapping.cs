@@ -23,6 +23,7 @@ public class CustomerBankInfoMapping : IEntityTypeConfiguration<CustomerBankInfo
             .IsRequired();
 
         builder.Property(x => x.AccountBalance)
+            //.HasDefaultValueSql("DECIMAL(65,2)")
             .IsRequired();
 
         builder.Property(x => x.CreatedAt)

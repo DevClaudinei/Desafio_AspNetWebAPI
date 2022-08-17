@@ -14,7 +14,15 @@ public class PortfolioMapping : IEntityTypeConfiguration<Portfolio>
             .IsRequired()
             .ValueGeneratedOnAdd();
 
-        builder.Property(x => x.TotalBalance)
-            .IsRequired();
+        builder.Property(x => x.CreatedAt)
+            .IsRequired()
+            .HasColumnType("TIMESTAMP")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP()")
+            .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.ModifiedAt)
+            .HasColumnType("TIMESTAMP")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()")
+            .ValueGeneratedOnUpdate();
     }
 }
