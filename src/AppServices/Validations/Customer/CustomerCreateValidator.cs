@@ -2,10 +2,11 @@ using Application.Models;
 using FluentValidation;
 using FluentValidation.Validators;
 
-namespace AppServices.Validations;
-public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
+namespace AppServices.Validations.Customer;
+
+public class CustomerCreateValidator : AbstractValidator<CreateCustomerRequest>
 {
-    public CustomerUpdateValidator()
+    public CustomerCreateValidator()
     {
         RuleFor(x => x.FullName)
             .NotEmpty()
@@ -33,7 +34,7 @@ public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
             .NotNull()
             .Must(x => x.IsValidDocument());
 
-        RuleFor(x => x.CellPhone)
+        RuleFor(x => x.Cellphone)
             .NotEmpty()
             .NotNull()
             .Must(x => x.IsCellphone())

@@ -3,7 +3,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using FluentValidation;
 
-namespace AppServices;
+namespace AppServices.Validations.Customer;
+
 public static class StringExtensions
 {
     public static bool IsValidDocument(this string document)
@@ -15,7 +16,7 @@ public static class StringExtensions
         {
             firstDigitChecker += document.ToIntAt(i) * (10 - i);
         }
-        firstDigitChecker = (firstDigitChecker * 10) % 11;
+        firstDigitChecker = firstDigitChecker * 10 % 11;
         if (firstDigitChecker is 10) firstDigitChecker = 0;
 
         var secondDigitChecker = 0;
@@ -23,7 +24,7 @@ public static class StringExtensions
         {
             secondDigitChecker += document.ToIntAt(i) * (11 - i);
         }
-        secondDigitChecker = (secondDigitChecker * 10) % 11;
+        secondDigitChecker = secondDigitChecker * 10 % 11;
         if (secondDigitChecker is 10) secondDigitChecker = 0;
 
         return firstDigitChecker.Equals(document.ToIntAt(^2)) && secondDigitChecker.Equals(document.ToIntAt(^1));
