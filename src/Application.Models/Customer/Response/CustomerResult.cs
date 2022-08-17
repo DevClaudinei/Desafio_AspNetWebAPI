@@ -13,6 +13,4 @@ public class CustomerResult
     public string Cpf { get; init; }
     public string Country { get; init; }
     public string City { get; init; }
-    public CustomerBankInfoResult CustomerBankInfo { get; init; } 
-    public ICollection<PortfolioResult> Portfolios { get; init; }
 }

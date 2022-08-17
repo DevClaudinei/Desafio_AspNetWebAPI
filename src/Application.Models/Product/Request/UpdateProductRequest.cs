@@ -8,18 +8,16 @@ public class UpdateProductRequest
         string symbol,
         int quotes,
         decimal unitPrice,
-        decimal netValue,
         DateTime convertedAt
     )
     {
         Symbol = symbol;
         Quotes = quotes;
         UnitPrice = unitPrice;
-        NetValue = netValue;
         ConvertedAt = convertedAt;
     }
 
-    public Guid ProductId { get; set; }
+    public Guid Id { get; set; }
     public string Symbol { get; set; } // nome do ativo
     public int Quotes { get; set; } // quantidade de cotas
     public decimal UnitPrice { get; set; } // preço de cada cota de um ativo
