@@ -6,6 +6,8 @@ using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
+using System.Security.Principal;
 
 namespace AppServices.Services;
 
@@ -59,9 +61,8 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _customerService.UpdateCustomerBankInfo(customerBankInfoToUpdate);
     }
 
-    public bool Delete(Guid id)
+    public (bool isValid, string message) Delete(Guid id)
     {
-        var deletedCustomer = _customerService.Delete(id);
-        return deletedCustomer;
+        return _customerService.Delete(id);
     }
 }
