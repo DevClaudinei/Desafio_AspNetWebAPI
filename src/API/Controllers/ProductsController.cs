@@ -37,7 +37,7 @@ public class ProductsController : ControllerBase
     {
         var productFound = _appService.GetProductById(id);
         return productFound is null
-            ? NotFound($"CustomerBankInfo para o id {id} não foi encontrado.")
+            ? NotFound($"Product para o id {id} não foi encontrado.")
             : Ok(productFound);
     }
 
@@ -46,14 +46,14 @@ public class ProductsController : ControllerBase
     {
         var productsFound = _appService.GetAllProductBySymbol(symbol);
         return productsFound is null
-            ? NotFound($"CustomerBankInfo para o id {symbol} não foi encontrado.")
+            ? NotFound($"Product para o symbol {symbol} não foi encontrado.")
             : Ok(productsFound);
     }
 
     [HttpPut("{id}")]
     public IActionResult Put(Guid id, UpdateProductRequest updateProductRequest)
     {
-        updateProductRequest.ProductId = id;
+        updateProductRequest.Id = id;
         var updatedCustomerBankInfo = _appService.Update(updateProductRequest);
         return updatedCustomerBankInfo.isValid
             ? Ok()
@@ -66,6 +66,6 @@ public class ProductsController : ControllerBase
         var excludedProductById = _appService.Delete(id);
         return excludedProductById
             ? NoContent()
-            : NotFound($"Cliente não encontrado para o ID: {id}.");
+            : NotFound($"Product não encontrado para o ID: {id}.");
     }
 }

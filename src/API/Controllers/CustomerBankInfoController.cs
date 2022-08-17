@@ -37,7 +37,7 @@ public class CustomerBankInfoController : ControllerBase
     {
         var customersBankInfoFound = _appService.GetCustomerBankInfoById(id);
         return customersBankInfoFound is null
-            ? NotFound($"CustomerBankInfo para o id {id} não foi encontrado.")
+            ? NotFound($"CustomerBankInfo para o id: {id} não foi encontrado.")
             : Ok(customersBankInfoFound);
     }
 
@@ -47,7 +47,7 @@ public class CustomerBankInfoController : ControllerBase
         var customerFoundName = _appService.GetAllCustomerBackInfoByAccount(account);
         return customerFoundName is not null
             ? Ok(customerFoundName)
-            : NotFound($"Cliente para o nome: {account} não foi encontrado.");
+            : NotFound($"CustomerBankInfo para account: {account} não foi encontrada.");
     }
 
     [HttpPut("{id}")]
@@ -64,8 +64,8 @@ public class CustomerBankInfoController : ControllerBase
     public IActionResult Delete(Guid id)
     {
         var excludedCustomerBankInfoById = _appService.Delete(id);
-        return excludedCustomerBankInfoById
+        return excludedCustomerBankInfoById.isValid
             ? NoContent()
-            : NotFound($"Cliente não encontrado para o ID: {id}.");
+            : NotFound(excludedCustomerBankInfoById.message);
     }
 }

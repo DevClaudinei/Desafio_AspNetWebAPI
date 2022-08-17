@@ -27,14 +27,14 @@ public class CustomersController : ControllerBase
             : BadRequest(createdCustomer.message);
     }
 
-    [HttpPost("{id}")]
-    public IActionResult Post(Guid id, Portfolio portfolio)
-    {
-        var createdCustomer = _appService.CreatePortfolio(portfolio);
-        return createdCustomer.isValid
-            ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
-            : BadRequest(createdCustomer.message);
-    }
+    //[HttpPost("{id}")]
+    //public IActionResult Post(Guid id, Portfolio portfolio)
+    //{
+    //    var createdCustomer = _appService.CreatePortfolio(portfolio);
+    //    return createdCustomer.isValid
+    //        ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
+    //        : BadRequest(createdCustomer.message);
+    //}
 
     [HttpGet]
     public IActionResult Get()
