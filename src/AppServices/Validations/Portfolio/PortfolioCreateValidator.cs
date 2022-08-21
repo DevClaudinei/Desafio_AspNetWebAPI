@@ -3,15 +3,11 @@ using FluentValidation;
 
 namespace AppServices.Validations.Portfolio;
 
-public class PortfolioCreateValidator : AbstractValidator<PortfolioCreate>
+public class PortfolioCreateValidator : AbstractValidator<CreatePortfolioRequest>
 {
 	public PortfolioCreateValidator()
 	{
 		RuleFor(x => x.CustomerId)
-			.NotEmpty()
-			.NotNull();
-
-		RuleFor(x => x.Products)
 			.NotEmpty()
 			.NotNull();
 	}

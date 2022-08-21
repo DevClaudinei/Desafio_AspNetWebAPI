@@ -11,21 +11,21 @@ public class ProductCreateValidation : AbstractValidator<CreateProductRequest>
             .NotEmpty()
             .NotNull();
 
-        RuleFor(x => x.Quotes)
-            .NotEmpty()
-            .NotNull();
+        //RuleFor(x => x.Quotes)
+        //    .NotEmpty()
+        //    .NotNull();
 
         RuleFor(x => x.UnitPrice)
             .NotEmpty()
             .NotNull();
 
-        RuleFor(x => x.NetValue)
-            .NotEmpty()
-            .NotNull();
+        //RuleFor(x => x.NetValue)
+        //    .NotEmpty()
+        //    .NotNull();
 
-        RuleFor(x => x.ConvertedAt)
-            .NotEmpty()
-            .NotNull();
+        //RuleFor(x => x.ConvertedAt)
+        //    .NotEmpty()
+        //    .NotNull();
     }
 }
 
