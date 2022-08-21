@@ -20,8 +20,10 @@ public class ProductService : IProductService
 
     public (bool isValid, string message) CreateProduct(Product product)
     {
-        //product.NetValue = product.Quotes * product.UnitPrice;
         var repository = _unitOfWork.Repository<Product>();
+        var productAlredyExists = CheckIfProductAlreadyExists(product);
+
+        if (productAlredyExists.exists is true) return (false, productAlredyExists.errorMessage);
 
         repository.Add(product);
         _unitOfWork.SaveChanges();
@@ -29,19 +31,14 @@ public class ProductService : IProductService
         return (true, product.Id.ToString());
     }
 
-    private (bool exists, string errorMessage) VerifyCustomerBankInfoAlreadyExists(CustomerBankInfo customerBankInfo)
+    private (bool exists, string errorMessage) CheckIfProductAlreadyExists(Product product)
     {
-        var messageTemplate = "The {0}: {1} is already linked to a|an {2}";
-        var repository = _repositoryFactory.Repository<CustomerBankInfo>();
+        var messageTemplate = "The {0}: {1} is already registered";
+        var repository = _repositoryFactory.Repository<Product>();
 
-        if (repository.Any(x => x.Account.Equals(customerBankInfo.Account)))
+        if (repository.Any(x => x.Symbol.Equals(product.Symbol)))
         {
-            return (true, string.Format(messageTemplate, "Account", customerBankInfo.Account, "Customer"));
-        }
-
-        if (repository.Any(x => x.Customer.Id.Equals(customerBankInfo.CustomerId)))
-        {
-            return (true, string.Format(messageTemplate, "CustomerId", customerBankInfo.CustomerId, "Account"));
+            return (true, string.Format(messageTemplate, "Product", product.Symbol));
         }
 
         return default;
@@ -77,7 +74,6 @@ public class ProductService : IProductService
     {
         var updatedProduct = GetProductById(product.Id);
         product.ConvertedAt = updatedProduct.ConvertedAt;
-        //product.NetValue = product.Quotes * product.UnitPrice;
 
         if (updatedProduct is null) return (false, $"Cliente não encontrado para o Id: {product.Id}.");
 

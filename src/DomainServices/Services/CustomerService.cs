@@ -4,7 +4,6 @@ using DomainModels.Entities;
 using DomainServices.Services;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace DomainServices;
 
@@ -12,8 +11,11 @@ public class CustomerService : ICustomerService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
-    
-    public CustomerService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
+
+    public CustomerService(
+        IUnitOfWork<ApplicationDbContext> unitOfWork,
+        IRepositoryFactory<ApplicationDbContext> repositoryFactory
+        )
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
@@ -31,16 +33,6 @@ public class CustomerService : ICustomerService
         _unitOfWork.SaveChanges();
 
         return (true, customer.Id.ToString());
-    }
-
-    public (bool isValid, string message) CreatePortfolio(Portfolio portfolio)
-    {
-        var repository = _unitOfWork.Repository<Portfolio>();
-        
-        repository.Add(portfolio);
-        _unitOfWork.SaveChanges();
-
-        return (true, portfolio.Id.ToString());
     }
 
     private (bool exists, string errorMessage) VerifyCustomerAlreadyExists(Customer customer)
@@ -64,9 +56,7 @@ public class CustomerService : ICustomerService
     public IEnumerable<Customer> GetAll()
     {
         var repository = _repositoryFactory.Repository<Customer>();
-        var query = repository.MultipleResultQuery()
-            .Include(source => source.Include(x => x.CustomerBankInfo)
-            .Include(x => x.CustomerBankInfo));
+        var query = repository.MultipleResultQuery();
         return repository.Search(query); 
     }
 
@@ -106,18 +96,13 @@ public class CustomerService : ICustomerService
         return (true, customer.Id.ToString());
     }
 
-    public bool Delete(Guid id)
+    public (bool isValid, string message) Delete(Guid id)
     {
         var repository = _unitOfWork.Repository<Customer>();
-        var portfoliRepository = _unitOfWork.Repository<Portfolio>();
-        var customerBankInfoRepository = _unitOfWork.Repository<CustomerBankInfo>();
+        var customerToDelete = GetById(id);
 
-        var x = customerBankInfoRepository.SingleResultQuery().AndFilter(x => x.AccountBalance > 0);
-        var y = portfoliRepository.SingleResultQuery().AndFilter(x => x.TotalBalance > 0);
+        if (customerToDelete is null) return (false, $"Cliente não encontrado para o ID: {id}.");
 
-        if (x != null || y != null) return false;
-
-        return repository.Remove(x => x.Id.Equals(id)) > 0;
+        return (repository.Remove(x => x.Id.Equals(id)) > 0, "");
     }
-
 }

@@ -8,7 +8,8 @@ public interface IPortfolioService
 {
     (bool isValid, string message) CreatePortfolio(Portfolio portfolio);
     IEnumerable<Portfolio> GetAllPortfolios();
-    Portfolio PortfolioById(Guid id);
-    decimal GetTotalBalance(Guid portfolioId);
+    Portfolio GetPortfolioById(Guid id);
+    (bool isValid, string message) GetTotalBalance(Guid portfolioId);
+    (bool isValid, string message) Update(Portfolio portfolio);
     bool Delete(Guid id);
 }
