@@ -10,8 +10,8 @@ public class ProductMapping : IEntityTypeConfiguration<Product>
     {
         builder.ToTable("Products");
 
-        builder.HasMany(x => x.Portfolios)
-            .WithMany(x => x.Products);
+        //builder.HasMany(x => x.PortfoliosProducts)
+        //    .WithMany(x => x.);
             
         //builder.HasOne(x => x.Portfolio)
         //    .WithMany(x => x.Products)
