@@ -9,9 +9,10 @@ namespace AppServices.Services.Interfaces;
 
 public interface IPortfolioAppService
 {
-    (bool isValid, string message) CreatePortfolio(PortfolioCreate portfolioCreate);
+    (bool isValid, string message) CreatePortfolio(CreatePortfolioRequest portfolioCreate);
     IEnumerable<PortfolioResult> GetAllPortfolios();
-    PortfolioResult PortfolioById(Guid id);
-    decimal GetTotalBalance(Guid portfolioId);
+    PortfolioResult GetPortfolioById(Guid id);
+    (bool isValid, string message) GetTotalBalance(Guid portfolioId);
+    (bool isValid, string message) Update(UpdatePortfolioRequest updatePortfolioRequest);
     bool Delete(Guid id);
 }

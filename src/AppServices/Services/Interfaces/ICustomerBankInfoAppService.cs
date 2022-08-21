@@ -8,7 +8,7 @@ namespace AppServices.Services.Interfaces;
 public interface ICustomerBankInfoAppService
 {
     (bool isValid, string message) Create(CreateCustomerBankInfoRequest createCustomerBankInfoRequest);
-    IEnumerable<CustomerBankInfoResult> Get();
+    IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo();
     CustomerBankInfoResult GetCustomerBankInfoById(Guid id);
     CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account);
     (bool isValid, string message) Update(UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);

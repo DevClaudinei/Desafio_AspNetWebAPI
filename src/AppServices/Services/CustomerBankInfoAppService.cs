@@ -32,7 +32,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return (false, createdCustomerBankInfo.message);
     }
 
-    public IEnumerable<CustomerBankInfoResult> Get()
+    public IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo()
     {
         var customersBankInfo = _customerService.GetAllCustomerBankInfo();
         return _mapper.Map<IEnumerable<CustomerBankInfoResult>>(customersBankInfo);

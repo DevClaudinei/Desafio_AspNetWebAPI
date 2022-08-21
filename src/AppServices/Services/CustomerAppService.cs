@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Application.Models;
+using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
 using DomainServices.Services;
@@ -9,13 +10,22 @@ namespace AppServices.Services;
 
 public class CustomerAppService : ICustomerAppService
 {
-    private readonly ICustomerService _customerService;
     private readonly IMapper _mapper;
-
-    public CustomerAppService(ICustomerService customerService, IMapper mapper)
+    private readonly ICustomerService _customerService;
+    private readonly ICustomerBankInfoAppService _customerBankInfoAppService;
+    private readonly IPortfolioAppService _portfolioAppService;
+    
+    public CustomerAppService(
+        ICustomerService customerService,
+        IMapper mapper,
+        ICustomerBankInfoAppService customerBankInfoService,
+        IPortfolioAppService portfolioService
+    )
     {
         _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _customerBankInfoAppService = customerBankInfoService ?? throw new ArgumentNullException(nameof(customerBankInfoService));
+        _portfolioAppService = portfolioService ?? throw new ArgumentNullException(nameof(portfolioService));
     }
 
     public (bool isValid, string message) Create(CreateCustomerRequest createCustomerRequest)
@@ -55,8 +65,27 @@ public class CustomerAppService : ICustomerAppService
         return _customerService.Update(customerToUpdate);
     }
 
-    public bool Delete(Guid id)
+    public (bool isValid, string message) Delete(Guid id)
     {
+        var customerBankInfoBalance = _customerBankInfoAppService.GetAllCustomerBankInfo();
+        foreach (var item in customerBankInfoBalance)
+        {
+            if (item.AccountBalance > 0)
+            {
+                return (false, $"Customer precisa resgatar seu saldo antes de ser excluido.");
+            }
+        }
+
+        var customerTotaltBalance = _portfolioAppService.GetAllPortfolios();
+
+        foreach (var item in customerTotaltBalance)
+        {
+            if (item.TotalBalance > 0)
+            {
+                return (false, $"Customer precisa resgatar seu saldo antes de ser excluido.");
+            }
+        }
+
         var deletedCustomer = _customerService.Delete(id);
         return deletedCustomer;
     }
