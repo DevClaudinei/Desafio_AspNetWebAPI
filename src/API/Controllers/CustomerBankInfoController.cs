@@ -28,7 +28,7 @@ public class CustomerBankInfoController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var customersBankInfoFound = _appService.Get();
+        var customersBankInfoFound = _appService.GetAllCustomerBankInfo();
         return Ok(customersBankInfoFound);
     }
     

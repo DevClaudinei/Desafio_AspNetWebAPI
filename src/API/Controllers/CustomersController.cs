@@ -27,15 +27,6 @@ public class CustomersController : ControllerBase
             : BadRequest(createdCustomer.message);
     }
 
-    //[HttpPost("{id}")]
-    //public IActionResult Post(Guid id, Portfolio portfolio)
-    //{
-    //    var createdCustomer = _appService.CreatePortfolio(portfolio);
-    //    return createdCustomer.isValid
-    //        ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
-    //        : BadRequest(createdCustomer.message);
-    //}
-
     [HttpGet]
     public IActionResult Get()
     {
@@ -75,8 +66,8 @@ public class CustomersController : ControllerBase
     public IActionResult Delete(Guid id)
     {
         var excludedCustomerById = _appService.Delete(id);
-        return excludedCustomerById
+        return excludedCustomerById.isValid
             ? NoContent()
-            : NotFound($"Cliente não encontrado para o ID: {id}.");
+            : NotFound(excludedCustomerById.message);
     }
 }
