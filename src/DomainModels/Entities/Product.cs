@@ -28,5 +28,5 @@ public class Product
     public decimal UnitPrice { get; set; } // preço de cada cota de um ativo
     public decimal NetValue { get; set; } // valor liquido total multiplicando Quotes pelo UnitPrice
     public DateTime ConvertedAt { get; set; } // data da compra
-    public virtual ICollection<Portfolio> Portfolios { get; set; }
+    public ICollection<PortfolioProduct> PortfoliosProducts { get; set; } // lista de produtos comprados
 }
