@@ -10,7 +10,6 @@ public class UpdateCustomerBankInfoRequest
     { 
         Account = account;
         AccountBalance = accountBalance;
-        //CustomerId = customerId;
     }
 
     public Guid Id { get; set; }

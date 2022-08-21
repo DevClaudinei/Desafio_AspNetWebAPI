@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 namespace Application.Models.Portfolio.Request;
 
-public class PortfolioCreate
+public class CreatePortfolioRequest
 {
+    
+    public virtual ICollection<CreateProductRequest> Products { get; set; }
     public Guid CustomerId { get; init; }
-    public virtual ICollection<CreateProductRequest> Products { get; init; }
 }
