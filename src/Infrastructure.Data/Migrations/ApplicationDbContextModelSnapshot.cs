@@ -168,6 +168,21 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Portfolios", (string)null);
                 });
 
+            modelBuilder.Entity("DomainModels.Entities.PortfolioProduct", b =>
+                {
+                    b.Property<Guid>("PortfolioId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("PortfolioId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("PortfoliosProducts", (string)null);
+                });
+
             modelBuilder.Entity("DomainModels.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -198,21 +213,6 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
-            modelBuilder.Entity("PortfolioProduct", b =>
-                {
-                    b.Property<Guid>("PortfoliosId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("PortfoliosId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("PortfolioProduct");
-                });
-
             modelBuilder.Entity("DomainModels.Entities.CustomerBankInfo", b =>
                 {
                     b.HasOne("DomainModels.Entities.Customer", "Customer")
@@ -233,19 +233,23 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PortfolioProduct", b =>
+            modelBuilder.Entity("DomainModels.Entities.PortfolioProduct", b =>
                 {
-                    b.HasOne("DomainModels.Entities.Portfolio", null)
-                        .WithMany()
-                        .HasForeignKey("PortfoliosId")
+                    b.HasOne("DomainModels.Entities.Portfolio", "Portfolio")
+                        .WithMany("PortfoliosProducts")
+                        .HasForeignKey("PortfolioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DomainModels.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
+                    b.HasOne("DomainModels.Entities.Product", "Product")
+                        .WithMany("PortfoliosProducts")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Portfolio");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DomainModels.Entities.Customer", b =>
@@ -253,6 +257,16 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("CustomerBankInfo");
 
                     b.Navigation("Portfolios");
+                });
+
+            modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
+                {
+                    b.Navigation("PortfoliosProducts");
+                });
+
+            modelBuilder.Entity("DomainModels.Entities.Product", b =>
+                {
+                    b.Navigation("PortfoliosProducts");
                 });
 #pragma warning restore 612, 618
         }
