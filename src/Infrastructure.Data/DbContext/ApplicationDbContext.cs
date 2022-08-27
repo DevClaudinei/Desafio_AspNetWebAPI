@@ -31,10 +31,4 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("Infrastructure.Data"));
     }
-
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<CustomerBankInfo> CustomerBankInfos { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Portfolio> Portfolios { get; set; }
-    public DbSet<PortfolioProduct> PortfoliosProducts { get; set; }
 }

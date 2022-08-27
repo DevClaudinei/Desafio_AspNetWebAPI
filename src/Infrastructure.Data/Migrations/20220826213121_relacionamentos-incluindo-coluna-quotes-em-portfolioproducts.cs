@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class relacionamentos : Migration
+    public partial class relacionamentosincluindocolunaquotesemportfolioproducts : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,10 +53,7 @@ namespace Infrastructure.Data.Migrations
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Symbol = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Quotes = table.Column<int>(type: "int", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    NetValue = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    ConvertedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP()")
+                    UnitPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -71,7 +68,7 @@ namespace Infrastructure.Data.Migrations
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Account = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    AccountBalance = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    AccountBalance = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     CustomerId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     CreatedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP()"),
                     ModifiedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()")
@@ -93,7 +90,7 @@ namespace Infrastructure.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    TotalBalance = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    TotalBalance = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     CustomerId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     CreatedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP()"),
                     ModifiedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()")
@@ -111,23 +108,27 @@ namespace Infrastructure.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "PortfoliosProducts",
+                name: "PortfolioProduct",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     PortfolioId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    ProductId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    ProductId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Quotes = table.Column<int>(type: "int", nullable: false),
+                    NetValue = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    ConvertedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PortfoliosProducts", x => new { x.PortfolioId, x.ProductId });
+                    table.PrimaryKey("PK_PortfolioProduct", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PortfoliosProducts_Portfolios_PortfolioId",
+                        name: "FK_PortfolioProduct_Portfolios_PortfolioId",
                         column: x => x.PortfolioId,
                         principalTable: "Portfolios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PortfoliosProducts_Products_ProductId",
+                        name: "FK_PortfolioProduct_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -142,14 +143,19 @@ namespace Infrastructure.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_PortfolioProduct_PortfolioId",
+                table: "PortfolioProduct",
+                column: "PortfolioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PortfolioProduct_ProductId",
+                table: "PortfolioProduct",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Portfolios_CustomerId",
                 table: "Portfolios",
                 column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PortfoliosProducts_ProductId",
-                table: "PortfoliosProducts",
-                column: "ProductId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -158,7 +164,7 @@ namespace Infrastructure.Data.Migrations
                 name: "CustomerBankInfos");
 
             migrationBuilder.DropTable(
-                name: "PortfoliosProducts");
+                name: "PortfolioProduct");
 
             migrationBuilder.DropTable(
                 name: "Portfolios");

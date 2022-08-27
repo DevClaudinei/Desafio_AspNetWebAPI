@@ -1,7 +1,6 @@
 ﻿using DomainModels.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace Infrastructure.Data.Mappings;
 
@@ -23,8 +22,7 @@ public class CustomerBankInfoMapping : IEntityTypeConfiguration<CustomerBankInfo
             .IsRequired();
 
         builder.Property(x => x.AccountBalance)
-            //.HasDefaultValueSql("DECIMAL(65,2)")
-            .IsRequired();
+            .HasColumnType("decimal(10,2)");
 
         builder.Property(x => x.CreatedAt)
             .IsRequired()

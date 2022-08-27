@@ -14,6 +14,9 @@ public class PortfolioMapping : IEntityTypeConfiguration<Portfolio>
             .IsRequired()
             .ValueGeneratedOnAdd();
 
+        builder.Property(x => x.TotalBalance)
+            .HasColumnType("decimal(10,2)");
+
         builder.Property(x => x.CreatedAt)
             .IsRequired()
             .HasColumnType("TIMESTAMP")

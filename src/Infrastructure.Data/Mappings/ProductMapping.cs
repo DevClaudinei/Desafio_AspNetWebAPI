@@ -10,13 +10,9 @@ public class ProductMapping : IEntityTypeConfiguration<Product>
     {
         builder.ToTable("Products");
 
-        //builder.HasMany(x => x.PortfoliosProducts)
-        //    .WithMany(x => x.);
+        //builder.HasMany(x => x.Portfolios)
+        //    .WithMany(x => x.Products);
             
-        //builder.HasOne(x => x.Portfolio)
-        //    .WithMany(x => x.Products)
-        //    .OnDelete(DeleteBehavior.ClientCascade);
-
         builder.Property(x => x.Id)
             .IsRequired()
             .ValueGeneratedOnAdd();
@@ -25,19 +21,10 @@ public class ProductMapping : IEntityTypeConfiguration<Product>
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(x => x.Quotes)
-            .IsRequired();
+        //builder.Ignore(x => x.Quotes);
 
         builder.Property(x => x.UnitPrice)
+            .HasColumnType("decimal(10,2)")
             .IsRequired();
-
-        builder.Property(x => x.NetValue)
-            .IsRequired();
-
-        builder.Property(x => x.ConvertedAt)
-            .IsRequired()
-            .HasColumnType("TIMESTAMP")
-            .HasDefaultValueSql("CURRENT_TIMESTAMP()")
-            .ValueGeneratedOnAdd();
     }
 }

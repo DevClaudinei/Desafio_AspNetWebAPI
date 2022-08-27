@@ -1,7 +1,6 @@
 ﻿using DomainModels.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 
 namespace Infrastructure.Data.Mappings;
 
@@ -9,23 +8,25 @@ public class PortfolioProductMapping : IEntityTypeConfiguration<PortfolioProduct
 {
     public void Configure(EntityTypeBuilder<PortfolioProduct> builder)
     {
-        builder.ToTable("PortfoliosProducts");
-
         builder.HasKey(x => new { x.PortfolioId, x.ProductId });
 
-        builder.Property(x => x.PortfolioId)
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Id)
+            .ValueGeneratedOnAdd()
+            .HasColumnName("Id");
+
+        builder.Property(x => x.Quotes)
             .IsRequired();
 
-        builder.Property(x => x.ProductId)
-            .IsRequired();
+        builder.Property(x => x.NetValue)
+            .IsRequired()
+            .HasColumnType("decimal(10,2)");
 
-        builder.HasOne(x => x.Portfolio)
-            .WithMany(x => x.PortfoliosProducts)
-            .HasForeignKey(x => x.PortfolioId);
-
-        builder.HasOne(x => x.Product)
-            .WithMany(x => x.PortfoliosProducts)
-            .HasForeignKey(x => x.ProductId);
-
+        builder.Property(x => x.ConvertedAt)
+            .IsRequired()
+            .HasColumnType("TIMESTAMP")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP()")
+            .ValueGeneratedOnAdd();
     }
 }
