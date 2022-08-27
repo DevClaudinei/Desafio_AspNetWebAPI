@@ -6,9 +6,8 @@ public class UpdateCustomerBankInfoRequest
 {
     protected UpdateCustomerBankInfoRequest() { }
 
-    public UpdateCustomerBankInfoRequest(string account, decimal accountBalance)
+    public UpdateCustomerBankInfoRequest(decimal accountBalance)
     { 
-        Account = account;
         AccountBalance = accountBalance;
     }
 

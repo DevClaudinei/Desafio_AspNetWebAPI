@@ -6,7 +6,6 @@ namespace Application.Models.Portfolio.Request;
 
 public class CreatePortfolioRequest
 {
-    
-    public virtual ICollection<CreateProductRequest> Products { get; set; }
+    public virtual IEnumerable<CreateProductRequest> Products { get; set; }
     public Guid CustomerId { get; init; }
 }
