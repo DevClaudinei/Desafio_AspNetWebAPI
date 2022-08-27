@@ -7,14 +7,15 @@ public class Portfolio : BaseModel
 {
     protected Portfolio() { }
 
-    public Portfolio(decimal totalBalance, ICollection<PortfolioProduct> portfoliosProducts, Guid customerId)
+    public Portfolio(decimal totalBalance, Guid customerId)
     {
         TotalBalance = totalBalance;
-        PortfoliosProducts = portfoliosProducts;
         CustomerId = customerId;
     }
 
     public decimal TotalBalance { get; set; } // patrimônio da carteira somando todos os ativos
-    public ICollection<PortfolioProduct> PortfoliosProducts { get; set; } // lista de produtos comprados
+    //public ICollection<Product> Products { get; set; } //= new List<Product>(); // lista de produtos comprados
     public Guid CustomerId { get; set; }
+    public virtual Customer Customer { get; set; }
+    public virtual ICollection<PortfolioProduct> PortfolioProducts { get; set; }
 }

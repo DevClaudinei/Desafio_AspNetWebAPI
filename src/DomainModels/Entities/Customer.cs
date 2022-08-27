@@ -52,6 +52,6 @@ public class Customer : BaseModel
     public string PostalCode { get; set; }
     public string Address { get; set; }
     public int Number { get; set; }
-    public CustomerBankInfo CustomerBankInfo { get; set; }
+    public virtual CustomerBankInfo CustomerBankInfo { get; set; }
     public virtual ICollection<Portfolio> Portfolios { get; set; }
 }

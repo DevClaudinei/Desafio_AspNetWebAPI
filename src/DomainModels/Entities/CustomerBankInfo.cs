@@ -14,6 +14,6 @@ public class CustomerBankInfo : BaseModel
 
     public string Account { get; set; } // código da conta
     public decimal AccountBalance { get; set; } // saldo da conta
-    public Customer Customer { get; set; }
+    public virtual Customer Customer { get; set; }
     public Guid CustomerId { get; set; }
 }
