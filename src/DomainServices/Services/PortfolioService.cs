@@ -1,8 +1,6 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
-using EntityFrameworkCore.Repository;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
-using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,8 +13,8 @@ public class PortfolioService : IPortfolioService
     private readonly IRepositoryFactory _repositoryFactory;
 
     public PortfolioService(
-        IUnitOfWork<ApplicationDbContext> unitOfWork,
-        IRepositoryFactory<ApplicationDbContext> repositoryFactory
+        IUnitOfWork unitOfWork,
+        IRepositoryFactory repositoryFactory
     )
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -27,6 +25,7 @@ public class PortfolioService : IPortfolioService
     {
         var repository = _unitOfWork.Repository<Portfolio>();
         var portfolioExists = GetPortfolioById(portfolio.Id);
+
         if (portfolioExists is not null) return (false, $"Portfolio com o ID: {portfolio.Id} já existe");
 
         repository.Add(portfolio);
@@ -34,25 +33,22 @@ public class PortfolioService : IPortfolioService
 
         return (true, portfolio.Id.ToString());
     }
-    
+
     public (bool isValid, string message) GetTotalBalance(Guid portfolioId)
     {
         var portfolioFound = GetPortfolioById(portfolioId);
+
         if (portfolioFound is null) return (false, $"Portfolio com ID: {portfolioId} não localizado.");
         if (portfolioFound.TotalBalance == 0) return (true, $"{portfolioFound.TotalBalance}");
-        
-        decimal totalBalance = 0;
-        foreach (var item in portfolioFound.PortfoliosProducts)
-        {
-            totalBalance += item.Product.NetValue;
-        }
-        return (true, $"{totalBalance}");
+
+        return (true, $"{portfolioFound.TotalBalance}");
     }
 
     public Portfolio GetPortfolioById(Guid id)
     {
         var repository = _repositoryFactory.Repository<Portfolio>();
         var query = repository.SingleResultQuery()
+            .Include(source => source.Include(x => x.PortfolioProducts))
             .AndFilter(x => x.Id.Equals(id));
 
         return repository.FirstOrDefault(query);
@@ -61,7 +57,8 @@ public class PortfolioService : IPortfolioService
     public IEnumerable<Portfolio> GetAllPortfolios()
     {
         var repository = _repositoryFactory.Repository<Portfolio>();
-        var query = repository.MultipleResultQuery();
+        var query = repository.MultipleResultQuery()
+            .Include(source => source.Include(x => x.PortfolioProducts));
 
         return repository.Search(query);
     }
@@ -72,7 +69,6 @@ public class PortfolioService : IPortfolioService
         var updatedPortfolio = GetPortfolioById(portfolio.Id);
         
         portfolio.CreatedAt = updatedPortfolio.CreatedAt;
-
         if (updatedPortfolio is null) return (false, $"Portfolio com o ID: {portfolio.Id} não encontrado.");
 
         repository.Update(portfolio);
@@ -82,15 +78,9 @@ public class PortfolioService : IPortfolioService
     }
 
     public bool Delete(Guid id)
-
     {
         var repository = _unitOfWork.Repository<Portfolio>();
         var checkAccountBalance = GetTotalBalance(id);
-
-        //if (checkAccountBalance.message )
-        //{
-
-        //}
 
         return repository.Remove(x => x.Id.Equals(id)) > 0;
     }

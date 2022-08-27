@@ -13,8 +13,8 @@ public class CustomerService : ICustomerService
     private readonly IRepositoryFactory _repositoryFactory;
 
     public CustomerService(
-        IUnitOfWork<ApplicationDbContext> unitOfWork,
-        IRepositoryFactory<ApplicationDbContext> repositoryFactory
+        IUnitOfWork unitOfWork,
+        IRepositoryFactory repositoryFactory
         )
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -57,6 +57,7 @@ public class CustomerService : ICustomerService
     {
         var repository = _repositoryFactory.Repository<Customer>();
         var query = repository.MultipleResultQuery();
+
         return repository.Search(query); 
     }
 
@@ -65,6 +66,7 @@ public class CustomerService : ICustomerService
         var repository = _repositoryFactory.Repository<Customer>();
         var customerFound = repository.SingleResultQuery()
             .AndFilter(x => x.Id.Equals(id));
+
         return repository.SingleOrDefault(customerFound);
     }
 
@@ -73,7 +75,7 @@ public class CustomerService : ICustomerService
         var repository = _repositoryFactory.Repository<Customer>();
         var query = repository.MultipleResultQuery()
             .AndFilter(x => x.FullName.Contains(fullName));
-        
+
         return repository.Search(query);
     }
 
@@ -84,10 +86,10 @@ public class CustomerService : ICustomerService
         if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
 
         var updatedCustomer = GetById(customer.Id);
-        customer.CreatedAt = updatedCustomer.CreatedAt;
 
         if (updatedCustomer is null) return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
 
+        customer.CreatedAt = updatedCustomer.CreatedAt;
         var repository = _unitOfWork.Repository<Customer>();
 
         repository.Update(customer);

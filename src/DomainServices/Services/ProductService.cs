@@ -12,7 +12,7 @@ public class ProductService : IProductService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
 
-    public ProductService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
+    public ProductService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
@@ -73,12 +73,12 @@ public class ProductService : IProductService
     public (bool isValid, string message) UpdateProduct(Product product)
     {
         var updatedProduct = GetProductById(product.Id);
-        product.ConvertedAt = updatedProduct.ConvertedAt;
-
         if (updatedProduct is null) return (false, $"Cliente não encontrado para o Id: {product.Id}.");
 
+        //product.ConvertedAt = updatedProduct.ConvertedAt;
         var repository = _unitOfWork.Repository<Product>();
-
+        updatedProduct.UnitPrice = product.UnitPrice;
+        
         repository.Update(product);
         _unitOfWork.SaveChanges();
 
