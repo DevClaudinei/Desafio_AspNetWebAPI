@@ -11,19 +11,19 @@ namespace AppServices.Services;
 
 public class ProductAppService : IProductAppService
 {
-    private readonly IProductService _customerService;
+    private readonly IProductService _productService;
     private readonly IMapper _mapper;
 
-    public ProductAppService(IProductService customerService, IMapper mapper)
+    public ProductAppService(IProductService productService, IMapper mapper)
     {
-        _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
+        _productService = productService ?? throw new ArgumentNullException(nameof(productService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public (bool isValid, string message) Create(CreateProductRequest createProductRequest)
     {
         var product = _mapper.Map<Product>(createProductRequest);
-        var createdProduct = _customerService.CreateProduct(product);
+        var createdProduct = _productService.CreateProduct(product);
 
         if (createdProduct.isValid) return (true, createdProduct.message);
 
@@ -32,13 +32,13 @@ public class ProductAppService : IProductAppService
 
     public IEnumerable<ProductResult> GetAllProducts()
     {
-        var product = _customerService.GetAllProducts();
+        var product = _productService.GetAllProducts();
         return _mapper.Map<IEnumerable<ProductResult>>(product);
     }
 
     public ProductResult GetAllProductBySymbol(string symbol)
     {
-        var product = _customerService.GetAllProducsBySymbol(symbol);
+        var product = _productService.GetAllProducsBySymbol(symbol);
         if (product is null) return null;
 
         return _mapper.Map<ProductResult>(product);
@@ -46,7 +46,7 @@ public class ProductAppService : IProductAppService
 
     public ProductResult GetProductById(Guid id)
     {
-        var product = _customerService.GetProductById(id);
+        var product = _productService.GetProductById(id);
         if (product is null) return null;
 
         return _mapper.Map<ProductResult>(product);
@@ -55,12 +55,12 @@ public class ProductAppService : IProductAppService
     public (bool isValid, string message) Update(UpdateProductRequest updateProductRequest)
     {
         var productToUpdate = _mapper.Map<Product>(updateProductRequest);
-        return _customerService.UpdateProduct(productToUpdate);
+        return _productService.UpdateProduct(productToUpdate);
     }
 
     public bool Delete(Guid id)
     {
-        var deletedProduct = _customerService.Delete(id);
+        var deletedProduct = _productService.Delete(id);
         return deletedProduct;
     }
 }

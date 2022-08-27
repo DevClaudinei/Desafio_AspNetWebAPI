@@ -1,7 +1,6 @@
-﻿using Application.Models;
-using Application.Models.Portfolio.Request;
+﻿using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
-using DomainModels.Entities;
+using Application.Models.PortfolioProduct;
 using System;
 using System.Collections.Generic;
 
@@ -13,6 +12,6 @@ public interface IPortfolioAppService
     IEnumerable<PortfolioResult> GetAllPortfolios();
     PortfolioResult GetPortfolioById(Guid id);
     (bool isValid, string message) GetTotalBalance(Guid portfolioId);
-    (bool isValid, string message) Update(UpdatePortfolioRequest updatePortfolioRequest);
+    (bool isValid, string message) AddProduct(UpdatePortfolioProductRequest updatePortfolioProductRequest);
     bool Delete(Guid id);
 }

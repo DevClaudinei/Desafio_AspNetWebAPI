@@ -18,21 +18,25 @@ public class CustomerAppService : ICustomerAppService
     public CustomerAppService(
         ICustomerService customerService,
         IMapper mapper,
-        ICustomerBankInfoAppService customerBankInfoService,
-        IPortfolioAppService portfolioService
+        ICustomerBankInfoAppService customerBankInfoAppService,
+        IPortfolioAppService portfolioAppService
     )
     {
         _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _customerBankInfoAppService = customerBankInfoService ?? throw new ArgumentNullException(nameof(customerBankInfoService));
-        _portfolioAppService = portfolioService ?? throw new ArgumentNullException(nameof(portfolioService));
+        _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
+        _portfolioAppService = portfolioAppService ?? throw new ArgumentNullException(nameof(portfolioAppService));
     }
 
     public (bool isValid, string message) Create(CreateCustomerRequest createCustomerRequest)
     {
         var customer = _mapper.Map<Customer>(createCustomerRequest);
         var createdCustomer = _customerService.CreateCustomer(customer);
-        if (createdCustomer.isValid) return (true, createdCustomer.message);
+        if (createdCustomer.isValid)
+        {
+            var customerBankInfo = _customerBankInfoAppService.Create(createCustomerRequest.CustomerBaninfo, Guid.Parse(createdCustomer.message));
+            if (customerBankInfo.isValid) return (true, createdCustomer.message);
+        }
 
         return (false, createdCustomer.message);
     }
@@ -45,18 +49,18 @@ public class CustomerAppService : ICustomerAppService
 
     public CustomerResult GetCustomerById(Guid id)
     {
-        var customer = _customerService.GetById(id);
-        if (customer is null) return null;
+        var customerFound = _customerService.GetById(id);
+        if (customerFound is null) return null;
 
-        return _mapper.Map<CustomerResult>(customer);
+        return _mapper.Map<CustomerResult>(customerFound);
     }
 
     public IEnumerable<CustomerResult> GetAllCustomerByName(string fullName)
     {
-        var customer = _customerService.GetAllByFullName(fullName);
-        if (customer is null) return null;
+        var customersFound = _customerService.GetAllByFullName(fullName);
+        if (customersFound is null) return null;
 
-        return _mapper.Map<IEnumerable<CustomerResult>>(customer);
+        return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
 
     public (bool isValid, string message) Update(UpdateCustomerRequest updateCustomerRequest)
@@ -67,23 +71,19 @@ public class CustomerAppService : ICustomerAppService
 
     public (bool isValid, string message) Delete(Guid id)
     {
-        var customerBankInfoBalance = _customerBankInfoAppService.GetAllCustomerBankInfo();
-        foreach (var item in customerBankInfoBalance)
+        var customerAccountBalance = _customerBankInfoAppService.GetAllCustomerBankInfo();
+       
+        foreach (var item in customerAccountBalance)
         {
-            if (item.AccountBalance > 0)
-            {
-                return (false, $"Customer precisa resgatar seu saldo antes de ser excluido.");
-            }
+            if (item.CustomerId != id) return (false, $"Customer para o Id: {id} não localizado.");
+            if (item.AccountBalance > 0) return (false, $"Customer precisa resgatar seu saldo antes de ser excluido.");
         }
 
         var customerTotaltBalance = _portfolioAppService.GetAllPortfolios();
 
         foreach (var item in customerTotaltBalance)
         {
-            if (item.TotalBalance > 0)
-            {
-                return (false, $"Customer precisa resgatar seu saldo antes de ser excluido.");
-            }
+            if (item.TotalBalance > 0) return (false, $"Customer precisa resgatar seu saldo antes de ser excluido.");
         }
 
         var deletedCustomer = _customerService.Delete(id);

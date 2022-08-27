@@ -6,26 +6,24 @@ using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
-using System.Security.Principal;
 
 namespace AppServices.Services;
 
 public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 {
-    private readonly ICustomerBankInfoService _customerService;
+    private readonly ICustomerBankInfoService _customerBankInfoService;
     private readonly IMapper _mapper;
 
-    public CustomerBankInfoAppService(ICustomerBankInfoService customerService, IMapper mapper)
+    public CustomerBankInfoAppService(ICustomerBankInfoService customerBankInfoService, IMapper mapper)
     {
-        _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
+        _customerBankInfoService = customerBankInfoService ?? throw new ArgumentNullException(nameof(customerBankInfoService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public (bool isValid, string message) Create(CreateCustomerBankInfoRequest createCustomerBankInfoRequest)
+    public (bool isValid, string message) Create(CreateCustomerBankInfoRequest createCustomerBankInfoRequest, Guid customerId)
     {
         var customerBankInfo = _mapper.Map<CustomerBankInfo>(createCustomerBankInfoRequest);
-        var createdCustomerBankInfo = _customerService.CreateCustomerBankInfo(customerBankInfo);
+        var createdCustomerBankInfo = _customerBankInfoService.CreateCustomerBankInfo(customerBankInfo, customerId);
 
         if (createdCustomerBankInfo.isValid) return (true, createdCustomerBankInfo.message);
 
@@ -34,13 +32,13 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo()
     {
-        var customersBankInfo = _customerService.GetAllCustomerBankInfo();
+        var customersBankInfo = _customerBankInfoService.GetAllCustomerBankInfo();
         return _mapper.Map<IEnumerable<CustomerBankInfoResult>>(customersBankInfo);
     }
 
     public CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account)
     {
-        var customerBankInfo = _customerService.GetCustomerBankInfoByAccount(account);
+        var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoByAccount(account);
         if (customerBankInfo is null) return null;
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
@@ -48,21 +46,26 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public CustomerBankInfoResult GetCustomerBankInfoById(Guid id)
     {
-        var customerBankInfo = _customerService.GetCustomerBankInfoById(id);
+        var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoById(id);
         if (customerBankInfo is null) return null;
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
 
-    public (bool isValid, string message) Update(UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    public (bool isValid, string message) DepositMoney(UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
-        
         var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(updateCustomerBankInfoRequest);
-        return _customerService.UpdateCustomerBankInfo(customerBankInfoToUpdate);
+        return _customerBankInfoService.DepositMoney(customerBankInfoToUpdate);
+    }
+
+    public (bool isValid, string message) WithdrawMoney(UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    {
+        var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(updateCustomerBankInfoRequest);
+        return _customerBankInfoService.WithdrawMoney(customerBankInfoToUpdate);
     }
 
     public (bool isValid, string message) Delete(Guid id)
     {
-        return _customerService.Delete(id);
+        return _customerBankInfoService.Delete(id);
     }
 }

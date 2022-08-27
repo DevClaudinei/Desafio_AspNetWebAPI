@@ -7,10 +7,11 @@ namespace AppServices.Services.Interfaces;
 
 public interface ICustomerBankInfoAppService
 {
-    (bool isValid, string message) Create(CreateCustomerBankInfoRequest createCustomerBankInfoRequest);
+    (bool isValid, string message) Create(CreateCustomerBankInfoRequest createCustomerBankInfoRequest, Guid customerId);
     IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo();
     CustomerBankInfoResult GetCustomerBankInfoById(Guid id);
     CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account);
-    (bool isValid, string message) Update(UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
+    (bool isValid, string message) DepositMoney(UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
+    (bool isValid, string message) WithdrawMoney(UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
     (bool isValid, string message) Delete(Guid id);
 }
