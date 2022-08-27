@@ -14,21 +14,21 @@ public static class ServicesConfiguration
     public static void AddServicesConfiguration(this IServiceCollection services)
     {
         services.AddTransient<ICustomerService, CustomerService>();
+        
+        services.AddTransient<ICustomerAppService, CustomerAppService>();
 
         services.AddTransient<ICustomerBankInfoService, CustomerBankInfoService>();
 
-        services.AddTransient<IProductService, ProductService>();
-
-        services.AddTransient<IPortfolioService, PortfolioService>();
-
-        services.AddTransient<ICustomerAppService, CustomerAppService>();
-
         services.AddTransient<ICustomerBankInfoAppService, CustomerBankInfoAppService>();
+
+        services.AddTransient<IProductService, ProductService>();
 
         services.AddTransient<IProductAppService, ProductAppService>();
 
+        services.AddTransient<IPortfolioService, PortfolioService>();
+
         services.AddTransient<IPortfolioAppService, PortfolioAppService>();
 
-        services.AddTransient<DbContext, ApplicationDbContext>();   
+        services.AddTransient<DbContext, ApplicationDbContext>();
     }
 }

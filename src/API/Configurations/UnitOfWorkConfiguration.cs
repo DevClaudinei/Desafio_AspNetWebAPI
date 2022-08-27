@@ -8,6 +8,6 @@ public static class UnitOfWorkConfiguration
 {
     public static void AddUnitOfWorkConfiguration(this IServiceCollection services)
     {
-        services.AddUnitOfWork<ApplicationDbContext>();
+        services.AddUnitOfWork(ServiceLifetime.Transient);
     }
 }
