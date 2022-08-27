@@ -9,17 +9,17 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private readonly IProductAppService _appService;
+    private readonly IProductAppService _productAppService;
 
     public ProductsController(IProductAppService appService)
     {
-        _appService = appService ?? throw new System.ArgumentNullException(nameof(appService));
+        _productAppService = appService ?? throw new System.ArgumentNullException(nameof(appService));
     }
 
     [HttpPost]
     public IActionResult Post(CreateProductRequest createProductRequest)
     {
-        var productCreated = _appService.Create(createProductRequest);
+        var productCreated = _productAppService.Create(createProductRequest);
         return productCreated.isValid
             ? Created("~http://localhost:5160/api/Product", productCreated.message)
             : BadRequest(productCreated.message);
@@ -28,14 +28,14 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var productsFound = _appService.GetAllProducts();
+        var productsFound = _productAppService.GetAllProducts();
         return Ok(productsFound);
     }
 
     [HttpGet("{id}")]
     public IActionResult Get(Guid id)
     {
-        var productFound = _appService.GetProductById(id);
+        var productFound = _productAppService.GetProductById(id);
         return productFound is null
             ? NotFound($"Product para o id {id} não foi encontrado.")
             : Ok(productFound);
@@ -44,7 +44,7 @@ public class ProductsController : ControllerBase
     [HttpGet("symbol/{symbol}")]
     public IActionResult Get(string symbol)
     {
-        var productsFound = _appService.GetAllProductBySymbol(symbol);
+        var productsFound = _productAppService.GetAllProductBySymbol(symbol);
         return productsFound is null
             ? NotFound($"Product para o symbol {symbol} não foi encontrado.")
             : Ok(productsFound);
@@ -54,7 +54,7 @@ public class ProductsController : ControllerBase
     public IActionResult Put(Guid id, UpdateProductRequest updateProductRequest)
     {
         updateProductRequest.Id = id;
-        var updatedCustomerBankInfo = _appService.Update(updateProductRequest);
+        var updatedCustomerBankInfo = _productAppService.Update(updateProductRequest);
         return updatedCustomerBankInfo.isValid
             ? Ok()
             : NotFound(updatedCustomerBankInfo.message);
@@ -63,7 +63,7 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(Guid id)
     {
-        var excludedProductById = _appService.Delete(id);
+        var excludedProductById = _productAppService.Delete(id);
         return excludedProductById
             ? NoContent()
             : NotFound($"Product não encontrado para o ID: {id}.");

@@ -1,8 +1,8 @@
 using System;
+using System.Linq;
 using Application.Models;
 using AppServices.Services;
 using AutoMapper;
-using DomainModels.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -47,7 +47,7 @@ public class CustomersController : ControllerBase
     public IActionResult GetAllByName(string fullName)
     {
         var customerFoundName = _appService.GetAllCustomerByName(fullName);
-        return customerFoundName is not null
+        return customerFoundName.Any()
             ? Ok(customerFoundName)
             : NotFound($"Cliente para o nome: {fullName} não foi encontrado.");
     }
