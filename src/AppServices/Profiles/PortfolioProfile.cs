@@ -1,6 +1,5 @@
 ﻿using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
-using Application.Models.Product.Response;
 using AutoMapper;
 using DomainModels.Entities;
 

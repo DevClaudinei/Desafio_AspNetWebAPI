@@ -7,11 +7,6 @@ public class CustomerBankInfoUpdateValidator : AbstractValidator<UpdateCustomerB
 {
     public CustomerBankInfoUpdateValidator()
     {
-        //RuleFor(x => x.Account)
-        //    .NotEmpty()
-        //    .NotNull()
-        //    .Must(x => x.IsValidAccount());
-
         RuleFor(x => x.AccountBalance)
             .NotEmpty()
             .NotNull();
