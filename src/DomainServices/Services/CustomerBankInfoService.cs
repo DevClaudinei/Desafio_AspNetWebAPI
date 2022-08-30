@@ -81,7 +81,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         var customerBankInfoToDesposityMoney = VerifyCustomerBankInfoExists(customerBankInfo);
         var repository = _unitOfWork.Repository<CustomerBankInfo>();
 
-        if (customerBankInfoToDesposityMoney.exists) return (false, customerBankInfoToDesposityMoney.errorMessage);
+        if (!customerBankInfoToDesposityMoney.exists) return (false, customerBankInfoToDesposityMoney.errorMessage);
 
         repository.Update(customerBankInfo);
         _unitOfWork.SaveChanges();
