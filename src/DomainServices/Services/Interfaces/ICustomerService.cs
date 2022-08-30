@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DomainModels.Entities;
 
@@ -8,8 +7,8 @@ public interface ICustomerService
 {
     (bool isValid, string message) CreateCustomer(Customer customer);
     IEnumerable<Customer> GetAll();
-    Customer GetById(Guid id);
+    Customer GetById(long id);
     IEnumerable<Customer> GetAllByFullName(string fullName);
     (bool isValid, string message) Update(Customer customer);
-    (bool isValid, string message) Delete(Guid id);
+    (bool isValid, string message) Delete(long id);
 }

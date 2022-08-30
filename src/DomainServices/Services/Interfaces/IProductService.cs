@@ -8,8 +8,8 @@ public interface IProductService
 {
     (bool isValid, string message) CreateProduct(Product product);
     IEnumerable<Product> GetAllProducts();
-    Product GetProductById(Guid id);
+    Product GetProductById(long id);
     Product GetAllProducsBySymbol(string symbol);
     (bool isValid, string message) UpdateProduct(Product product);
-    bool Delete(Guid id);
+    bool Delete(long id);
 }

@@ -12,10 +12,7 @@ public class PortfolioService : IPortfolioService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
 
-    public PortfolioService(
-        IUnitOfWork unitOfWork,
-        IRepositoryFactory repositoryFactory
-    )
+    public PortfolioService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
@@ -34,7 +31,7 @@ public class PortfolioService : IPortfolioService
         return (true, portfolio.Id.ToString());
     }
 
-    public (bool isValid, string message) GetTotalBalance(Guid portfolioId)
+    public (bool isValid, string message) GetTotalBalance(long portfolioId)
     {
         var portfolioFound = GetPortfolioById(portfolioId);
 
@@ -44,7 +41,7 @@ public class PortfolioService : IPortfolioService
         return (true, $"{portfolioFound.TotalBalance}");
     }
 
-    public Portfolio GetPortfolioById(Guid id)
+    public Portfolio GetPortfolioById(long id)
     {
         var repository = _repositoryFactory.Repository<Portfolio>();
         var query = repository.SingleResultQuery()
@@ -77,7 +74,19 @@ public class PortfolioService : IPortfolioService
         return (true, portfolio.Id.ToString());
     }
 
-    public bool Delete(Guid id)
+    public bool UpdateBalanceAfterPurchase(Portfolio portfolio)
+    {
+        var repository = _unitOfWork.Repository<Portfolio>();
+        var customerBankInfoToUpdate = GetPortfolioById(portfolio.Id);
+        portfolio.CreatedAt = customerBankInfoToUpdate.CreatedAt;
+
+        repository.Update(portfolio);
+        _unitOfWork.SaveChanges();
+
+        return true;
+    }
+
+    public bool Delete(long id)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
         var checkAccountBalance = GetTotalBalance(id);

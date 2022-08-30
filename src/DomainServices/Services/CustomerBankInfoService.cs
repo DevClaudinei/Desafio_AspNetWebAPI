@@ -1,7 +1,6 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
-using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 
@@ -12,16 +11,13 @@ public class CustomerBankInfoService : ICustomerBankInfoService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
 
-    public CustomerBankInfoService(
-        IUnitOfWork unitOfWork,
-        IRepositoryFactory repositoryFactory
-    )
+    public CustomerBankInfoService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public (bool isValid, string message) CreateCustomerBankInfo(CustomerBankInfo customerBankInfo, Guid customerId)
+    public (bool isValid, string message) CreateCustomerBankInfo(CustomerBankInfo customerBankInfo, long customerId)
     {
         customerBankInfo.CustomerId = customerId;
         var customerBankInfoAlreadyExists = VerifyCustomerBankInfoAlreadyExists(customerBankInfo);
@@ -71,7 +67,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         return repository.SingleOrDefault(query);
     }
 
-    public CustomerBankInfo GetCustomerBankInfoById(Guid id)
+    public CustomerBankInfo GetCustomerBankInfoById(long id)
     {
         var repository = _repositoryFactory.Repository<CustomerBankInfo>();
         var query = repository.SingleResultQuery()
@@ -82,24 +78,38 @@ public class CustomerBankInfoService : ICustomerBankInfoService
 
     public (bool isValid, string message) DepositMoney(CustomerBankInfo customerBankInfo)
     {
-        var updatedCustomerBankInfo = GetCustomerBankInfoByAccount(customerBankInfo.Account);
-
-        if (updatedCustomerBankInfo is null) return (false, $"CustomerBankInfo not found by Account: {customerBankInfo.Account}.");
-
-        if ((updatedCustomerBankInfo.CustomerId != customerBankInfo.CustomerId) || updatedCustomerBankInfo.Id != customerBankInfo.Id)
-            return (false, $"Não é possível realizar o deposito. Customer para o Id: {customerBankInfo.CustomerId} não localizado.");
-
-        customerBankInfo.CreatedAt = updatedCustomerBankInfo.CreatedAt;
+        var customerBankInfoToDesposityMoney = VerifyCustomerBankInfoExists(customerBankInfo);
         var repository = _unitOfWork.Repository<CustomerBankInfo>();
 
-        if (customerBankInfo.AccountBalance < 0) return (false, $"CustomerBankInfo cannot update balance for negative amounts.");
-
-        customerBankInfo.AccountBalance = updatedCustomerBankInfo.AccountBalance + customerBankInfo.AccountBalance;
+        if (customerBankInfoToDesposityMoney.exists) return (false, customerBankInfoToDesposityMoney.errorMessage);
 
         repository.Update(customerBankInfo);
         _unitOfWork.SaveChanges();
 
         return (true, customerBankInfo.Id.ToString());
+    }
+
+    private (bool exists, string errorMessage) VerifyCustomerBankInfoExists(CustomerBankInfo customerBankInfo)
+    {
+        var messageTemplate = "{0} para o {1}: {2} não localizado.";
+        var updatedCustomerBankInfo = GetCustomerBankInfoByAccount(customerBankInfo.Account);
+
+        if (updatedCustomerBankInfo is null)
+            return (false, $"CustomerBankInfo not found by Account: {customerBankInfo.Account}.");
+
+        if (updatedCustomerBankInfo.CustomerId != customerBankInfo.CustomerId)
+            return (true, string.Format(messageTemplate,"Customer", "Id", customerBankInfo.CustomerId));
+
+        if (updatedCustomerBankInfo.Id != customerBankInfo.Id)
+            return (true, string.Format(messageTemplate, "CustomerBankInfo", "Id", customerBankInfo.Id));
+
+        customerBankInfo.CreatedAt = updatedCustomerBankInfo.CreatedAt;
+
+        if (customerBankInfo.AccountBalance < 0) return (false, $"CustomerBankInfo cannot update balance for negative amounts.");
+
+        customerBankInfo.AccountBalance = updatedCustomerBankInfo.AccountBalance + customerBankInfo.AccountBalance;
+
+        return (true, "");
     }
 
     public (bool isValid, string message) WithdrawMoney(CustomerBankInfo customerBankInfo)
@@ -118,10 +128,23 @@ public class CustomerBankInfoService : ICustomerBankInfoService
 
         repository.Update(customerBankInfo);
         _unitOfWork.SaveChanges();
+
         return (true, "");
     }
 
-    public (bool isValid, string message) Delete(Guid id)
+    public bool UpdateBalanceAfterPurchase(CustomerBankInfo customerBankInfo)
+    {
+        var repository = _unitOfWork.Repository<CustomerBankInfo>();
+        var customerBankInfoToUpdate = GetCustomerBankInfoById(customerBankInfo.Id);
+        customerBankInfo.CreatedAt = customerBankInfoToUpdate.CreatedAt;
+
+        repository.Update(customerBankInfo);
+        _unitOfWork.SaveChanges();
+
+        return true;
+    }
+
+    public (bool isValid, string message) Delete(long id)
     {
         var messageTemplate = "The {0}: {1} cannot be closed as it still has a balance";
         var checkIfAccountHasBalance = GetCustomerBankInfoById(id);

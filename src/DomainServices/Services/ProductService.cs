@@ -1,7 +1,6 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
-using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 
@@ -61,7 +60,7 @@ public class ProductService : IProductService
         return repository.SingleOrDefault(query);
     }
 
-    public Product GetProductById(Guid id)
+    public Product GetProductById(long id)
     {
         var repository = _repositoryFactory.Repository<Product>();
         var query = repository.SingleResultQuery()
@@ -75,7 +74,6 @@ public class ProductService : IProductService
         var updatedProduct = GetProductById(product.Id);
         if (updatedProduct is null) return (false, $"Cliente não encontrado para o Id: {product.Id}.");
 
-        //product.ConvertedAt = updatedProduct.ConvertedAt;
         var repository = _unitOfWork.Repository<Product>();
         updatedProduct.UnitPrice = product.UnitPrice;
         
@@ -85,7 +83,7 @@ public class ProductService : IProductService
         return (true, product.Id.ToString());
     }
 
-    public bool Delete(Guid id)
+    public bool Delete(long id)
     {
         var repository = _unitOfWork.Repository<Product>();
 

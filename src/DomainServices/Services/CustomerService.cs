@@ -61,7 +61,7 @@ public class CustomerService : ICustomerService
         return repository.Search(query); 
     }
 
-    public Customer GetById(Guid id)
+    public Customer GetById(long id)
     {
         var repository = _repositoryFactory.Repository<Customer>();
         var customerFound = repository.SingleResultQuery()
@@ -98,7 +98,7 @@ public class CustomerService : ICustomerService
         return (true, customer.Id.ToString());
     }
 
-    public (bool isValid, string message) Delete(Guid id)
+    public (bool isValid, string message) Delete(long id)
     {
         var repository = _unitOfWork.Repository<Customer>();
         var customerToDelete = GetById(id);

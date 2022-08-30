@@ -6,11 +6,12 @@ namespace DomainServices.Services.Interfaces;
 
 public interface ICustomerBankInfoService
 {
-    (bool isValid, string message) CreateCustomerBankInfo(CustomerBankInfo customerBankInfo, Guid customerId);
+    (bool isValid, string message) CreateCustomerBankInfo(CustomerBankInfo customerBankInfo, long customerId);
     IEnumerable<CustomerBankInfo> GetAllCustomerBankInfo();
-    CustomerBankInfo GetCustomerBankInfoById(Guid id);
+    CustomerBankInfo GetCustomerBankInfoById(long id);
     CustomerBankInfo GetCustomerBankInfoByAccount(string account);
     (bool isValid, string message) DepositMoney(CustomerBankInfo customerBankInfo);
     (bool isValid, string message) WithdrawMoney(CustomerBankInfo customerBankInfo);
-    (bool isValid, string message) Delete(Guid id);
+    public bool UpdateBalanceAfterPurchase(CustomerBankInfo customerBankInfo);
+    (bool isValid, string message) Delete(long id);
 }

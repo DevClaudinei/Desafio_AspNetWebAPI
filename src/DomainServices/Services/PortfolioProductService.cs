@@ -25,12 +25,23 @@ public class PortfolioProductService : IPortfolioProductService
         return repository.Search(query);
     }
 
-    public PortfolioProduct GetPortfolioProductById(Guid id)
+    public PortfolioProduct GetPortfolioProductById(long id)
     {
         var repository = _repositoryFactory.Repository<PortfolioProduct>();
         var customerFound = repository.SingleResultQuery()
             .AndFilter(x => x.Id.Equals(id));
 
         return repository.SingleOrDefault(customerFound);
+    }
+
+    public (bool isValid, string message) Add(PortfolioProduct portfolioProduct)
+    {
+        var repository = _unitOfWork.Repository<PortfolioProduct>();
+        portfolioProduct.ConvertedAt = DateTime.Now;
+
+        repository.Add(portfolioProduct);
+        _unitOfWork.SaveChanges();
+
+        return (true, portfolioProduct.Id.ToString());
     }
 }
