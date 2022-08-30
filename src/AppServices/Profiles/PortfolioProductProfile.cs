@@ -1,5 +1,6 @@
 ﻿using Application.Models.Portfolio.Response;
-using Application.Models.PortfolioProduct;
+using Application.Models.PortfolioProduct.Request;
+using Application.Models.PortfolioProduct.Response;
 using AutoMapper;
 using DomainModels.Entities;
 
@@ -9,8 +10,10 @@ public class PortfolioProductProfile : Profile
 {
 	public PortfolioProductProfile()
 	{
-        CreateMap<PortfolioProduct, PortfolioProductResult>().ReverseMap();
-        CreateMap<PortfolioResult, PortfolioProductResult>().ReverseMap();
-        CreateMap<UpdatePortfolioProductRequest, PortfolioProduct>().ReverseMap();
+        CreateMap<PortfolioProduct, PortfolioProductResult>();
+        CreateMap<PortfolioResult, PortfolioProductResult>();
+        CreateMap<UpdatePortfolioProductRequest, PortfolioProduct>();
+        CreateMap<InvestmentRequest, PortfolioProduct>();
+
     }
 }

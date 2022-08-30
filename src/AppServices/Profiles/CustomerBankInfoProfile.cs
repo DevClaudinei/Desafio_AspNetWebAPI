@@ -12,5 +12,6 @@ public class CustomerBankInfoProfile : Profile
         CreateMap<CustomerBankInfo, CustomerBankInfoResult>();
         CreateMap<UpdateCustomerBankInfoRequest, CustomerBankInfo>();
         CreateMap<CreateCustomerBankInfoRequest, CustomerBankInfo>();
+        CreateMap<CustomerBankInfoResult, CustomerBankInfo>();
     }
 }

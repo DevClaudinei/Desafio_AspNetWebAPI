@@ -4,6 +4,7 @@ using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -20,7 +21,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public (bool isValid, string message) Create(CreateCustomerBankInfoRequest createCustomerBankInfoRequest, Guid customerId)
+    public (bool isValid, string message) Create(CreateCustomerBankInfoRequest createCustomerBankInfoRequest, long customerId)
     {
         var customerBankInfo = _mapper.Map<CustomerBankInfo>(createCustomerBankInfoRequest);
         var createdCustomerBankInfo = _customerBankInfoService.CreateCustomerBankInfo(customerBankInfo, customerId);
@@ -44,7 +45,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
 
-    public CustomerBankInfoResult GetCustomerBankInfoById(Guid id)
+    public CustomerBankInfoResult GetCustomerBankInfoById(long id)
     {
         var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoById(id);
         if (customerBankInfo is null) return null;
@@ -64,7 +65,14 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _customerBankInfoService.WithdrawMoney(customerBankInfoToUpdate);
     }
 
-    public (bool isValid, string message) Delete(Guid id)
+    public bool UpdateBalanceAfterPurchase(CustomerBankInfoResult customerBankinfo, decimal purchaseValue)
+    {
+        customerBankinfo.AccountBalance -= purchaseValue;
+        var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(customerBankinfo);
+        return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankInfoToUpdate);
+    }
+
+    public (bool isValid, string message) Delete(long id)
     {
         return _customerBankInfoService.Delete(id);
     }

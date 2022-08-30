@@ -44,7 +44,7 @@ public class ProductAppService : IProductAppService
         return _mapper.Map<ProductResult>(product);
     }
 
-    public ProductResult GetProductById(Guid id)
+    public ProductResult GetProductById(long id)
     {
         var product = _productService.GetProductById(id);
         if (product is null) return null;
@@ -58,7 +58,7 @@ public class ProductAppService : IProductAppService
         return _productService.UpdateProduct(productToUpdate);
     }
 
-    public bool Delete(Guid id)
+    public bool Delete(long id)
     {
         var deletedProduct = _productService.Delete(id);
         return deletedProduct;

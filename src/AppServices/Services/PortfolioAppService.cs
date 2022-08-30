@@ -1,6 +1,6 @@
 ﻿using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
-using Application.Models.PortfolioProduct;
+using Application.Models.PortfolioProduct.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -14,19 +14,16 @@ public class PortfolioAppService : IPortfolioAppService
 {
     private readonly IMapper _mapper;
     private readonly IPortfolioService _portfolioService;
-    private readonly IProductAppService _productAppService;
     private readonly ICustomerBankInfoAppService _customerBankInfoAppService;
 
     public PortfolioAppService(
-        IPortfolioService portfolioService,
         IMapper mapper,
-        IProductAppService productAppService,
+        IPortfolioService portfolioService,
         ICustomerBankInfoAppService customerBankInfoAppService
     )
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _portfolioService = portfolioService ?? throw new ArgumentNullException(nameof(portfolioService));
-        _productAppService = productAppService ?? throw new ArgumentNullException(nameof(productAppService));
         _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
     }
 
@@ -52,21 +49,21 @@ public class PortfolioAppService : IPortfolioAppService
     public IEnumerable<PortfolioResult> GetAllPortfolios()
     {
         var portfoliosFound = _portfolioService.GetAllPortfolios();
-
-        foreach (var portfolio in portfoliosFound)
-        {   
-            foreach (var item in portfolio.PortfolioProducts)
+        var portfolioMapp = _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
+        foreach (var portfolios in portfoliosFound)
+        {
+            foreach (var portfolio in portfolios.PortfolioProducts)
             {
-                var x = _portfolioService.GetPortfolioById(item.ProductId);
+                //portfolioMapp = _mapper.Map<IEnumerable<PortfolioProductResult>>(portfolio);
             }
         }
-       
+
         return _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
+        //yield return portfolioMapp;
     }
 
-    public PortfolioResult GetPortfolioById(Guid id)
+    public PortfolioResult GetPortfolioById(long id)
     {
-        
         var portfolioFound = _portfolioService.GetPortfolioById(id);
 
         if (portfolioFound is null) return null;
@@ -77,35 +74,18 @@ public class PortfolioAppService : IPortfolioAppService
         return portfolioMapp;
     }
 
-    public (bool isValid, string message) GetTotalBalance(Guid portfolioId)
+    public (bool isValid, string message) GetTotalBalance(long portfolioId)
     {
         return _portfolioService.GetTotalBalance(portfolioId);
     }
 
-    public (bool isValid, string message) AddProduct(UpdatePortfolioProductRequest updatePortfolioProductRequest)
+    public bool UpdateBalanceAfterPurchase(PortfolioResult portfolioResult, decimal purchaseValue)
     {
-        var portfolio = _portfolioService.GetPortfolioById(updatePortfolioProductRequest.PortfolioId);
-        var product = _productAppService.GetProductById(updatePortfolioProductRequest.ProductId);
-
-        if (portfolio is null || product is null) 
-            return (false, $"Não é possível incluir o produto: {product} no portfolio: {portfolio}");
-
-        var portfolioProduct = _mapper.Map<PortfolioResult>(portfolio);
-        
-        foreach (var item in portfolioProduct.Products)
-        {
-            item.NetValue = updatePortfolioProductRequest.Quotes * product.UnitPrice;
-            portfolio.TotalBalance += item.NetValue;
-            portfolio.PortfolioProducts.Add(_mapper.Map<PortfolioProduct>(item));
-        }
-
-
-        portfolio.PortfolioProducts.Clear();
-        
-        return _portfolioService.Update(portfolio);
+        var portfolioToUpdate = _mapper.Map<Portfolio>(portfolioResult);
+        return _portfolioService.UpdateBalanceAfterPurchase(portfolioToUpdate);
     }
 
-    public bool Delete(Guid id)
+    public bool Delete(long id)
     {
         var deletedPortfolio = _portfolioService.Delete(id);
         return deletedPortfolio;

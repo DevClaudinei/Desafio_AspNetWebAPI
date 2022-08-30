@@ -32,9 +32,10 @@ public class CustomerAppService : ICustomerAppService
     {
         var customer = _mapper.Map<Customer>(createCustomerRequest);
         var createdCustomer = _customerService.CreateCustomer(customer);
+
         if (createdCustomer.isValid)
         {
-            var customerBankInfo = _customerBankInfoAppService.Create(createCustomerRequest.CustomerBaninfo, Guid.Parse(createdCustomer.message));
+            var customerBankInfo = _customerBankInfoAppService.Create(createCustomerRequest.CustomerBaninfo, long.Parse(createdCustomer.message));
             if (customerBankInfo.isValid) return (true, createdCustomer.message);
         }
 
@@ -47,7 +48,7 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
 
-    public CustomerResult GetCustomerById(Guid id)
+    public CustomerResult GetCustomerById(long id)
     {
         var customerFound = _customerService.GetById(id);
         if (customerFound is null) return null;
@@ -69,7 +70,7 @@ public class CustomerAppService : ICustomerAppService
         return _customerService.Update(customerToUpdate);
     }
 
-    public (bool isValid, string message) Delete(Guid id)
+    public (bool isValid, string message) Delete(long id)
     {
         var customerAccountBalance = _customerBankInfoAppService.GetAllCustomerBankInfo();
        
@@ -87,6 +88,7 @@ public class CustomerAppService : ICustomerAppService
         }
 
         var deletedCustomer = _customerService.Delete(id);
+
         return deletedCustomer;
     }
 

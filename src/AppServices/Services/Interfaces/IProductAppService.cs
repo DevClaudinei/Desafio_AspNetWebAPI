@@ -9,8 +9,8 @@ public interface IProductAppService
 {
     (bool isValid, string message) Create(CreateProductRequest createProductRequest);
     IEnumerable<ProductResult> GetAllProducts();
-    ProductResult GetProductById(Guid id);
+    ProductResult GetProductById(long id);
     ProductResult GetAllProductBySymbol(string symbol);
     (bool isValid, string message) Update(UpdateProductRequest updateProductRequest);
-    bool Delete(Guid id);
+    bool Delete(long id);
 }
