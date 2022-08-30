@@ -1,8 +1,6 @@
 ﻿using Application.Models.Portfolio.Request;
-using Application.Models.PortfolioProduct;
 using AppServices.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace API.Controllers;
 
@@ -34,7 +32,7 @@ public class PortfoliosController : Controller
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(Guid id)
+    public IActionResult Get(long id)
     {
         var portfolioFound = _portfolioAppService.GetPortfolioById(id);
         return portfolioFound is null
@@ -43,7 +41,7 @@ public class PortfoliosController : Controller
     }
 
     [HttpGet("/totalBalance")]
-    public IActionResult GetByTotalBalance(Guid portfolioId)
+    public IActionResult GetByTotalBalance(long portfolioId)
     {
         var portfolioBalance = _portfolioAppService.GetTotalBalance(portfolioId);
         return portfolioBalance.isValid
@@ -51,17 +49,8 @@ public class PortfoliosController : Controller
             : BadRequest(portfolioBalance.message);
     }
 
-    [HttpPut("AddProduct")]
-    public IActionResult AddProduct(UpdatePortfolioProductRequest updatePortfolioProductRequest)
-    {
-        var productsToAddOnPortfolio = _portfolioAppService.AddProduct(updatePortfolioProductRequest);
-        return productsToAddOnPortfolio.isValid
-            ? Ok()
-            : NotFound(productsToAddOnPortfolio.message);
-    }
-
     [HttpDelete("{id}")]
-    public IActionResult Delete(Guid id)
+    public IActionResult Delete(long id)
     {
         var excludedPortfolioById = _portfolioAppService.Delete(id);
         return excludedPortfolioById

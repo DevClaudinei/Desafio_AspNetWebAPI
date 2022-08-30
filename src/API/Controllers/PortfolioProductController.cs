@@ -1,4 +1,5 @@
-﻿using AppServices.Services.Interfaces;
+﻿using Application.Models.PortfolioProduct.Request;
+using AppServices.Services.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,12 +25,21 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public IActionResult GetById(long id)
         {
             var customerFoundId = _appService.GetPortfolioProductById(id);
             return customerFoundId is null
                 ? NotFound($"Customer para o id: {id} não foi encontrado.")
                 : Ok(customerFoundId);
+        }
+
+        [HttpPost]
+        public IActionResult Post(InvestmentRequest investmentRequest, long customerBankId)
+        {
+            var investmentCustomer = _appService.Invest(investmentRequest, customerBankId);
+            return investmentCustomer.isValid
+                ? Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer.message)
+                : BadRequest(investmentCustomer.message);
         }
     }
 }

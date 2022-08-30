@@ -1,7 +1,6 @@
 ﻿using Application.Models;
 using AppServices.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace API.Controllers;
 
@@ -24,7 +23,7 @@ public class CustomerBankInfosController : ControllerBase
     }
     
     [HttpGet("{id}")]
-    public IActionResult Get(Guid id)
+    public IActionResult Get(long id)
     {
         var customersBankInfoFound = _customerBankInfoAppService.GetCustomerBankInfoById(id);
         return customersBankInfoFound is null
@@ -42,7 +41,7 @@ public class CustomerBankInfosController : ControllerBase
     }
 
     [HttpPut("DepositMoney/{id}")]
-    public IActionResult DepositMoney(Guid id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    public IActionResult DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
         updateCustomerBankInfoRequest.Id = id;
         var updatedCustomerBankInfo = _customerBankInfoAppService.DepositMoney(updateCustomerBankInfoRequest);
@@ -52,7 +51,7 @@ public class CustomerBankInfosController : ControllerBase
     }
 
     [HttpPut("WithdrawMoney/{id}")]
-    public IActionResult WithdrawMoney(Guid id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    public IActionResult WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
         updateCustomerBankInfoRequest.Id = id;
         var updatedCustomerBankInfo = _customerBankInfoAppService.WithdrawMoney(updateCustomerBankInfoRequest);
@@ -62,7 +61,7 @@ public class CustomerBankInfosController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(Guid id)
+    public IActionResult Delete(long id)
     {
         var excludedCustomerBankInfoById = _customerBankInfoAppService.Delete(id);
         return excludedCustomerBankInfoById.isValid

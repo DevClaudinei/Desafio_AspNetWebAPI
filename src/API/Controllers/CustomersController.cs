@@ -35,7 +35,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(Guid id)
+    public IActionResult GetById(long id)
     {
         var customerFoundId = _appService.GetCustomerById(id);
         return customerFoundId is null
@@ -53,7 +53,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(Guid id, UpdateCustomerRequest updateCustomerRequest)
+    public IActionResult Put(long id, UpdateCustomerRequest updateCustomerRequest)
     {
         updateCustomerRequest.Id = id;
         var updatedCustomer = _appService.Update(updateCustomerRequest);
@@ -63,7 +63,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(Guid id)
+    public IActionResult Delete(long id)
     {
         var excludedCustomerById = _appService.Delete(id);
         return excludedCustomerById.isValid

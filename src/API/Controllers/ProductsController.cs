@@ -1,7 +1,6 @@
 ﻿using Application.Models.Product.Request;
 using AppServices.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace API.Controllers;
 
@@ -33,7 +32,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(Guid id)
+    public IActionResult Get(long id)
     {
         var productFound = _productAppService.GetProductById(id);
         return productFound is null
@@ -51,7 +50,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(Guid id, UpdateProductRequest updateProductRequest)
+    public IActionResult Put(long id, UpdateProductRequest updateProductRequest)
     {
         updateProductRequest.Id = id;
         var updatedCustomerBankInfo = _productAppService.Update(updateProductRequest);
@@ -61,7 +60,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(Guid id)
+    public IActionResult Delete(long id)
     {
         var excludedProductById = _productAppService.Delete(id);
         return excludedProductById
