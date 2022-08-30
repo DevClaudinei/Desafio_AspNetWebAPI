@@ -31,8 +31,8 @@ public class CustomerBankInfoMapping : IEntityTypeConfiguration<CustomerBankInfo
             .ValueGeneratedOnAdd();
 
         builder.Property(x => x.ModifiedAt)
-                .HasColumnType("TIMESTAMP")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()")
-                .ValueGeneratedOnUpdate();
+            .HasColumnType("TIMESTAMP")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()")
+            .ValueGeneratedOnUpdate();
     }
 }

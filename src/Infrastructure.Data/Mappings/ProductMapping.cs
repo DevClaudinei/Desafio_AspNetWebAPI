@@ -10,9 +10,6 @@ public class ProductMapping : IEntityTypeConfiguration<Product>
     {
         builder.ToTable("Products");
 
-        //builder.HasMany(x => x.Portfolios)
-        //    .WithMany(x => x.Products);
-            
         builder.Property(x => x.Id)
             .IsRequired()
             .ValueGeneratedOnAdd();
@@ -20,8 +17,6 @@ public class ProductMapping : IEntityTypeConfiguration<Product>
         builder.Property(x => x.Symbol)
             .IsRequired()
             .HasMaxLength(50);
-
-        //builder.Ignore(x => x.Quotes);
 
         builder.Property(x => x.UnitPrice)
             .HasColumnType("decimal(10,2)")
