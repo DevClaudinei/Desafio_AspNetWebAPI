@@ -14,6 +14,10 @@ public class PortfolioMapping : IEntityTypeConfiguration<Portfolio>
             .IsRequired()
             .ValueGeneratedOnAdd();
 
+        builder.HasMany(x => x.PortfolioProducts)
+            .WithOne(x => x.Portfolio)
+            .HasForeignKey(x => x.PortfolioId);
+
         builder.Property(x => x.TotalBalance)
             .HasColumnType("decimal(10,2)");
 

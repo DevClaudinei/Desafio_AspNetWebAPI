@@ -8,13 +8,10 @@ public class PortfolioProductMapping : IEntityTypeConfiguration<PortfolioProduct
 {
     public void Configure(EntityTypeBuilder<PortfolioProduct> builder)
     {
-        builder.HasKey(x => new { x.PortfolioId, x.ProductId });
-
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)
-            .ValueGeneratedOnAdd()
-            .HasColumnName("Id");
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Quotes)
             .IsRequired();
@@ -24,9 +21,6 @@ public class PortfolioProductMapping : IEntityTypeConfiguration<PortfolioProduct
             .HasColumnType("decimal(10,2)");
 
         builder.Property(x => x.ConvertedAt)
-            .IsRequired()
-            .HasColumnType("TIMESTAMP")
-            .HasDefaultValueSql("CURRENT_TIMESTAMP()")
-            .ValueGeneratedOnAdd();
+            .IsRequired();
     }
 }
