@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220826213121_relacionamentos-incluindo-coluna-quotes-em-portfolioproducts")]
-    partial class relacionamentosincluindocolunaquotesemportfolioproducts
+    [Migration("20220830020505_relacionamentos-mudanca-no-formato-dos-ids")]
+    partial class relacionamentosmudancanoformatodosids
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,9 +23,9 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("DomainModels.Entities.Customer", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
+                        .HasColumnType("bigint")
                         .HasColumnName("Id");
 
                     b.Property<string>("Address")
@@ -109,9 +109,9 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("DomainModels.Entities.CustomerBankInfo", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Account")
                         .IsRequired()
@@ -125,8 +125,8 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP()");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("char(36)");
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("ModifiedAt")
                         .ValueGeneratedOnUpdate()
@@ -143,17 +143,17 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP()");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("char(36)");
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("ModifiedAt")
                         .ValueGeneratedOnUpdate()
@@ -172,24 +172,21 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("DomainModels.Entities.PortfolioProduct", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
-                        .HasColumnName("Id");
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("ConvertedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP()");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<decimal>("NetValue")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<Guid>("PortfolioId")
-                        .HasColumnType("char(36)");
+                    b.Property<long>("PortfolioId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("char(36)");
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Quotes")
                         .HasColumnType("int");
@@ -205,9 +202,9 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("DomainModels.Entities.Product", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Symbol")
                         .IsRequired()
@@ -253,7 +250,7 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("DomainModels.Entities.Product", "Product")
-                        .WithMany("PortfolioProducts")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -271,11 +268,6 @@ namespace Infrastructure.Data.Migrations
                 });
 
             modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
-                {
-                    b.Navigation("PortfolioProducts");
-                });
-
-            modelBuilder.Entity("DomainModels.Entities.Product", b =>
                 {
                     b.Navigation("PortfolioProducts");
                 });
