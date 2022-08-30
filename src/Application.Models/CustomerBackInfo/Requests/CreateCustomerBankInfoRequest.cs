@@ -1,9 +1,7 @@
-using System;
-
 namespace Application.Models;
 public class CreateCustomerBankInfoRequest
 {
-    public CreateCustomerBankInfoRequest(string account, decimal accountBalance, Guid customerId)
+    public CreateCustomerBankInfoRequest(string account, decimal accountBalance, long customerId)
     {
         Account = account;
         AccountBalance = accountBalance;
@@ -11,5 +9,5 @@ public class CreateCustomerBankInfoRequest
     }
     public string Account { get; set; }
     public decimal AccountBalance { get; set; }
-    public Guid CustomerId { get; set; }
+    public long CustomerId { get; set; }
 }

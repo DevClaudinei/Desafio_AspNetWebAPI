@@ -1,5 +1,3 @@
-using System;
-
 namespace Application.Models;
 
 public class UpdateCustomerBankInfoRequest
@@ -11,8 +9,8 @@ public class UpdateCustomerBankInfoRequest
         AccountBalance = accountBalance;
     }
 
-    public Guid Id { get; set; }
+    public long Id { get; set; }
     public string Account { get; set; }
     public decimal AccountBalance { get; set; }
-    public Guid CustomerId { get; set; }
+    public long CustomerId { get; set; }
 }

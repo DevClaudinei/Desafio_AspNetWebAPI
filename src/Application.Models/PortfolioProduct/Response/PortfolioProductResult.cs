@@ -1,10 +1,11 @@
 ﻿using System;
 
-namespace Application.Models.PortfolioProduct;
+namespace Application.Models.PortfolioProduct.Response;
 
 public class PortfolioProductResult
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
+    public int Quotes { get; set; }
     public decimal NetValue { get; set; }
     public DateTime ConvertedAt { get; set; }
 }

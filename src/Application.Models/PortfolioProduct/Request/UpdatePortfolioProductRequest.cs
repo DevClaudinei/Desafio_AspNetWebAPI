@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Application.Models.PortfolioProduct;
+﻿namespace Application.Models.PortfolioProduct.Request;
 
 public class UpdatePortfolioProductRequest
 {
@@ -10,8 +8,8 @@ public class UpdatePortfolioProductRequest
         NetValue = netValue;
     }
 
-    public Guid PortfolioId { get; set; }
-    public Guid ProductId { get; set; }
+    public long PortfolioId { get; set; }
+    public long ProductId { get; set; }
     public int Quotes { get; set; }
     public decimal NetValue { get; set; }
 

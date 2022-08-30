@@ -1,14 +1,11 @@
-﻿using Application.Models.Product.Request;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Application.Models.Portfolio.Request;
 
 public class UpdatePortfolioRequest
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
     public decimal TotalBalance { get; set; } // patrimônio da carteira somando todos os ativos
     public virtual IEnumerable<UpdatePortfolioRequest> Products { get; set; }
-    //public Guid CustomerId { get; init; }
 }
     
