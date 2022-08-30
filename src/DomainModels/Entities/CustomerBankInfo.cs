@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DomainModels.Entities;
+﻿namespace DomainModels.Entities;
 
 public class CustomerBankInfo : BaseModel
 {
@@ -15,5 +13,5 @@ public class CustomerBankInfo : BaseModel
     public string Account { get; set; } // código da conta
     public decimal AccountBalance { get; set; } // saldo da conta
     public virtual Customer Customer { get; set; }
-    public Guid CustomerId { get; set; }
+    public long CustomerId { get; set; }
 }
