@@ -17,7 +17,6 @@ public class PortfolioProductAppService : IPortfolioProductAppService
     private readonly IPortfolioProductService _portfolioProductService;
     private readonly IPortfolioAppService _portfolioAppService;
     private readonly IProductAppService _productAppService;
-    private readonly ICustomerAppService _customerAppService;
     private readonly ICustomerBankInfoAppService _customerBankInfoAppService;
 
     public PortfolioProductAppService(
@@ -25,8 +24,7 @@ public class PortfolioProductAppService : IPortfolioProductAppService
         IPortfolioProductService portfolioProductService,
         IPortfolioAppService portfolioAppService,
         IProductAppService productAppService,
-        ICustomerBankInfoAppService customerBankInfoAppService,
-        ICustomerAppService customerAppService
+        ICustomerBankInfoAppService customerBankInfoAppService
     )
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -34,7 +32,6 @@ public class PortfolioProductAppService : IPortfolioProductAppService
         _portfolioAppService = portfolioAppService ?? throw new ArgumentNullException(nameof(portfolioAppService));
         _productAppService = productAppService ?? throw new ArgumentNullException(nameof(productAppService));
         _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
-        _customerAppService = customerAppService ?? throw new ArgumentNullException(nameof(customerAppService));
     }
 
     public IEnumerable<PortfolioProductResult> GetAllPortfolioProduct()
