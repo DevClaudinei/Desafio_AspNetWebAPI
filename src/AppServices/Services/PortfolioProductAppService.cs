@@ -1,5 +1,7 @@
-﻿using Application.Models.PortfolioProduct.Request;
+﻿using Application.Models.Portfolio.Response;
+using Application.Models.PortfolioProduct.Request;
 using Application.Models.PortfolioProduct.Response;
+using Application.Models.Product.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -49,13 +51,27 @@ public class PortfolioProductAppService : IPortfolioProductAppService
         return _mapper.Map<PortfolioProductResult>(portfolioProductFound);
     }
 
+    private (bool exists, string errorMessage) CheckIfItIsPossibleToMakeTheInvestment(ProductResult product, PortfolioResult portfolio)
+    {
+        var messageTemplate = "{0} não encontrado para o {1}: {2}.";
+
+        if (product is null)
+            return (false, string.Format(messageTemplate, "Produto", "Id", product.Id));
+
+        if (portfolio is null)
+            return (false, string.Format(messageTemplate, "Produto", "Id", portfolio.Id));
+
+        return (true, "");
+    }
+
     public (bool, string) Invest(InvestmentRequest request, long customerBankId)
     {
         var productFound = _productAppService.GetProductById(request.ProductId);
         var portfolioFound = _portfolioAppService.GetPortfolioById(request.PortfolioId);
         var customerBankInfoFound = _customerBankInfoAppService.GetCustomerBankInfoById(customerBankId);
+        var canInvest = CheckIfItIsPossibleToMakeTheInvestment(productFound, portfolioFound);
 
-        if (productFound is null || portfolioFound is null) return (false, $"Produto não encontrado para o Id: {request.ProductId}");
+        if (!canInvest.exists) return (false, canInvest.errorMessage);
 
         var investment = _mapper.Map<PortfolioProduct>(request);
         investment.NetValue = productFound.UnitPrice * investment.Quotes;
