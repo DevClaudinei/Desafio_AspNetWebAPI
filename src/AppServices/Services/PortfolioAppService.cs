@@ -43,23 +43,22 @@ public class PortfolioAppService : IPortfolioAppService
         if (createdPortfolio.isValid) return (true, createdPortfolio.message);
 
         return (false, createdPortfolio.message);
-
     }
 
     public IEnumerable<PortfolioResult> GetAllPortfolios()
     {
         var portfoliosFound = _portfolioService.GetAllPortfolios();
         var portfolioMapp = _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
+
         foreach (var portfolios in portfoliosFound)
         {
-            foreach (var portfolio in portfolios.PortfolioProducts)
+            foreach (var product in portfolioMapp)
             {
-                //portfolioMapp = _mapper.Map<IEnumerable<PortfolioProductResult>>(portfolio);
+                product.Products = _mapper.Map<IEnumerable<PortfolioProductResult>>(portfolios.PortfolioProducts);
             }
         }
 
-        return _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
-        //yield return portfolioMapp;
+        return portfolioMapp;
     }
 
     public PortfolioResult GetPortfolioById(long id)
