@@ -29,6 +29,10 @@ public static class ServicesConfiguration
 
         services.AddTransient<IPortfolioAppService, PortfolioAppService>();
 
+        services.AddTransient<IPortfolioProductService, PortfolioProductService>();
+
+        services.AddTransient<IPortfolioProductAppService, PortfolioProductAppService>();
+
         services.AddTransient<DbContext, ApplicationDbContext>();
     }
 }
