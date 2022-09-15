@@ -1,6 +1,7 @@
 ﻿using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
 using Application.Models.PortfolioProduct.Response;
+using Application.Models.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -83,6 +84,23 @@ public class PortfolioAppService : IPortfolioAppService
 
     public void Delete(long id)
     {
+        var portfolios = _portfolioService.GetAllPortfolios();
+        var portfolioToDelete = new Portfolio();
+
+        foreach (var portfolio in portfolios)
+        {
+            if (portfolio.Id.Equals(id)) portfolioToDelete = portfolio;
+        }
+
+        var portfolioTotalBalance = _portfolioService.GetTotalBalance(id);
+        var customerBankInfos = _customerBankInfoAppService.GetAllCustomerBankInfo();
+
+        foreach (var customerBankInfo in customerBankInfos)
+        {
+            if (customerBankInfo.CustomerId == portfolioToDelete.CustomerId) 
+                _customerBankInfoAppService.UpdateBalanceAfterRescue(customerBankInfo, portfolioTotalBalance);
+        }
+
         _portfolioService.Delete(id);
     }
 }
