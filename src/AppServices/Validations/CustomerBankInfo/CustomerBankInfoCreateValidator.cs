@@ -11,9 +11,5 @@ public class CustomerBankInfoCreateValidator : AbstractValidator<CreateCustomerB
             .NotEmpty()
             .NotNull()
             .Must(x => x.IsValidAccount());
-
-        RuleFor(x => x.AccountBalance)
-            .NotEmpty()
-            .NotNull();
     }
 }
