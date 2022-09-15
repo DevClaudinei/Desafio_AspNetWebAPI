@@ -1,6 +1,7 @@
 ﻿using Application.Models.PortfolioProduct.Request;
 using AppServices.Services.Interfaces;
 using AutoMapper;
+using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -29,17 +30,22 @@ namespace API.Controllers
         {
             var customerFoundId = _appService.GetPortfolioProductById(id);
             return customerFoundId is null
-                ? NotFound($"Customer para o id: {id} não foi encontrado.")
+                ? NotFound($"Customer for id: {id} not found.")
                 : Ok(customerFoundId);
         }
 
         [HttpPost]
         public IActionResult Post(InvestmentRequest investmentRequest, long customerBankId)
         {
-            var investmentCustomer = _appService.Invest(investmentRequest, customerBankId);
-            return investmentCustomer.isValid
-                ? Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer.message)
-                : BadRequest(investmentCustomer.message);
+            try
+            {
+                var investmentCustomer = _appService.Invest(investmentRequest, customerBankId);
+                return Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer);
+            }
+            catch (CustomerException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
