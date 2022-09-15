@@ -1,5 +1,6 @@
 ﻿using Application.Models.Portfolio.Request;
 using AppServices.Services.Interfaces;
+using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -18,10 +19,15 @@ public class PortfoliosController : Controller
     [HttpPost]
     public IActionResult Post(CreatePortfolioRequest portfolioCreate)
     {
-        var createdPortfolio = _portfolioAppService.CreatePortfolio(portfolioCreate);
-        return createdPortfolio.isValid
-            ? Created("~http://localhost:5160/api/Customers", createdPortfolio.message)
-            : BadRequest(createdPortfolio.message);
+        try
+        {
+            var createdPortfolio = _portfolioAppService.CreatePortfolio(portfolioCreate);
+            return Created("~http://localhost:5160/api/Customers", createdPortfolio);
+        }
+        catch (CustomerException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet]
@@ -43,18 +49,28 @@ public class PortfoliosController : Controller
     [HttpGet("/totalBalance")]
     public IActionResult GetByTotalBalance(long portfolioId)
     {
-        var portfolioBalance = _portfolioAppService.GetTotalBalance(portfolioId);
-        return portfolioBalance.isValid
-            ? Ok(portfolioBalance.message)
-            : BadRequest(portfolioBalance.message);
+        try
+        {
+            var portfolioBalance = _portfolioAppService.GetTotalBalance(portfolioId);
+            return Ok(portfolioBalance);
+        }
+        catch (CustomerException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {
-        var excludedPortfolioById = _portfolioAppService.Delete(id);
-        return excludedPortfolioById
-            ? NoContent()
-            : NotFound($"Portfolio não encontrado para o ID: {id}.");
+        try
+        {
+            _portfolioAppService.Delete(id);
+            return NoContent();
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }

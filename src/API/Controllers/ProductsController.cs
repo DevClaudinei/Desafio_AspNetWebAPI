@@ -1,5 +1,6 @@
 ﻿using Application.Models.Product.Request;
 using AppServices.Services.Interfaces;
+using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -18,10 +19,15 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public IActionResult Post(CreateProductRequest createProductRequest)
     {
-        var productCreated = _productAppService.Create(createProductRequest);
-        return productCreated.isValid
-            ? Created("~http://localhost:5160/api/Product", productCreated.message)
-            : BadRequest(productCreated.message);
+        try
+        {
+            var productCreated = _productAppService.Create(createProductRequest);
+            return Created("~http://localhost:5160/api/Product", productCreated);
+        }
+        catch (CustomerException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet]
@@ -36,7 +42,7 @@ public class ProductsController : ControllerBase
     {
         var productFound = _productAppService.GetProductById(id);
         return productFound is null
-            ? NotFound($"Product para o id {id} não foi encontrado.")
+            ? NotFound($"Product for the Id: {id} was not found.")
             : Ok(productFound);
     }
 
@@ -45,26 +51,37 @@ public class ProductsController : ControllerBase
     {
         var productsFound = _productAppService.GetAllProductBySymbol(symbol);
         return productsFound is null
-            ? NotFound($"Product para o symbol {symbol} não foi encontrado.")
+            ? NotFound($"Product for the symbol: {symbol} was not found.")
             : Ok(productsFound);
     }
 
     [HttpPut("{id}")]
     public IActionResult Put(long id, UpdateProductRequest updateProductRequest)
     {
-        updateProductRequest.Id = id;
-        var updatedCustomerBankInfo = _productAppService.Update(updateProductRequest);
-        return updatedCustomerBankInfo.isValid
-            ? Ok()
-            : NotFound(updatedCustomerBankInfo.message);
+        try
+        {
+            updateProductRequest.Id = id;
+            _productAppService.Update(updateProductRequest);
+            return Ok();
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {
-        var excludedProductById = _productAppService.Delete(id);
-        return excludedProductById
-            ? NoContent()
-            : NotFound($"Product não encontrado para o ID: {id}.");
+        try
+        {
+            _productAppService.Delete(id);
+            return NoContent();
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Application.Models;
 using AppServices.Services.Interfaces;
+using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -40,32 +41,31 @@ public class CustomerBankInfosController : ControllerBase
             : NotFound($"CustomerBankInfo para account: {account} não foi encontrada.");
     }
 
-    [HttpPut("DepositMoney/{id}")]
+    [HttpPut("deposit/{id}")]
     public IActionResult DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
-        updateCustomerBankInfoRequest.Id = id;
-        var updatedCustomerBankInfo = _customerBankInfoAppService.DepositMoney(updateCustomerBankInfoRequest);
-        return updatedCustomerBankInfo.isValid
-            ? Ok()
-            : NotFound(updatedCustomerBankInfo.message);
+        try
+        {
+            _customerBankInfoAppService.DepositMoney(id, updateCustomerBankInfoRequest);
+            return Ok();
+        }
+        catch (CustomerException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
-    [HttpPut("WithdrawMoney/{id}")]
+    [HttpPut("withdraw/{id}")]
     public IActionResult WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
-        updateCustomerBankInfoRequest.Id = id;
-        var updatedCustomerBankInfo = _customerBankInfoAppService.WithdrawMoney(updateCustomerBankInfoRequest);
-        return updatedCustomerBankInfo.isValid
-            ? Ok()
-            : NotFound(updatedCustomerBankInfo.message);
-    }
-
-    [HttpDelete("{id}")]
-    public IActionResult Delete(long id)
-    {
-        var excludedCustomerBankInfoById = _customerBankInfoAppService.Delete(id);
-        return excludedCustomerBankInfoById.isValid
-            ? NoContent()
-            : NotFound(excludedCustomerBankInfoById.message);
+        try
+        {
+            _customerBankInfoAppService.WithdrawMoney(id, updateCustomerBankInfoRequest);
+            return Ok();
+        }
+        catch (CustomerException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
