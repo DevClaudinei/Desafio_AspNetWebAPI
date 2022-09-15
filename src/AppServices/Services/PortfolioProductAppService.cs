@@ -2,9 +2,11 @@
 using Application.Models.PortfolioProduct.Request;
 using Application.Models.PortfolioProduct.Response;
 using Application.Models.Product.Response;
+using Application.Models.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
+using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -48,44 +50,56 @@ public class PortfolioProductAppService : IPortfolioProductAppService
         return _mapper.Map<PortfolioProductResult>(portfolioProductFound);
     }
 
-    private (bool exists, string errorMessage) CheckIfItIsPossibleToMakeTheInvestment(ProductResult product, PortfolioResult portfolio)
+    private ProductResult ProductExists(long productId)
     {
-        var messageTemplate = "{0} não encontrado para o {1}: {2}.";
+        var productFound = _productAppService.GetProductById(productId);
 
-        if (product is null)
-            return (false, string.Format(messageTemplate, "Produto", "Id", product.Id));
+        if (productFound is null)
+            throw new CustomerException($"Product not found to the Id: {productId}");
 
-        if (portfolio is null)
-            return (false, string.Format(messageTemplate, "Produto", "Id", portfolio.Id));
-
-        return (true, "");
+        return productFound;
     }
 
-    public (bool, string) Invest(InvestmentRequest request, long customerBankId)
+    private PortfolioResult PortfolioExists(long portfolioId)
     {
-        var productFound = _productAppService.GetProductById(request.ProductId);
-        var portfolioFound = _portfolioAppService.GetPortfolioById(request.PortfolioId);
+        var portfolioFound = _portfolioAppService.GetPortfolioById(portfolioId);
+
+        if (portfolioFound is null)
+            throw new CustomerException($"Portfolio not found to the Id: {portfolioId}");
+
+        return portfolioFound;
+    }
+
+    public long Invest(InvestmentRequest request, long customerBankId)
+    {
+        var productFound = ProductExists(request.ProductId);
+        var portfolioFound = PortfolioExists(request.PortfolioId);
         var customerBankInfoFound = _customerBankInfoAppService.GetCustomerBankInfoById(customerBankId);
-        var canInvest = CheckIfItIsPossibleToMakeTheInvestment(productFound, portfolioFound);
-
-        if (!canInvest.exists) return (false, canInvest.errorMessage);
-
         var investment = _mapper.Map<PortfolioProduct>(request);
-        investment.NetValue = productFound.UnitPrice * investment.Quotes;
-
-        if (customerBankInfoFound.AccountBalance < investment.NetValue) 
-            return (false, $"Saldo insuficiente para adquirir o produto com o Id: {productFound.Id}");
-
+        
+        CheckCustomerAccountBalance(investment, customerBankInfoFound.AccountBalance, productFound);
+        
         var createdInvestment = _portfolioProductService.Add(investment);
 
-        if (createdInvestment.isValid)
-        {
-            portfolioFound.TotalBalance += investment.NetValue;
-            _portfolioAppService.UpdateBalanceAfterPurchase(portfolioFound, investment.NetValue);
-            _customerBankInfoAppService.UpdateBalanceAfterPurchase(customerBankInfoFound, investment.NetValue);
-            return (true, createdInvestment.message);
-        } 
-            
-        return (false, createdInvestment.message);
+        PostInvestmentUpdates(portfolioFound, customerBankInfoFound, investment);
+
+        return createdInvestment;
+    }
+
+    private void PostInvestmentUpdates(PortfolioResult portfolioFound, CustomerBankInfoResult customerBankInfoFound, PortfolioProduct investment)
+    {
+        portfolioFound.TotalBalance += investment.NetValue;
+        _portfolioAppService.UpdateBalanceAfterPurchase(portfolioFound, investment.NetValue);
+        _customerBankInfoAppService.UpdateBalanceAfterPurchase(customerBankInfoFound, investment.NetValue);
+    }
+
+    private bool CheckCustomerAccountBalance(PortfolioProduct investment, decimal accountBalance, ProductResult productFound)
+    {
+        investment.NetValue = productFound.UnitPrice * investment.Quotes;
+
+        if (accountBalance < investment.NetValue)
+            throw new CustomerException($"Insufficient balance to purchase the product with the Id: {productFound.Id}.");
+
+        return true;
     }
 }
