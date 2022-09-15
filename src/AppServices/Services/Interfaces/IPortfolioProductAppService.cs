@@ -8,5 +8,5 @@ public interface IPortfolioProductAppService
 {
     IEnumerable<PortfolioProductResult> GetAllPortfolioProduct();
     PortfolioProductResult GetPortfolioProductById(long id);
-    (bool isValid, string message) Invest(InvestmentRequest request, long customerId);
+    long Invest(InvestmentRequest request, long customerId);
 }

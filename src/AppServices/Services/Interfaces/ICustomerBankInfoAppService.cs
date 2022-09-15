@@ -13,4 +13,5 @@ public interface ICustomerBankInfoAppService
     void DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
     void WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
     public bool UpdateBalanceAfterPurchase(CustomerBankInfoResult customerBankinfo, decimal purchaseValue);
+    public bool UpdateBalanceAfterRescue(CustomerBankInfoResult customerBankinfo, decimal purchaseValue);
 }
