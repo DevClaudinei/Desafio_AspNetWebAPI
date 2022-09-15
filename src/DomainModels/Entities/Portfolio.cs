@@ -4,7 +4,7 @@ namespace DomainModels.Entities;
 
 public class Portfolio : BaseModel
 {
-    protected Portfolio() { }
+    public Portfolio() { }
 
     public Portfolio(decimal totalBalance, long customerId)
     {
