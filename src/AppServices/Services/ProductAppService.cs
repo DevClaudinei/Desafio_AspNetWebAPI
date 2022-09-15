@@ -20,14 +20,10 @@ public class ProductAppService : IProductAppService
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public (bool isValid, string message) Create(CreateProductRequest createProductRequest)
+    public long Create(CreateProductRequest createProductRequest)
     {
         var product = _mapper.Map<Product>(createProductRequest);
-        var createdProduct = _productService.CreateProduct(product);
-
-        if (createdProduct.isValid) return (true, createdProduct.message);
-
-        return (false, createdProduct.message);
+        return _productService.CreateProduct(product);
     }
 
     public IEnumerable<ProductResult> GetAllProducts()
@@ -52,15 +48,14 @@ public class ProductAppService : IProductAppService
         return _mapper.Map<ProductResult>(product);
     }
 
-    public (bool isValid, string message) Update(UpdateProductRequest updateProductRequest)
+    public void Update(UpdateProductRequest updateProductRequest)
     {
         var productToUpdate = _mapper.Map<Product>(updateProductRequest);
-        return _productService.UpdateProduct(productToUpdate);
+        _productService.UpdateProduct(productToUpdate);
     }
 
-    public bool Delete(long id)
+    public void Delete(long id)
     {
-        var deletedProduct = _productService.Delete(id);
-        return deletedProduct;
+        _productService.Delete(id);
     }
 }

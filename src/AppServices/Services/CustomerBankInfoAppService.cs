@@ -4,7 +4,6 @@ using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -19,16 +18,6 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
     {
         _customerBankInfoService = customerBankInfoService ?? throw new ArgumentNullException(nameof(customerBankInfoService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
-    public (bool isValid, string message) Create(CreateCustomerBankInfoRequest createCustomerBankInfoRequest, long customerId)
-    {
-        var customerBankInfo = _mapper.Map<CustomerBankInfo>(createCustomerBankInfoRequest);
-        var createdCustomerBankInfo = _customerBankInfoService.CreateCustomerBankInfo(customerBankInfo, customerId);
-
-        if (createdCustomerBankInfo.isValid) return (true, createdCustomerBankInfo.message);
-
-        return (false, createdCustomerBankInfo.message);
     }
 
     public IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo()
@@ -53,16 +42,16 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
 
-    public (bool isValid, string message) DepositMoney(UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    public void DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
         var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(updateCustomerBankInfoRequest);
-        return _customerBankInfoService.DepositMoney(customerBankInfoToUpdate);
+        _customerBankInfoService.DepositMoney(id, customerBankInfoToUpdate);
     }
 
-    public (bool isValid, string message) WithdrawMoney(UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    public void WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
         var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(updateCustomerBankInfoRequest);
-        return _customerBankInfoService.WithdrawMoney(customerBankInfoToUpdate);
+        _customerBankInfoService.WithdrawMoney(id, customerBankInfoToUpdate);
     }
 
     public bool UpdateBalanceAfterPurchase(CustomerBankInfoResult customerBankinfo, decimal purchaseValue)
@@ -72,8 +61,8 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankInfoToUpdate);
     }
 
-    public (bool isValid, string message) Delete(long id)
+    public void Create(long customerId)
     {
-        return _customerBankInfoService.Delete(id);
+        _customerBankInfoService.Create(customerId);
     }
 }
