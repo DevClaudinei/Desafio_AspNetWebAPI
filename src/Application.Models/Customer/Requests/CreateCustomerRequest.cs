@@ -47,5 +47,4 @@ public class CreateCustomerRequest
     public string PostalCode { get; set; }
     public string Address { get; set; }
     public int Number { get; set; }
-    public CreateCustomerBankInfoRequest CustomerBaninfo { get; set; }
 }
