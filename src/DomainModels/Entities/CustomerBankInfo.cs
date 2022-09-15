@@ -1,17 +1,18 @@
-﻿namespace DomainModels.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace DomainModels.Entities;
 
 public class CustomerBankInfo : BaseModel
 {
-    protected CustomerBankInfo() { }
-
-    public CustomerBankInfo(string account, decimal accountBalance)
+    public CustomerBankInfo(long customerId) 
     {
-        Account = account;
-        AccountBalance = accountBalance;
+        CustomerId = customerId;
+        Account = new Random().Next(1, 100).ToString();
     }
 
     public string Account { get; set; } // código da conta
-    public decimal AccountBalance { get; set; } // saldo da conta
+    public decimal AccountBalance { get; set; } = 0; // saldo da conta
     public virtual Customer Customer { get; set; }
     public long CustomerId { get; set; }
 }
