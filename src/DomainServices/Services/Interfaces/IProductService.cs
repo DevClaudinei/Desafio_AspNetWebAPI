@@ -6,10 +6,10 @@ namespace DomainServices.Services.Interfaces;
 
 public interface IProductService
 {
-    (bool isValid, string message) CreateProduct(Product product);
+    long CreateProduct(Product product);
     IEnumerable<Product> GetAllProducts();
     Product GetProductById(long id);
     Product GetAllProducsBySymbol(string symbol);
-    (bool isValid, string message) UpdateProduct(Product product);
-    bool Delete(long id);
+    void UpdateProduct(Product product);
+    void Delete(long id);
 }
