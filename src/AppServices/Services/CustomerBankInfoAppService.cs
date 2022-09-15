@@ -61,6 +61,13 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankInfoToUpdate);
     }
 
+    public bool UpdateBalanceAfterRescue(CustomerBankInfoResult customerBankinfo, decimal purchaseValue)
+    {
+        customerBankinfo.AccountBalance += purchaseValue;
+        var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(customerBankinfo);
+        return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankInfoToUpdate);
+    }
+
     public void Create(long customerId)
     {
         _customerBankInfoService.Create(customerId);
