@@ -5,7 +5,7 @@ namespace DomainModels.Entities;
 
 public class Customer : BaseModel
 {
-    protected Customer() { }
+    public Customer() { }
 
     public Customer(
         string fullName,
