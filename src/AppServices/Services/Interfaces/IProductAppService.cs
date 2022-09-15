@@ -7,10 +7,10 @@ namespace AppServices.Services.Interfaces;
 
 public interface IProductAppService
 {
-    (bool isValid, string message) Create(CreateProductRequest createProductRequest);
+    long Create(CreateProductRequest createProductRequest);
     IEnumerable<ProductResult> GetAllProducts();
     ProductResult GetProductById(long id);
     ProductResult GetAllProductBySymbol(string symbol);
-    (bool isValid, string message) Update(UpdateProductRequest updateProductRequest);
-    bool Delete(long id);
+    void Update(UpdateProductRequest updateProductRequest);
+    void Delete(long id);
 }
