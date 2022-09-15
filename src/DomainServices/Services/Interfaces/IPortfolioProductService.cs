@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System;
-using DomainModels.Entities;
+﻿using DomainModels.Entities;
+using System.Collections.Generic;
 
 namespace DomainServices.Services.Interfaces;
 
@@ -8,5 +7,5 @@ public interface IPortfolioProductService
 {
     IEnumerable<PortfolioProduct> GetAllPortfolioProduct();
     PortfolioProduct GetPortfolioProductById(long id);
-    (bool isValid, string message) Add(PortfolioProduct portfolioProduct);
+    long Add(PortfolioProduct portfolioProduct);
 }
