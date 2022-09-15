@@ -1,9 +1,10 @@
-using System;
-using System.Collections.Generic;
 using DomainModels.Entities;
+using DomainServices.Exceptions;
 using DomainServices.Services;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
-using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
 namespace DomainServices;
 
@@ -21,42 +22,34 @@ public class CustomerService : ICustomerService
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public (bool isValid, string message) CreateCustomer(Customer customer)
+    public long CreateCustomer(Customer customer)
     {
-        var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
-        
-        if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
-
         var repository = _unitOfWork.Repository<Customer>();
-
+        VerifyCustomerAlreadyExists(customer);
+        
         repository.Add(customer);
         _unitOfWork.SaveChanges();
 
-        return (true, customer.Id.ToString());
+        return customer.Id;
     }
 
-    private (bool exists, string errorMessage) VerifyCustomerAlreadyExists(Customer customer)
+    private bool VerifyCustomerAlreadyExists(Customer customer)
     {
-        var messageTemplate = "Customer already exists for {0}: {1}";
         var repository = _repositoryFactory.Repository<Customer>();
 
         if (repository.Any(x => x.Email.Equals(customer.Email)))
-        {
-            return (true, string.Format(messageTemplate, "Email", customer.Email));
-        }
+            throw new CustomerException($"Customer already exists for email: {customer.Email}");
 
         if (repository.Any(x => x.Cpf.Equals(customer.Cpf)))
-        {
-            return (true, string.Format(messageTemplate, "Cpf", customer.Cpf));
-        }
+            throw new CustomerException($"Customer already exists for CPF: {customer.Cpf}");
 
-        return default;
+        return true;
     }
 
     public IEnumerable<Customer> GetAll()
     {
         var repository = _repositoryFactory.Repository<Customer>();
-        var query = repository.MultipleResultQuery();
+        var query = repository.MultipleResultQuery().Include(x => x.Include(x => x.CustomerBankInfo));
 
         return repository.Search(query); 
     }
@@ -79,32 +72,32 @@ public class CustomerService : ICustomerService
         return repository.Search(query);
     }
 
-    public (bool isValid, string message) Update(Customer customer)
+    private Customer CustomerAlreadyExists(long id)
     {
-        var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
+        var updatedCustomer = GetById(id);
+        if (updatedCustomer is null) throw new CustomerException($"Cliente não encontrado para o Id: {id}.");
 
-        if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
+        return updatedCustomer;
+    }
 
-        var updatedCustomer = GetById(customer.Id);
-
-        if (updatedCustomer is null) return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
-
-        customer.CreatedAt = updatedCustomer.CreatedAt;
+    public void Update(long id, Customer customer)
+    {
         var repository = _unitOfWork.Repository<Customer>();
+        VerifyCustomerAlreadyExists(customer);
+        var updatedCustomer = CustomerAlreadyExists(id);
+        
+        customer.Id = id;
+        customer.CreatedAt = updatedCustomer.CreatedAt;
 
         repository.Update(customer);
         _unitOfWork.SaveChanges();
-
-        return (true, customer.Id.ToString());
     }
 
-    public (bool isValid, string message) Delete(long id)
+    public void Delete(long id)
     {
         var repository = _unitOfWork.Repository<Customer>();
-        var customerToDelete = GetById(id);
+        CustomerAlreadyExists(id);
 
-        if (customerToDelete is null) return (false, $"Cliente não encontrado para o ID: {id}.");
-
-        return (repository.Remove(x => x.Id.Equals(id)) > 0, "");
+        repository.Remove(x => x.Id.Equals(id));
     }
 }

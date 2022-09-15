@@ -1,4 +1,5 @@
 ﻿using DomainModels.Entities;
+using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -18,27 +19,26 @@ public class PortfolioService : IPortfolioService
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public (bool isValid, string message) CreatePortfolio(Portfolio portfolio)
+    public long CreatePortfolio(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
         var portfolioExists = GetPortfolioById(portfolio.Id);
 
-        if (portfolioExists is not null) return (false, $"Portfolio com o ID: {portfolio.Id} já existe");
+        if (portfolioExists is not null) throw new CustomerException($"Portfolio com o ID: {portfolio.Id} já existe");
 
         repository.Add(portfolio);
         _unitOfWork.SaveChanges();
 
-        return (true, portfolio.Id.ToString());
+        return portfolio.Id;
     }
 
-    public (bool isValid, string message) GetTotalBalance(long portfolioId)
+    public decimal GetTotalBalance(long portfolioId)
     {
         var portfolioFound = GetPortfolioById(portfolioId);
 
-        if (portfolioFound is null) return (false, $"Portfolio com ID: {portfolioId} não localizado.");
-        if (portfolioFound.TotalBalance == 0) return (true, $"{portfolioFound.TotalBalance}");
+        if (portfolioFound is null) throw new CustomerException($"Portfolio com ID: {portfolioId} não localizado.");
 
-        return (true, $"{portfolioFound.TotalBalance}");
+        return portfolioFound.TotalBalance;
     }
 
     public Portfolio GetPortfolioById(long id)
@@ -60,37 +60,41 @@ public class PortfolioService : IPortfolioService
         return repository.Search(query);
     }
 
-    public (bool isValid, string message) Update(Portfolio portfolio)
+    public void Update(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        var updatedPortfolio = GetPortfolioById(portfolio.Id);
-        
-        portfolio.CreatedAt = updatedPortfolio.CreatedAt;
-        if (updatedPortfolio is null) return (false, $"Portfolio com o ID: {portfolio.Id} não encontrado.");
+        var portfolioToUpdate = VerifyPortfolioAlreadyExists(portfolio);
 
-        repository.Update(portfolio);
+        repository.Update(portfolioToUpdate);
         _unitOfWork.SaveChanges();
+    }
 
-        return (true, portfolio.Id.ToString());
+    private Portfolio VerifyPortfolioAlreadyExists(Portfolio portfolio)
+    {
+        var updatedPortfolio = GetPortfolioById(portfolio.Id);
+
+        if (updatedPortfolio is null) throw new CustomerException($"Portfolio com o ID: {portfolio.Id} não encontrado.");
+
+        portfolio.CreatedAt = updatedPortfolio.CreatedAt;
+        return portfolio;
     }
 
     public bool UpdateBalanceAfterPurchase(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        var customerBankInfoToUpdate = GetPortfolioById(portfolio.Id);
-        portfolio.CreatedAt = customerBankInfoToUpdate.CreatedAt;
+        var portfolioToUpdate = VerifyPortfolioAlreadyExists(portfolio);
 
-        repository.Update(portfolio);
+        repository.Update(portfolioToUpdate);
         _unitOfWork.SaveChanges();
 
         return true;
     }
 
-    public bool Delete(long id)
+    public void Delete(long id)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        var checkAccountBalance = GetTotalBalance(id);
+        GetTotalBalance(id);
 
-        return repository.Remove(x => x.Id.Equals(id)) > 0;
+        repository.Remove(x => x.Id.Equals(id));
     }
 }

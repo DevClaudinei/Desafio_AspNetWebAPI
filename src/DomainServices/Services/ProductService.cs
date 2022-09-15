@@ -1,4 +1,5 @@
 ﻿using DomainModels.Entities;
+using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using System;
@@ -17,30 +18,25 @@ public class ProductService : IProductService
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public (bool isValid, string message) CreateProduct(Product product)
+    public long CreateProduct(Product product)
     {
         var repository = _unitOfWork.Repository<Product>();
-        var productAlredyExists = CheckIfProductAlreadyExists(product);
-
-        if (productAlredyExists.exists is true) return (false, productAlredyExists.errorMessage);
+        CheckIfProductAlreadyExists(product);
 
         repository.Add(product);
         _unitOfWork.SaveChanges();
 
-        return (true, product.Id.ToString());
+        return product.Id;
     }
 
-    private (bool exists, string errorMessage) CheckIfProductAlreadyExists(Product product)
+    private bool CheckIfProductAlreadyExists(Product product)
     {
-        var messageTemplate = "The {0}: {1} is already registered";
         var repository = _repositoryFactory.Repository<Product>();
 
         if (repository.Any(x => x.Symbol.Equals(product.Symbol)))
-        {
-            return (true, string.Format(messageTemplate, "Product", product.Symbol));
-        }
+            throw new CustomerException($"Product: {product.Symbol} is already registered");
 
-        return default;
+        return true;
     }
 
     public IEnumerable<Product> GetAllProducts()
@@ -69,24 +65,25 @@ public class ProductService : IProductService
         return repository.SingleOrDefault(query);
     }
 
-    public (bool isValid, string message) UpdateProduct(Product product)
+    public void UpdateProduct(Product product)
     {
         var updatedProduct = GetProductById(product.Id);
-        if (updatedProduct is null) return (false, $"Cliente não encontrado para o Id: {product.Id}.");
+        if (updatedProduct is null) throw new CustomerException($"Product not found for id: {product.Id}.");
 
         var repository = _unitOfWork.Repository<Product>();
         updatedProduct.UnitPrice = product.UnitPrice;
         
         repository.Update(product);
         _unitOfWork.SaveChanges();
-
-        return (true, product.Id.ToString());
     }
 
-    public bool Delete(long id)
+    public void Delete(long id)
     {
         var repository = _unitOfWork.Repository<Product>();
+        var productToDelete = GetProductById(id);
 
-        return repository.Remove(x => x.Id.Equals(id)) > 0;
+        if (productToDelete is null) throw new CustomerException($"Product not found for id: {id}.");
+
+        repository.Remove(x => x.Id.Equals(id));
     }
 }
