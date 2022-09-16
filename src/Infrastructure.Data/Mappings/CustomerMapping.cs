@@ -84,5 +84,5 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
             .HasColumnType("TIMESTAMP")
             .HasDefaultValueSql("CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()")
             .ValueGeneratedOnUpdate();
-        }
+    }
 }
