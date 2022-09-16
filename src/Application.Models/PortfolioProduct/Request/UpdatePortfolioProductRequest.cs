@@ -12,5 +12,4 @@ public class UpdatePortfolioProductRequest
     public long ProductId { get; set; }
     public int Quotes { get; set; }
     public decimal NetValue { get; set; }
-
 }

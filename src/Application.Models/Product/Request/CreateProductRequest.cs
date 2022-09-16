@@ -12,6 +12,7 @@ public class CreateProductRequest
         Symbol = symbol;
         UnitPrice = unitPrice;
     }
+
     public long Id { get; set; }
     public string Symbol { get; set; } // nome do ativo
     public int Quotes { get; set; } // quantidade de cotas
