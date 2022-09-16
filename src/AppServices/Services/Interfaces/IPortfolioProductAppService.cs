@@ -8,5 +8,4 @@ public interface IPortfolioProductAppService
 {
     IEnumerable<PortfolioProductResult> GetAllPortfolioProduct();
     PortfolioProductResult GetPortfolioProductById(long id);
-    long Invest(InvestmentRequest request, long customerId);
 }
