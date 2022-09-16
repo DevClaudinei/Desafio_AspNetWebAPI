@@ -26,19 +26,29 @@ public class CustomerBankInfosController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
-        var customersBankInfoFound = _customerBankInfoAppService.GetCustomerBankInfoById(id);
-        return customersBankInfoFound is null
-            ? NotFound($"CustomerBankInfo para o id: {id} não foi encontrado.")
-            : Ok(customersBankInfoFound);
+        try
+        {
+            var customersBankInfoFound = _customerBankInfoAppService.GetCustomerBankInfoById(id);
+            return Ok(customersBankInfoFound);
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpGet("account/{account}")]
     public IActionResult GetByAccount(string account)
     {
-        var customerFoundName = _customerBankInfoAppService.GetAllCustomerBackInfoByAccount(account);
-        return customerFoundName is not null
-            ? Ok(customerFoundName)
-            : NotFound($"CustomerBankInfo para account: {account} não foi encontrada.");
+        try
+        {
+            var customerFoundName = _customerBankInfoAppService.GetAllCustomerBackInfoByAccount(account);
+            return Ok(customerFoundName);
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpPut("deposit/{id}")]

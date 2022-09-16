@@ -1,10 +1,10 @@
-using System;
-using System.Linq;
 using Application.Models;
 using AppServices.Services;
 using AutoMapper;
 using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace API.Controllers;
 
@@ -26,14 +26,11 @@ public class CustomersController : ControllerBase
         {
             var createdCustomer = _appService.Create(createCustomerRequest);
             return Created("~http://localhost:5160/api/Customers", createdCustomer);
-            //? BadRequest(createdCustomer.message)
-            //: Created("~http://localhost:5160/api/Customers", createdCustomer.message);
         }
         catch (CustomerException e)
         {
             return BadRequest(e.Message);
         }
-        
     }
 
     [HttpGet]
@@ -46,19 +43,29 @@ public class CustomersController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetById(long id)
     {
-        var customerFoundId = _appService.GetCustomerById(id);
-        return customerFoundId is null
-            ? NotFound($"Customer para o id: {id} não foi encontrado.")
-            : Ok(customerFoundId);
+        try
+        {
+            var customerFoundId = _appService.GetCustomerById(id);
+            return Ok(customerFoundId);
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpGet("name/{fullName}")]
     public IActionResult GetAllByName(string fullName)
     {
-        var customerFoundName = _appService.GetAllCustomerByName(fullName);
-        return customerFoundName.Any()
-            ? Ok(customerFoundName)
-            : NotFound($"Cliente para o nome: {fullName} não foi encontrado.");
+        try
+        {
+            var customerFoundName = _appService.GetAllCustomerByName(fullName);
+            return Ok(customerFoundName);
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpPut("{id}")]
@@ -87,6 +94,5 @@ public class CustomersController : ControllerBase
         {
             return NotFound(e.Message);
         }
-        
     }
 }

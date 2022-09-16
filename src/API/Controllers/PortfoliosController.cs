@@ -40,10 +40,15 @@ public class PortfoliosController : Controller
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
-        var portfolioFound = _portfolioAppService.GetPortfolioById(id);
-        return portfolioFound is null
-            ? NotFound($"Portfolio para o Id: {id} não foi encontrado.")
-            : Ok(portfolioFound);
+        try
+        {
+            var portfolioFound = _portfolioAppService.GetPortfolioById(id);
+            return Ok(portfolioFound);
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpGet("/totalBalance")]

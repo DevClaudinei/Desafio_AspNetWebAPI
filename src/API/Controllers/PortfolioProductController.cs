@@ -28,10 +28,15 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(long id)
         {
-            var customerFoundId = _appService.GetPortfolioProductById(id);
-            return customerFoundId is null
-                ? NotFound($"Customer for id: {id} not found.")
-                : Ok(customerFoundId);
+            try
+            {
+                var customerFoundId = _appService.GetPortfolioProductById(id);
+                return Ok(customerFoundId);
+            }
+            catch (CustomerException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost]

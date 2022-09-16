@@ -40,19 +40,29 @@ public class ProductsController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
-        var productFound = _productAppService.GetProductById(id);
-        return productFound is null
-            ? NotFound($"Product for the Id: {id} was not found.")
-            : Ok(productFound);
+        try
+        {
+            var productFound = _productAppService.GetProductById(id);
+            return Ok(productFound);
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpGet("symbol/{symbol}")]
     public IActionResult Get(string symbol)
     {
-        var productsFound = _productAppService.GetAllProductBySymbol(symbol);
-        return productsFound is null
-            ? NotFound($"Product for the symbol: {symbol} was not found.")
-            : Ok(productsFound);
+        try
+        {
+            var productsFound = _productAppService.GetAllProductBySymbol(symbol);
+            return Ok(productsFound);
+        }
+        catch (CustomerException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpPut("{id}")]
@@ -82,6 +92,5 @@ public class ProductsController : ControllerBase
         {
             return NotFound(e.Message);
         }
-
     }
 }
