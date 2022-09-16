@@ -30,6 +30,20 @@ public class PortfoliosController : Controller
         }
     }
 
+    [HttpPost("/investment")]
+    public IActionResult Post(CreateInvestmentRequest investmentRequest, long customerBankId)
+    {
+        try
+        {
+            var investmentCustomer = _portfolioAppService.Invest(investmentRequest, customerBankId);
+            return Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer);
+        }
+        catch (CustomerException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
     [HttpGet]
     public IActionResult Get()
     {
@@ -51,7 +65,7 @@ public class PortfoliosController : Controller
         }
     }
 
-    [HttpGet("/totalBalance")]
+    [HttpGet("/total-balance")]
     public IActionResult GetByTotalBalance(long portfolioId)
     {
         try
