@@ -10,7 +10,6 @@ public class PortfolioProfile : Profile
 	public PortfolioProfile()
 	{
         CreateMap<Portfolio, PortfolioResult>();
-        CreateMap<CreatePortfolioRequest, Portfolio>();
         CreateMap<UpdatePortfolioRequest, Portfolio>();
         CreateMap<PortfolioResult, Portfolio>();
     }
