@@ -1,6 +1,5 @@
 ﻿using Application.Models.Product.Request;
 using Application.Models.Product.Response;
-using System;
 using System.Collections.Generic;
 
 namespace AppServices.Services.Interfaces;

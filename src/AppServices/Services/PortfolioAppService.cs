@@ -1,7 +1,6 @@
 ﻿using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
 using Application.Models.PortfolioProduct.Response;
-using Application.Models.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -63,7 +62,7 @@ public class PortfolioAppService : IPortfolioAppService
     {
         var portfolioFound = _portfolioService.GetPortfolioById(id);
 
-        if (portfolioFound is null) return null;
+        if (portfolioFound is null) throw new CustomerException($"Portfolio for Id: {id} not found.");
 
         var portfolioMapp = _mapper.Map<PortfolioResult>(portfolioFound);
         portfolioMapp.Products = _mapper.Map<IEnumerable<PortfolioProductResult>>(portfolioFound.PortfolioProducts);

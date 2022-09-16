@@ -3,6 +3,7 @@ using Application.Models.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
+using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
     public CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account)
     {
         var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoByAccount(account);
-        if (customerBankInfo is null) return null;
+        if (customerBankInfo is null) throw new CustomerException($"CustomerBankInfo for account: {account} was not found.");
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
@@ -37,7 +38,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
     public CustomerBankInfoResult GetCustomerBankInfoById(long id)
     {
         var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoById(id);
-        if (customerBankInfo is null) return null;
+        if (customerBankInfo is null) throw new CustomerException($"CustomerBankInfo for id: {id} not found.");
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }

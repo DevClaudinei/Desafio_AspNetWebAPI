@@ -3,6 +3,7 @@ using Application.Models.Product.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
+using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ public class ProductAppService : IProductAppService
     public ProductResult GetAllProductBySymbol(string symbol)
     {
         var product = _productService.GetAllProducsBySymbol(symbol);
-        if (product is null) return null;
+        if (product is null) throw new CustomerException($"Product for the symbol: {symbol} was not found.");
 
         return _mapper.Map<ProductResult>(product);
     }
@@ -43,7 +44,7 @@ public class ProductAppService : IProductAppService
     public ProductResult GetProductById(long id)
     {
         var product = _productService.GetProductById(id);
-        if (product is null) return null;
+        if (product is null) throw new CustomerException($"Product for the Id: {id} was not found.");
 
         return _mapper.Map<ProductResult>(product);
     }

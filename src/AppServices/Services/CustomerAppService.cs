@@ -8,6 +8,7 @@ using DomainServices.Exceptions;
 using DomainServices.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AppServices.Services;
 
@@ -38,7 +39,6 @@ public class CustomerAppService : ICustomerAppService
 
         _customerBankInfoAppService.Create(customer.Id);
         return createdCustomer;
-
     }
 
     public IEnumerable<CustomerResult> Get()
@@ -50,7 +50,7 @@ public class CustomerAppService : ICustomerAppService
     public CustomerResult GetCustomerById(long id)
     {
         var customerFound = _customerService.GetById(id);
-        if (customerFound is null) return null;
+        if (customerFound is null) throw new CustomerException($"Customer for Id: {id} was not found.");
 
         return _mapper.Map<CustomerResult>(customerFound);
     }
@@ -58,7 +58,7 @@ public class CustomerAppService : ICustomerAppService
     public IEnumerable<CustomerResult> GetAllCustomerByName(string fullName)
     {
         var customersFound = _customerService.GetAllByFullName(fullName);
-        if (customersFound is null) return null;
+        if (customersFound.Count() == 0) throw new CustomerException($"Client for name: {fullName} could not be found.");
 
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }

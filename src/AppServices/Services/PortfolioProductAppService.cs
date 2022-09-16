@@ -45,7 +45,7 @@ public class PortfolioProductAppService : IPortfolioProductAppService
     public PortfolioProductResult GetPortfolioProductById(long id)
     {
         var portfolioProductFound = _portfolioProductService.GetPortfolioProductById(id);
-        if (portfolioProductFound is null) return null;
+        if (portfolioProductFound is null) throw new CustomerException($"PortfolioProduct for id: {id} not found.");
 
         return _mapper.Map<PortfolioProductResult>(portfolioProductFound);
     }
