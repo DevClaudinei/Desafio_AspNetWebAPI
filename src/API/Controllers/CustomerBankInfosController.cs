@@ -51,7 +51,7 @@ public class CustomerBankInfosController : ControllerBase
         }
     }
 
-    [HttpPut("deposit/{id}")]
+    [HttpPatch("{id}/deposit")]
     public IActionResult DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
         try
@@ -65,7 +65,7 @@ public class CustomerBankInfosController : ControllerBase
         }
     }
 
-    [HttpPut("withdraw/{id}")]
+    [HttpPatch("{id}/withdraw")]
     public IActionResult WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
         try
