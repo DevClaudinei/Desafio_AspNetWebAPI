@@ -14,6 +14,5 @@ public class PortfolioProductProfile : Profile
         CreateMap<PortfolioResult, PortfolioProductResult>();
         CreateMap<UpdatePortfolioProductRequest, PortfolioProduct>();
         CreateMap<InvestmentRequest, PortfolioProduct>();
-
     }
 }
