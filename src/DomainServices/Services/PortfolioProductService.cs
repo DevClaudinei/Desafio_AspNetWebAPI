@@ -33,15 +33,4 @@ public class PortfolioProductService : IPortfolioProductService
 
         return repository.SingleOrDefault(customerFound);
     }
-
-    public long Add(PortfolioProduct portfolioProduct)
-    {
-        var repository = _unitOfWork.Repository<PortfolioProduct>();
-        portfolioProduct.ConvertedAt = DateTime.Now;
-
-        repository.Add(portfolioProduct);
-        _unitOfWork.SaveChanges();
-
-        return portfolioProduct.Id;
-    }
 }
