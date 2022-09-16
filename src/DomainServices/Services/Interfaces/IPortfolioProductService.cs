@@ -7,5 +7,4 @@ public interface IPortfolioProductService
 {
     IEnumerable<PortfolioProduct> GetAllPortfolioProduct();
     PortfolioProduct GetPortfolioProductById(long id);
-    long Add(PortfolioProduct portfolioProduct);
 }
