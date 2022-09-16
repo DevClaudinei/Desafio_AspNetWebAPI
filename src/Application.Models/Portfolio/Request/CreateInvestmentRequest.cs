@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Application.Models.PortfolioProduct.Request;
+namespace Application.Models.Portfolio.Request;
 
-public record InvestmentRequest(
+public record CreateInvestmentRequest(
     long ProductId,
     long PortfolioId,
     int Quotes,
