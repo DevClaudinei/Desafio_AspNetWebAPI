@@ -16,7 +16,7 @@ public class CustomerService : ICustomerService
     public CustomerService(
         IUnitOfWork unitOfWork,
         IRepositoryFactory repositoryFactory
-        )
+    )
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));

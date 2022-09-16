@@ -79,11 +79,11 @@ public class CustomerBankInfoService : ICustomerBankInfoService
 
     private CustomerBankInfo CheckIfWithdrawalIsValid(CustomerBankInfo updatedCustomerBankInfo, CustomerBankInfo customerBankInfo)
     {
-        if (updatedCustomerBankInfo.AccountBalance <= 0) throw new CustomerException($"Saldo solicitado não pode ser resgatado.");
+        if (customerBankInfo.AccountBalance < 0) throw new CustomerException($"Unable to make negative withdrawals.");
 
         customerBankInfo.AccountBalance = updatedCustomerBankInfo.AccountBalance - customerBankInfo.AccountBalance;
 
-        if (customerBankInfo.AccountBalance < 0) throw new CustomerException($"Saldo solicitado não pode ser resgatado.");
+        if (updatedCustomerBankInfo.AccountBalance <= 0) throw new CustomerException($"Requested balance cannot be redeemed.");
 
         return customerBankInfo;
     }
@@ -96,10 +96,10 @@ public class CustomerBankInfoService : ICustomerBankInfoService
             throw new CustomerException($"CustomerBankInfo not found by Account: {customerBankInfo.Account}.");
 
         if (updatedCustomerBankInfo.CustomerId != customerBankInfo.CustomerId)
-            throw new CustomerException($"Customer para Id: {customerBankInfo.CustomerId} não localizado.");
+            throw new CustomerException($"Customer for the Id: {customerBankInfo.CustomerId} not found.");
 
         if (updatedCustomerBankInfo.Id != customerBankInfo.Id)
-            throw new CustomerException($"CustomerBankInfo para Id {customerBankInfo.Id} não localizado.");
+            throw new CustomerException($"CustomerBankInfo for the Id: {customerBankInfo.Id} not found.");
 
         customerBankInfo.CreatedAt = updatedCustomerBankInfo.CreatedAt;
 
@@ -121,13 +121,13 @@ public class CustomerBankInfoService : ICustomerBankInfoService
     public void Create(long customerId)
     {
         var repository = _unitOfWork.Repository<CustomerBankInfo>();
-        var customerBankInfo = GeraNumeroDeConta(customerId);
+        var customerBankInfo = GenerateAccountNumber(customerId);
 
         repository.Add(customerBankInfo);
         _unitOfWork.SaveChanges();
     }
     
-    private CustomerBankInfo GeraNumeroDeConta(long customerId)
+    private CustomerBankInfo GenerateAccountNumber(long customerId)
     {
         var numberAccountValid = false;
         var listaContas = GetAllCustomerBankInfo();
