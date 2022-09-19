@@ -12,13 +12,13 @@ namespace AppServices.Services;
 
 public class ProductAppService : IProductAppService
 {
-    private readonly IProductService _productService;
     private readonly IMapper _mapper;
+    private readonly IProductService _productService;
 
     public ProductAppService(IProductService productService, IMapper mapper)
     {
-        _productService = productService ?? throw new ArgumentNullException(nameof(productService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _productService = productService ?? throw new ArgumentNullException(nameof(productService));
     }
 
     public long Create(CreateProductRequest createProductRequest)
@@ -36,7 +36,7 @@ public class ProductAppService : IProductAppService
     public ProductResult GetAllProductBySymbol(string symbol)
     {
         var product = _productService.GetAllProducsBySymbol(symbol);
-        if (product is null) throw new CustomerException($"Product for the symbol: {symbol} was not found.");
+        if (product is null) throw new GenericNotFoundException($"Product for the symbol: {symbol} was not found.");
 
         return _mapper.Map<ProductResult>(product);
     }
@@ -44,7 +44,7 @@ public class ProductAppService : IProductAppService
     public ProductResult GetProductById(long id)
     {
         var product = _productService.GetProductById(id);
-        if (product is null) throw new CustomerException($"Product for the Id: {id} was not found.");
+        if (product is null) throw new GenericNotFoundException($"Product for the Id: {id} was not found.");
 
         return _mapper.Map<ProductResult>(product);
     }

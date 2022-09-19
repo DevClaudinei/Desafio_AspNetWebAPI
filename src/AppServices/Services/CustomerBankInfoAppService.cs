@@ -12,13 +12,13 @@ namespace AppServices.Services;
 
 public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 {
-    private readonly ICustomerBankInfoService _customerBankInfoService;
     private readonly IMapper _mapper;
+    private readonly ICustomerBankInfoService _customerBankInfoService;
 
     public CustomerBankInfoAppService(ICustomerBankInfoService customerBankInfoService, IMapper mapper)
     {
-        _customerBankInfoService = customerBankInfoService ?? throw new ArgumentNullException(nameof(customerBankInfoService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _customerBankInfoService = customerBankInfoService ?? throw new ArgumentNullException(nameof(customerBankInfoService));
     }
 
     public IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo()
@@ -30,7 +30,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
     public CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account)
     {
         var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoByAccount(account);
-        if (customerBankInfo is null) throw new CustomerException($"CustomerBankInfo for account: {account} was not found.");
+        if (customerBankInfo is null) throw new GenericNotFoundException($"CustomerBankInfo for account: {account} was not found.");
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
@@ -38,9 +38,17 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
     public CustomerBankInfoResult GetCustomerBankInfoById(long id)
     {
         var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoById(id);
-        if (customerBankInfo is null) throw new CustomerException($"CustomerBankInfo for id: {id} not found.");
+        if (customerBankInfo is null) throw new GenericNotFoundException($"CustomerBankInfo for id: {id} not found.");
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
+    }
+
+    private CustomerBankInfo GetById(long id)
+    {
+        var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoById(id);
+        if (customerBankInfo is null) throw new GenericNotFoundException($"CustomerBankInfo for id: {id} not found.");
+
+        return customerBankInfo;
     }
 
     public void DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
@@ -55,22 +63,43 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         _customerBankInfoService.WithdrawMoney(id, customerBankInfoToUpdate);
     }
 
-    public bool UpdateBalanceAfterPurchase(CustomerBankInfoResult customerBankinfo, decimal purchaseValue)
+    public bool UpdateBalanceAfterPurchase(long customerBankInfoId, decimal purchaseValue)
     {
+        var customerBankinfo = GetById(customerBankInfoId);
         customerBankinfo.AccountBalance -= purchaseValue;
         var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(customerBankinfo);
         return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankInfoToUpdate);
     }
 
-    public bool UpdateBalanceAfterRescue(CustomerBankInfoResult customerBankinfo, decimal purchaseValue)
+    public bool UpdateBalanceAfterRescue(CustomerBankInfo customerBankinfo, decimal purchaseValue)
     {
         customerBankinfo.AccountBalance += purchaseValue;
-        var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(customerBankinfo);
-        return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankInfoToUpdate);
+        return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankinfo);
     }
 
     public void Create(long customerId)
     {
         _customerBankInfoService.Create(customerId);
+    }
+
+    public bool RedeemInvestedAmount(long customerId, decimal purchaseValue) 
+    {
+        var customerBankInfos = _customerBankInfoService.GetAllCustomerBankInfo();
+
+        foreach (var customerBankInfo in customerBankInfos)
+        {
+            if (customerBankInfo.CustomerId == customerId) 
+                UpdateBalanceAfterRescue(customerBankInfo, purchaseValue);
+        }
+
+        return true;
+    }
+
+    public bool CheckCustomerAccountBalance(decimal netValue, long customerBankInfoId)
+    {
+        var customerBankInfo = GetCustomerBankInfoById(customerBankInfoId);
+        if (customerBankInfo.AccountBalance < netValue) return false;
+            
+        return true;
     }
 }

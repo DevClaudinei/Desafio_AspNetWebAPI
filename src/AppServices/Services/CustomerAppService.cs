@@ -16,20 +16,20 @@ public class CustomerAppService : ICustomerAppService
 {
     private readonly IMapper _mapper;
     private readonly ICustomerService _customerService;
-    private readonly ICustomerBankInfoAppService _customerBankInfoAppService;
     private readonly IPortfolioAppService _portfolioAppService;
+    private readonly ICustomerBankInfoAppService _customerBankInfoAppService;
     
     public CustomerAppService(
-        ICustomerService customerService,
         IMapper mapper,
-        ICustomerBankInfoAppService customerBankInfoAppService,
-        IPortfolioAppService portfolioAppService
+        ICustomerService customerService,
+        IPortfolioAppService portfolioAppService,
+        ICustomerBankInfoAppService customerBankInfoAppService
     )
     {
-        _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
+        _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         _portfolioAppService = portfolioAppService ?? throw new ArgumentNullException(nameof(portfolioAppService));
+        _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
     }
 
     public long Create(CreateCustomerRequest createCustomerRequest)
@@ -50,7 +50,7 @@ public class CustomerAppService : ICustomerAppService
     public CustomerResult GetCustomerById(long id)
     {
         var customerFound = _customerService.GetById(id);
-        if (customerFound is null) throw new CustomerException($"Customer for Id: {id} was not found.");
+        if (customerFound is null) throw new GenericNotFoundException($"Customer for Id: {id} was not found.");
 
         return _mapper.Map<CustomerResult>(customerFound);
     }
@@ -58,7 +58,7 @@ public class CustomerAppService : ICustomerAppService
     public IEnumerable<CustomerResult> GetAllCustomerByName(string fullName)
     {
         var customersFound = _customerService.GetAllByFullName(fullName);
-        if (customersFound.Count() == 0) throw new CustomerException($"Client for name: {fullName} could not be found.");
+        if (customersFound.Count() == 0) throw new GenericNotFoundException($"Client for name: {fullName} could not be found.");
 
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
@@ -89,7 +89,7 @@ public class CustomerAppService : ICustomerAppService
             if (item.CustomerId != id) continue;
 
             if (item.CustomerId == id && item.TotalBalance > 0) 
-                throw new CustomerException($"Customer precisa resgatar seu saldo antes de ser excluido.");
+                throw new GenericBalancesException($"Customer needs to redeem their balance before being deleted.");
 
             if (item.CustomerId == id && item.TotalBalance == 0) exclusionOfValidCustomer = true;
         }
@@ -106,7 +106,7 @@ public class CustomerAppService : ICustomerAppService
             if (item.CustomerId != id) continue;
 
             if (item.CustomerId == id && item.AccountBalance > 0)
-                throw new CustomerException($"Customer precisa resgatar seu saldo antes de ser excluido.");
+                throw new GenericBalancesException($"Customer needs to redeem their balance before being deleted.");
 
             if (item.CustomerId == id && item.AccountBalance == 0) exclusionOfValidCustomer = true;
         }

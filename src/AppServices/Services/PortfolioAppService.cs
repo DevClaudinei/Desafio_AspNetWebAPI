@@ -2,7 +2,6 @@
 using Application.Models.Portfolio.Response;
 using Application.Models.PortfolioProduct.Response;
 using Application.Models.Product.Response;
-using Application.Models.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -41,7 +40,7 @@ public class PortfolioAppService : IPortfolioAppService
         foreach (var customerBankInfo in hasCustomerBankInfo)
         {
             if (customerBankInfo.CustomerId != portfolio.CustomerId) 
-                throw new CustomerException($"Não é possível criar portfolio para o Customer com Id: {portfolio.CustomerId}");
+                throw new GenericNotFoundException($"Unable to create portfolio for the Customer with Id: {portfolio.CustomerId} not found");
         }
 
         return _portfolioService.CreatePortfolio(portfolio);
@@ -67,12 +66,21 @@ public class PortfolioAppService : IPortfolioAppService
     {
         var portfolioFound = _portfolioService.GetPortfolioById(id);
 
-        if (portfolioFound is null) throw new CustomerException($"Portfolio for Id: {id} not found.");
+        if (portfolioFound is null) throw new GenericNotFoundException($"Portfolio for Id: {id} not found.");
 
         var portfolioMapp = _mapper.Map<PortfolioResult>(portfolioFound);
         portfolioMapp.Products = _mapper.Map<IEnumerable<PortfolioProductResult>>(portfolioFound.PortfolioProducts);
 
         return portfolioMapp;
+    }
+
+    private Portfolio GetById(long id)
+    {
+        var portfolioFound = _portfolioService.GetPortfolioById(id);
+
+        if (portfolioFound is null) throw new GenericNotFoundException($"Portfolio for Id: {id} not found.");
+
+        return portfolioFound;
     }
 
     public decimal GetTotalBalance(long portfolioId)
@@ -97,68 +105,40 @@ public class PortfolioAppService : IPortfolioAppService
         }
 
         var portfolioTotalBalance = _portfolioService.GetTotalBalance(id);
-        var customerBankInfos = _customerBankInfoAppService.GetAllCustomerBankInfo();
-
-        foreach (var customerBankInfo in customerBankInfos)
-        {
-            if (customerBankInfo.CustomerId == portfolioToDelete.CustomerId) 
-                _customerBankInfoAppService.UpdateBalanceAfterRescue(customerBankInfo, portfolioTotalBalance);
-        }
+        _customerBankInfoAppService.RedeemInvestedAmount(portfolioToDelete.CustomerId, portfolioTotalBalance);
 
         _portfolioService.Delete(id);
     }
 
     public long Invest(CreateInvestmentRequest request, long customerBankId)
     {
-        var productFound = ProductExists(request.ProductId);
-        var portfolioFound = PortfolioExists(request.PortfolioId);
-        var customerBankInfoFound = _customerBankInfoAppService.GetCustomerBankInfoById(customerBankId);
+        var productFound = _productAppService.GetProductById(request.ProductId);
+        var portfolioFound = GetById(request.PortfolioId);
         var investment = _mapper.Map<PortfolioProduct>(request);
 
-        CheckCustomerAccountBalance(investment, customerBankInfoFound.AccountBalance, productFound);
+        CheckCustomerAccountBalance(investment, customerBankId, productFound);
 
         var createdInvestment = _portfolioService.Add(investment);
 
-        PostInvestmentUpdates(portfolioFound, customerBankInfoFound, investment);
+        PostInvestmentUpdates(portfolioFound, customerBankId, investment);
 
         return createdInvestment;
     }
 
-    private ProductResult ProductExists(long productId)
-    {
-        
-        var productFound = _productAppService.GetProductById(productId);
-
-        if (productFound is null)
-            throw new CustomerException($"Product not found to the Id: {productId}");
-
-        return productFound;
-    }
-
-    private PortfolioResult PortfolioExists(long portfolioId)
-    {
-        var portfolioFound = GetPortfolioById(portfolioId);
-
-        if (portfolioFound is null)
-            throw new CustomerException($"Portfolio not found to the Id: {portfolioId}");
-
-        return portfolioFound;
-    }
-
-    private void PostInvestmentUpdates(PortfolioResult portfolioFound, CustomerBankInfoResult customerBankInfoFound, PortfolioProduct investment)
+    private void PostInvestmentUpdates(Portfolio portfolioFound, long customerBankId, PortfolioProduct investment)
     {
         portfolioFound.TotalBalance += investment.NetValue;
-        var portfolioToUpdate = _mapper.Map<Portfolio>(portfolioFound);
-        _portfolioService.UpdateBalanceAfterPurchase(portfolioToUpdate);
-        _customerBankInfoAppService.UpdateBalanceAfterPurchase(customerBankInfoFound, investment.NetValue);
+        _portfolioService.UpdateBalanceAfterPurchase(portfolioFound);
+        _customerBankInfoAppService.UpdateBalanceAfterPurchase(customerBankId, investment.NetValue);
     }
 
-    private bool CheckCustomerAccountBalance(PortfolioProduct investment, decimal accountBalance, ProductResult productFound)
+    private bool CheckCustomerAccountBalance(PortfolioProduct investment, long customerBankId, ProductResult productFound)
     {
         investment.NetValue = productFound.UnitPrice * investment.Quotes;
+        var customerAccountBalance = _customerBankInfoAppService.CheckCustomerAccountBalance(investment.NetValue, customerBankId);
 
-        if (accountBalance < investment.NetValue)
-            throw new CustomerException($"Insufficient balance to purchase the product with the Id: {productFound.Id}.");
+        if (customerAccountBalance is false ) 
+            throw new GenericBalancesException($"Insufficient balance to invest.");
 
         return true;
     }
