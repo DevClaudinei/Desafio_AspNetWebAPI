@@ -8,12 +8,10 @@ namespace DomainServices.Services;
 
 public class PortfolioProductService : IPortfolioProductService
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
 
-    public PortfolioProductService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
+    public PortfolioProductService(IRepositoryFactory repositoryFactory)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 

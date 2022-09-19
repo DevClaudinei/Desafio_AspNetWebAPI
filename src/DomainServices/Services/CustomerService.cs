@@ -38,10 +38,10 @@ public class CustomerService : ICustomerService
         var repository = _repositoryFactory.Repository<Customer>();
 
         if (repository.Any(x => x.Email.Equals(customer.Email)))
-            throw new CustomerException($"Customer already exists for email: {customer.Email}");
+            throw new GenericResourceAlreadyExistsException($"Customer already exists for email: {customer.Email}");
 
         if (repository.Any(x => x.Cpf.Equals(customer.Cpf)))
-            throw new CustomerException($"Customer already exists for CPF: {customer.Cpf}");
+            throw new GenericResourceAlreadyExistsException($"Customer already exists for CPF: {customer.Cpf}");
 
         return true;
     }
@@ -74,10 +74,10 @@ public class CustomerService : ICustomerService
 
     private Customer CustomerAlreadyExists(long id)
     {
-        var updatedCustomer = GetById(id);
-        if (updatedCustomer is null) throw new CustomerException($"Cliente não encontrado para o Id: {id}.");
+        var customerFound = GetById(id);
+        if (customerFound is null) throw new GenericNotFoundException($"Client for Id: {id} not found.");
 
-        return updatedCustomer;
+        return customerFound;
     }
 
     public void Update(long id, Customer customer)

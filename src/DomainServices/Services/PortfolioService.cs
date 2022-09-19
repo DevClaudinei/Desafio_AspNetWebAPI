@@ -24,7 +24,7 @@ public class PortfolioService : IPortfolioService
         var repository = _unitOfWork.Repository<Portfolio>();
         var portfolioExists = GetPortfolioById(portfolio.Id);
 
-        if (portfolioExists is not null) throw new CustomerException($"Portfolio com o ID: {portfolio.Id} já existe");
+        if (portfolioExists is not null) throw new GenericResourceAlreadyExistsException($"Portfolio with Id: {portfolio.Id} already exists.");
 
         repository.Add(portfolio);
         _unitOfWork.SaveChanges();
@@ -47,7 +47,7 @@ public class PortfolioService : IPortfolioService
     {
         var portfolioFound = GetPortfolioById(portfolioId);
 
-        if (portfolioFound is null) throw new CustomerException($"Portfolio com ID: {portfolioId} não localizado.");
+        if (portfolioFound is null) throw new GenericNotFoundException($"Portfolio with Id: {portfolioId} not found.");
 
         return portfolioFound.TotalBalance;
     }
@@ -84,7 +84,7 @@ public class PortfolioService : IPortfolioService
     {
         var updatedPortfolio = GetPortfolioById(portfolio.Id);
 
-        if (updatedPortfolio is null) throw new CustomerException($"Portfolio com o ID: {portfolio.Id} não encontrado.");
+        if (updatedPortfolio is null) throw new GenericNotFoundException($"Portfolio with Id: {portfolio.Id} not found.");
 
         portfolio.CreatedAt = updatedPortfolio.CreatedAt;
         return portfolio;

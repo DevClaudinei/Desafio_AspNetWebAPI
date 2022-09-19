@@ -34,7 +34,7 @@ public class ProductService : IProductService
         var repository = _repositoryFactory.Repository<Product>();
 
         if (repository.Any(x => x.Symbol.Equals(product.Symbol)))
-            throw new CustomerException($"Product: {product.Symbol} is already registered");
+            throw new GenericResourceAlreadyExistsException($"Product: {product.Symbol} is already registered");
 
         return true;
     }
@@ -68,7 +68,7 @@ public class ProductService : IProductService
     public void UpdateProduct(Product product)
     {
         var updatedProduct = GetProductById(product.Id);
-        if (updatedProduct is null) throw new CustomerException($"Product not found for id: {product.Id}.");
+        if (updatedProduct is null) throw new GenericNotFoundException($"Product not found for id: {product.Id}.");
 
         var repository = _unitOfWork.Repository<Product>();
         updatedProduct.UnitPrice = product.UnitPrice;
@@ -82,7 +82,7 @@ public class ProductService : IProductService
         var repository = _unitOfWork.Repository<Product>();
         var productToDelete = GetProductById(id);
 
-        if (productToDelete is null) throw new CustomerException($"Product not found for id: {id}.");
+        if (productToDelete is null) throw new GenericNotFoundException($"Product not found for id: {id}.");
 
         repository.Remove(x => x.Id.Equals(id));
     }

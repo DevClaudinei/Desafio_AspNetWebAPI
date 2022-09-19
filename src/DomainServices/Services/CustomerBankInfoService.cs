@@ -61,7 +61,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         var updatedCustomerBankInfo = VerifyCustomerBankInfoExists(customerBankInfo);
 
         if (customerBankInfo.AccountBalance < 0) 
-            throw new CustomerException($"CustomerBankInfo cannot update balance for negative amounts.");
+            throw new GenericBalancesException($"CustomerBankInfo cannot update balance for negative amounts.");
 
         return updatedCustomerBankInfo;
     }
@@ -79,11 +79,11 @@ public class CustomerBankInfoService : ICustomerBankInfoService
 
     private CustomerBankInfo CheckIfWithdrawalIsValid(CustomerBankInfo updatedCustomerBankInfo, CustomerBankInfo customerBankInfo)
     {
-        if (customerBankInfo.AccountBalance < 0) throw new CustomerException($"Unable to make negative withdrawals.");
+        if (customerBankInfo.AccountBalance < 0) throw new GenericBalancesException($"Unable to make negative withdrawals.");
 
         customerBankInfo.AccountBalance = updatedCustomerBankInfo.AccountBalance - customerBankInfo.AccountBalance;
 
-        if (updatedCustomerBankInfo.AccountBalance <= 0) throw new CustomerException($"Requested balance cannot be redeemed.");
+        if (updatedCustomerBankInfo.AccountBalance <= 0) throw new GenericBalancesException($"Requested balance cannot be redeemed.");
 
         return customerBankInfo;
     }
@@ -93,13 +93,13 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         var updatedCustomerBankInfo = GetCustomerBankInfoByAccount(customerBankInfo.Account);
 
         if (updatedCustomerBankInfo is null)
-            throw new CustomerException($"CustomerBankInfo not found by Account: {customerBankInfo.Account}.");
+            throw new GenericNotFoundException($"CustomerBankInfo for the Account: {customerBankInfo.Account} not found.");
 
         if (updatedCustomerBankInfo.CustomerId != customerBankInfo.CustomerId)
-            throw new CustomerException($"Customer for the Id: {customerBankInfo.CustomerId} not found.");
+            throw new GenericNotFoundException($"Customer for the Id: {customerBankInfo.CustomerId} not found.");
 
         if (updatedCustomerBankInfo.Id != customerBankInfo.Id)
-            throw new CustomerException($"CustomerBankInfo for the Id: {customerBankInfo.Id} not found.");
+            throw new GenericNotFoundException($"CustomerBankInfo for the Id: {customerBankInfo.Id} not found.");
 
         customerBankInfo.CreatedAt = updatedCustomerBankInfo.CreatedAt;
 
