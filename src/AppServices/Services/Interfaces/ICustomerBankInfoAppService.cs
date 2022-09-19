@@ -1,5 +1,6 @@
 ﻿using Application.Models;
 using Application.Models.Response;
+using DomainModels.Entities;
 using System.Collections.Generic;
 
 namespace AppServices.Services.Interfaces;
@@ -12,6 +13,8 @@ public interface ICustomerBankInfoAppService
     CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account);
     void DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
     void WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
-    public bool UpdateBalanceAfterPurchase(CustomerBankInfoResult customerBankinfo, decimal purchaseValue);
-    public bool UpdateBalanceAfterRescue(CustomerBankInfoResult customerBankinfo, decimal purchaseValue);
+    bool UpdateBalanceAfterPurchase(long customerBankId, decimal purchaseValue);
+    bool UpdateBalanceAfterRescue(CustomerBankInfo customerBankinfo, decimal purchaseValue);
+    bool RedeemInvestedAmount(long customerId, decimal purchaseValue);
+    bool CheckCustomerAccountBalance(decimal netValue, long customerBankInfoId);
 }
