@@ -10,7 +10,6 @@ public class CustomerBankInfoProfile : Profile
     public CustomerBankInfoProfile()
     {
         CreateMap<CustomerBankInfo, CustomerBankInfoResult>();
-        CreateMap<CustomerBankInfoResult, CustomerBankInfo>();
         CreateMap<UpdateCustomerBankInfoRequest, CustomerBankInfo>();
         CreateMap<CreateCustomerBankInfoRequest, CustomerBankInfo>();
     }

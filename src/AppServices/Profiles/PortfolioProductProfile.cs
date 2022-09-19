@@ -1,5 +1,4 @@
 ﻿using Application.Models.Portfolio.Request;
-using Application.Models.Portfolio.Response;
 using Application.Models.PortfolioProduct.Request;
 using Application.Models.PortfolioProduct.Response;
 using AutoMapper;
@@ -12,7 +11,6 @@ public class PortfolioProductProfile : Profile
 	public PortfolioProductProfile()
 	{
         CreateMap<PortfolioProduct, PortfolioProductResult>();
-        CreateMap<PortfolioResult, PortfolioProductResult>();
         CreateMap<UpdatePortfolioProductRequest, PortfolioProduct>();
         CreateMap<CreateInvestmentRequest, PortfolioProduct>();
     }
