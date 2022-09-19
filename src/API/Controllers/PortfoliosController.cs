@@ -24,7 +24,11 @@ public class PortfoliosController : Controller
             var createdPortfolio = _portfolioAppService.CreatePortfolio(portfolioCreate);
             return Created("~http://localhost:5160/api/Customers", createdPortfolio);
         }
-        catch (CustomerException e)
+        catch (GenericNotFoundException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch(GenericResourceAlreadyExistsException e)
         {
             return BadRequest(e.Message);
         }
@@ -38,7 +42,11 @@ public class PortfoliosController : Controller
             var investmentCustomer = _portfolioAppService.Invest(investmentRequest, customerBankId);
             return Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer);
         }
-        catch (CustomerException e)
+        catch (GenericNotFoundException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (GenericBalancesException e)
         {
             return BadRequest(e.Message);
         }
@@ -59,7 +67,7 @@ public class PortfoliosController : Controller
             var portfolioFound = _portfolioAppService.GetPortfolioById(id);
             return Ok(portfolioFound);
         }
-        catch (CustomerException e)
+        catch (GenericNotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -73,7 +81,7 @@ public class PortfoliosController : Controller
             var portfolioBalance = _portfolioAppService.GetTotalBalance(portfolioId);
             return Ok(portfolioBalance);
         }
-        catch (CustomerException e)
+        catch (GenericBalancesException e)
         {
             return BadRequest(e.Message);
         }
@@ -87,7 +95,7 @@ public class PortfoliosController : Controller
             _portfolioAppService.Delete(id);
             return NoContent();
         }
-        catch (CustomerException e)
+        catch (GenericNotFoundException e)
         {
             return NotFound(e.Message);
         }

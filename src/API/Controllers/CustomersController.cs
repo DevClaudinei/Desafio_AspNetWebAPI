@@ -4,7 +4,6 @@ using AutoMapper;
 using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 
 namespace API.Controllers;
 
@@ -27,7 +26,7 @@ public class CustomersController : ControllerBase
             var createdCustomer = _appService.Create(createCustomerRequest);
             return Created("~http://localhost:5160/api/Customers", createdCustomer);
         }
-        catch (CustomerException e)
+        catch (GenericResourceAlreadyExistsException e)
         {
             return BadRequest(e.Message);
         }
@@ -48,7 +47,7 @@ public class CustomersController : ControllerBase
             var customerFoundId = _appService.GetCustomerById(id);
             return Ok(customerFoundId);
         }
-        catch (CustomerException e)
+        catch (GenericNotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -62,7 +61,7 @@ public class CustomersController : ControllerBase
             var customerFoundName = _appService.GetAllCustomerByName(fullName);
             return Ok(customerFoundName);
         }
-        catch (CustomerException e)
+        catch (GenericNotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -76,7 +75,7 @@ public class CustomersController : ControllerBase
             _appService.Update(id, updateCustomerRequest);
             return Ok();
         }
-        catch (CustomerException e)
+        catch (GenericNotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -90,7 +89,11 @@ public class CustomersController : ControllerBase
             _appService.Delete(id);
             return NoContent();
         }
-        catch (Exception e)
+        catch (GenericBalancesException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (GenericNotFoundException e)
         {
             return NotFound(e.Message);
         }

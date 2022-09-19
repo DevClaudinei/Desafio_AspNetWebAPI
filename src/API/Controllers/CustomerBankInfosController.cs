@@ -31,7 +31,7 @@ public class CustomerBankInfosController : ControllerBase
             var customersBankInfoFound = _customerBankInfoAppService.GetCustomerBankInfoById(id);
             return Ok(customersBankInfoFound);
         }
-        catch (CustomerException e)
+        catch (GenericNotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -45,7 +45,7 @@ public class CustomerBankInfosController : ControllerBase
             var customerFoundName = _customerBankInfoAppService.GetAllCustomerBackInfoByAccount(account);
             return Ok(customerFoundName);
         }
-        catch (CustomerException e)
+        catch (GenericNotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -59,7 +59,11 @@ public class CustomerBankInfosController : ControllerBase
             _customerBankInfoAppService.DepositMoney(id, updateCustomerBankInfoRequest);
             return Ok();
         }
-        catch (CustomerException e)
+        catch (GenericBalancesException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (GenericNotFoundException e)
         {
             return BadRequest(e.Message);
         }
@@ -73,7 +77,11 @@ public class CustomerBankInfosController : ControllerBase
             _customerBankInfoAppService.WithdrawMoney(id, updateCustomerBankInfoRequest);
             return Ok();
         }
-        catch (CustomerException e)
+        catch (GenericBalancesException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (GenericNotFoundException e)
         {
             return BadRequest(e.Message);
         }
