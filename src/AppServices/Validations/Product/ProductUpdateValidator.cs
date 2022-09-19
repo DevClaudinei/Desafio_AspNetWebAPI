@@ -7,6 +7,10 @@ public class ProductUpdateValidator : AbstractValidator<UpdateProductRequest>
 {
     public ProductUpdateValidator()
     {
+        RuleFor(x => x.Symbol)
+            .NotEmpty()
+            .NotNull();
+
         RuleFor(x => x.UnitPrice)
             .NotEmpty()
             .NotNull();
