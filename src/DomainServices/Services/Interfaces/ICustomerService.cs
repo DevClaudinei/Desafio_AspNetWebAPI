@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using DomainModels.Entities;
+using System.Collections.Generic;
 
 namespace DomainServices.Services;
 

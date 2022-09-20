@@ -81,7 +81,7 @@ public class PortfoliosController : Controller
             var portfolioBalance = _portfolioAppService.GetTotalBalance(portfolioId);
             return Ok(portfolioBalance);
         }
-        catch (GenericBalancesException e)
+        catch (GenericNotFoundException e)
         {
             return BadRequest(e.Message);
         }

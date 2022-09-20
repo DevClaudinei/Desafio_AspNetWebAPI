@@ -28,7 +28,7 @@ public class CustomerBankInfosController : ControllerBase
     {
         try
         {
-            var customersBankInfoFound = _customerBankInfoAppService.GetCustomerBankInfoById(id);
+            var customersBankInfoFound = _customerBankInfoAppService.Get(id);
             return Ok(customersBankInfoFound);
         }
         catch (GenericNotFoundException e)

@@ -23,7 +23,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo()
     {
-        var customersBankInfo = _customerBankInfoService.GetAllCustomerBankInfo();
+        var customersBankInfo = _customerBankInfoService.Get();
         return _mapper.Map<IEnumerable<CustomerBankInfoResult>>(customersBankInfo);
     }
 
@@ -35,7 +35,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
 
-    public CustomerBankInfoResult GetCustomerBankInfoById(long id)
+    public CustomerBankInfoResult Get(long id)
     {
         var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoById(id);
         if (customerBankInfo is null) throw new GenericNotFoundException($"CustomerBankInfo for id: {id} not found.");
@@ -84,7 +84,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public bool RedeemInvestedAmount(long customerId, decimal purchaseValue) 
     {
-        var customerBankInfos = _customerBankInfoService.GetAllCustomerBankInfo();
+        var customerBankInfos = _customerBankInfoService.Get();
 
         foreach (var customerBankInfo in customerBankInfos)
         {
@@ -97,7 +97,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public bool CheckCustomerAccountBalance(decimal netValue, long customerBankInfoId)
     {
-        var customerBankInfo = GetCustomerBankInfoById(customerBankInfoId);
+        var customerBankInfo = Get(customerBankInfoId);
         if (customerBankInfo.AccountBalance < netValue) return false;
             
         return true;

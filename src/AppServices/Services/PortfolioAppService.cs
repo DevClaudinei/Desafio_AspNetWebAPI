@@ -17,19 +17,22 @@ public class PortfolioAppService : IPortfolioAppService
     private readonly IMapper _mapper;
     private readonly IPortfolioService _portfolioService;
     private readonly IProductAppService _productAppService;
+    private readonly IPortfolioProductAppService _portfolioProductAppService;
     private readonly ICustomerBankInfoAppService _customerBankInfoAppService;
 
     public PortfolioAppService(
         IMapper mapper,
         IPortfolioService portfolioService,
         IProductAppService productAppService,
-        ICustomerBankInfoAppService customerBankInfoAppService
+        ICustomerBankInfoAppService customerBankInfoAppService,
+        IPortfolioProductAppService portfolioProductAppService
     )
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _portfolioService = portfolioService ?? throw new ArgumentNullException(nameof(portfolioService));
         _productAppService = productAppService ?? throw new ArgumentNullException(nameof(productAppService));
         _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
+        _portfolioProductAppService = portfolioProductAppService ?? throw new ArgumentNullException(nameof(portfolioProductAppService));
     }
 
     public long CreatePortfolio(CreatePortfolioRequest portfolioCreate)
@@ -118,7 +121,7 @@ public class PortfolioAppService : IPortfolioAppService
 
         CheckCustomerAccountBalance(investment, customerBankId, productFound);
 
-        var createdInvestment = _portfolioService.Add(investment);
+        var createdInvestment = _portfolioProductAppService.Create(investment);
 
         PostInvestmentUpdates(portfolioFound, customerBankId, investment);
 

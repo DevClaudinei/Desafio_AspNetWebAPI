@@ -9,7 +9,7 @@ public interface ICustomerBankInfoAppService
 {
     void Create(long customerId);
     IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo();
-    CustomerBankInfoResult GetCustomerBankInfoById(long id);
+    CustomerBankInfoResult Get(long id);
     CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account);
     void DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
     void WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);

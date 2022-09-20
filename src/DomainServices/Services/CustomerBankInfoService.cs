@@ -19,7 +19,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public IEnumerable<CustomerBankInfo> GetAllCustomerBankInfo()
+    public IEnumerable<CustomerBankInfo> Get()
     {
         var repository = _repositoryFactory.Repository<CustomerBankInfo>();
         var query = repository.MultipleResultQuery();
@@ -130,7 +130,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
     private CustomerBankInfo GenerateAccountNumber(long customerId)
     {
         var numberAccountValid = false;
-        var listaContas = GetAllCustomerBankInfo();
+        var listaContas = Get();
         var customerBankInfo = new CustomerBankInfo(customerId);
         
         if (listaContas.Count() == 0) numberAccountValid = true;
@@ -139,11 +139,10 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         {
             foreach (var conta in listaContas)
             {
-                if (!conta.Account.Contains(customerBankInfo.Account)) continue;
-                    
-                customerBankInfo.Account = new Random().Next(1, 100).ToString();
-                numberAccountValid = true;
+                if (conta.Account == customerBankInfo.Account) customerBankInfo.Account = new Random().Next(1, 100).ToString();
             }
+
+            numberAccountValid = true;
         }
         return customerBankInfo;
     }

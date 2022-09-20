@@ -1,7 +1,9 @@
 ﻿using Application.Models.PortfolioProduct.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
+using DomainModels.Entities;
 using DomainServices.Exceptions;
+using DomainServices.Services;
 using DomainServices.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,11 @@ public class PortfolioProductAppService : IPortfolioProductAppService
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _portfolioProductService = portfolioProductService ?? throw new ArgumentNullException(nameof(portfolioProductService));
+    }
+
+    public long Create(PortfolioProduct investment)
+    {
+        return _portfolioProductService.Add(investment);
     }
 
     public IEnumerable<PortfolioProductResult> GetAllPortfolioProduct()
