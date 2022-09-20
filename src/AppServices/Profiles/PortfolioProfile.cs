@@ -11,6 +11,5 @@ public class PortfolioProfile : Profile
 	{
         CreateMap<Portfolio, PortfolioResult>();
         CreateMap<CreatePortfolioRequest, Portfolio>();
-        CreateMap<UpdatePortfolioRequest, Portfolio>();
     }
 }

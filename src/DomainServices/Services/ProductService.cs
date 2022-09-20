@@ -72,7 +72,7 @@ public class ProductService : IProductService
 
         var repository = _unitOfWork.Repository<Product>();
         updatedProduct.UnitPrice = product.UnitPrice;
-        
+
         repository.Update(product);
         _unitOfWork.SaveChanges();
     }

@@ -8,11 +8,24 @@ namespace DomainServices.Services;
 
 public class PortfolioProductService : IPortfolioProductService
 {
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
 
-    public PortfolioProductService(IRepositoryFactory repositoryFactory)
+    public PortfolioProductService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
     {
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
+    }
+
+    public long Add(PortfolioProduct portfolioProduct)
+    {
+        var repository = _unitOfWork.Repository<PortfolioProduct>();
+        portfolioProduct.ConvertedAt = DateTime.Now;
+
+        repository.Add(portfolioProduct);
+        _unitOfWork.SaveChanges();
+
+        return portfolioProduct.Id;
     }
 
     public IEnumerable<PortfolioProduct> GetAllPortfolioProduct()

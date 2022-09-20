@@ -2,7 +2,6 @@ using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -13,10 +12,7 @@ public class CustomerService : ICustomerService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
 
-    public CustomerService(
-        IUnitOfWork unitOfWork,
-        IRepositoryFactory repositoryFactory
-    )
+    public CustomerService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
@@ -26,7 +22,7 @@ public class CustomerService : ICustomerService
     {
         var repository = _unitOfWork.Repository<Customer>();
         VerifyCustomerAlreadyExists(customer);
-        
+
         repository.Add(customer);
         _unitOfWork.SaveChanges();
 
@@ -49,7 +45,7 @@ public class CustomerService : ICustomerService
     public IEnumerable<Customer> GetAll()
     {
         var repository = _repositoryFactory.Repository<Customer>();
-        var query = repository.MultipleResultQuery().Include(x => x.Include(x => x.CustomerBankInfo));
+        var query = repository.MultipleResultQuery();
 
         return repository.Search(query); 
     }

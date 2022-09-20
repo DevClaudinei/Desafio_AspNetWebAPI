@@ -32,17 +32,6 @@ public class PortfolioService : IPortfolioService
         return portfolio.Id;
     }
 
-    public long Add(PortfolioProduct portfolioProduct)
-    {
-        var repository = _unitOfWork.Repository<PortfolioProduct>();
-        portfolioProduct.ConvertedAt = DateTime.Now;
-
-        repository.Add(portfolioProduct);
-        _unitOfWork.SaveChanges();
-
-        return portfolioProduct.Id;
-    }
-
     public decimal GetTotalBalance(long portfolioId)
     {
         var portfolioFound = GetPortfolioById(portfolioId);
