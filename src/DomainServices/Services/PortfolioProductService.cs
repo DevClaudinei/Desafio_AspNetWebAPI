@@ -1,6 +1,7 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
+using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 
@@ -11,7 +12,7 @@ public class PortfolioProductService : IPortfolioProductService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepositoryFactory _repositoryFactory;
 
-    public PortfolioProductService(IUnitOfWork unitOfWork, IRepositoryFactory repositoryFactory)
+    public PortfolioProductService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
