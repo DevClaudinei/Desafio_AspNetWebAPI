@@ -15,9 +15,7 @@ public static class DbConfiguration
             options.UseMySql(configuration.GetConnectionString("DefaultConnection"),
                             ServerVersion.Parse("8.0.29-mysql"),
                             b => b.MigrationsAssembly("Infrastructure.Data"));
-        });
-
-        services.AddTransient<DbContext, ApplicationDbContext>();
-        services.AddUnitOfWork(ServiceLifetime.Transient);
+        }, contextLifetime: ServiceLifetime.Transient);
+        services.AddUnitOfWork<ApplicationDbContext>(ServiceLifetime.Transient);
     }
 }
