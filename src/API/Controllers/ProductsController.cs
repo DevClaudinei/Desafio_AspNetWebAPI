@@ -24,7 +24,7 @@ public class ProductsController : ControllerBase
             var productCreated = _productAppService.Create(createProductRequest);
             return Created("~http://localhost:5160/api/Product", productCreated);
         }
-        catch (GenericResourceAlreadyExistsException e)
+        catch (BadRequestException e)
         {
             return BadRequest(e.Message);
         }
@@ -45,7 +45,7 @@ public class ProductsController : ControllerBase
             var productFound = _productAppService.GetProductById(id);
             return Ok(productFound);
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -59,7 +59,7 @@ public class ProductsController : ControllerBase
             var productsFound = _productAppService.GetAllProductBySymbol(symbol);
             return Ok(productsFound);
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -74,7 +74,7 @@ public class ProductsController : ControllerBase
             _productAppService.Update(updateProductRequest);
             return Ok();
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -88,7 +88,7 @@ public class ProductsController : ControllerBase
             _productAppService.Delete(id);
             return NoContent();
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }

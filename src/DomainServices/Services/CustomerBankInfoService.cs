@@ -20,7 +20,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public IEnumerable<CustomerBankInfo> Get()
+    public IEnumerable<CustomerBankInfo> GetAll()
     {
         var repository = _repositoryFactory.Repository<CustomerBankInfo>();
         var query = repository.MultipleResultQuery();
@@ -28,7 +28,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         return repository.Search(query);
     }
 
-    public CustomerBankInfo GetCustomerBankInfoByAccount(string account)
+    public CustomerBankInfo GetByAccount(string account)
     {
         var repository = _repositoryFactory.Repository<CustomerBankInfo>();
         var query = repository.SingleResultQuery()
@@ -37,7 +37,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         return repository.SingleOrDefault(query);
     }
 
-    public CustomerBankInfo GetCustomerBankInfoById(long id)
+    public CustomerBankInfo GetById(long id)
     {
         var repository = _repositoryFactory.Repository<CustomerBankInfo>();
         var query = repository.SingleResultQuery()
@@ -59,10 +59,10 @@ public class CustomerBankInfoService : ICustomerBankInfoService
 
     private CustomerBankInfo VerifyCustomerBankInfoHasBalance(CustomerBankInfo customerBankInfo)
     {
-        var updatedCustomerBankInfo = VerifyCustomerBankInfoExists(customerBankInfo);
+        var updatedCustomerBankInfo = Exists(customerBankInfo);
 
         if (customerBankInfo.AccountBalance < 0) 
-            throw new GenericBalancesException($"CustomerBankInfo cannot update balance for negative amounts.");
+            throw new BadRequestException($"CustomerBankInfo cannot update balance for negative amounts.");
 
         return updatedCustomerBankInfo;
     }
@@ -71,7 +71,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
     {
         var repository = _unitOfWork.Repository<CustomerBankInfo>();
         customerBankInfo.Id = id;
-        var updatedCustomerBankInfo = VerifyCustomerBankInfoExists(customerBankInfo);
+        var updatedCustomerBankInfo = Exists(customerBankInfo);
         var customerBankInfoToUpdate = CheckIfWithdrawalIsValid(updatedCustomerBankInfo, customerBankInfo);
 
         repository.Update(customerBankInfoToUpdate);
@@ -80,27 +80,27 @@ public class CustomerBankInfoService : ICustomerBankInfoService
 
     private CustomerBankInfo CheckIfWithdrawalIsValid(CustomerBankInfo updatedCustomerBankInfo, CustomerBankInfo customerBankInfo)
     {
-        if (customerBankInfo.AccountBalance < 0) throw new GenericBalancesException($"Unable to make negative withdrawals.");
+        if (customerBankInfo.AccountBalance < 0) throw new BadRequestException($"Unable to make negative withdrawals.");
 
         customerBankInfo.AccountBalance = updatedCustomerBankInfo.AccountBalance - customerBankInfo.AccountBalance;
 
-        if (updatedCustomerBankInfo.AccountBalance <= 0) throw new GenericBalancesException($"Requested balance cannot be redeemed.");
+        if (updatedCustomerBankInfo.AccountBalance <= 0) throw new BadRequestException($"Requested balance cannot be redeemed.");
 
         return customerBankInfo;
     }
 
-    private CustomerBankInfo VerifyCustomerBankInfoExists(CustomerBankInfo customerBankInfo)
+    private CustomerBankInfo Exists(CustomerBankInfo customerBankInfo)
     {
-        var updatedCustomerBankInfo = GetCustomerBankInfoByAccount(customerBankInfo.Account);
+        var updatedCustomerBankInfo = GetByAccount(customerBankInfo.Account);
 
         if (updatedCustomerBankInfo is null)
-            throw new GenericNotFoundException($"CustomerBankInfo for the Account: {customerBankInfo.Account} not found.");
+            throw new NotFoundException($"CustomerBankInfo for the Account: {customerBankInfo.Account} not found.");
 
         if (updatedCustomerBankInfo.CustomerId != customerBankInfo.CustomerId)
-            throw new GenericNotFoundException($"Customer for the Id: {customerBankInfo.CustomerId} not found.");
+            throw new NotFoundException($"Customer for the Id: {customerBankInfo.CustomerId} not found.");
 
         if (updatedCustomerBankInfo.Id != customerBankInfo.Id)
-            throw new GenericNotFoundException($"CustomerBankInfo for the Id: {customerBankInfo.Id} not found.");
+            throw new NotFoundException($"CustomerBankInfo for the Id: {customerBankInfo.Id} not found.");
 
         customerBankInfo.CreatedAt = updatedCustomerBankInfo.CreatedAt;
 
@@ -110,7 +110,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
     public bool UpdateBalanceAfterPurchase(CustomerBankInfo customerBankInfo)
     {
         var repository = _unitOfWork.Repository<CustomerBankInfo>();
-        var customerBankInfoToUpdate = GetCustomerBankInfoById(customerBankInfo.Id);
+        var customerBankInfoToUpdate = GetById(customerBankInfo.Id);
         customerBankInfo.CreatedAt = customerBankInfoToUpdate.CreatedAt;
 
         repository.Update(customerBankInfo);
@@ -131,7 +131,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
     private CustomerBankInfo GenerateAccountNumber(long customerId)
     {
         var numberAccountValid = false;
-        var listaContas = Get();
+        var listaContas = GetAll();
         var customerBankInfo = new CustomerBankInfo(customerId);
         
         if (listaContas.Count() == 0) numberAccountValid = true;

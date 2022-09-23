@@ -20,12 +20,12 @@ public class PortfolioService : IPortfolioService
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public long CreatePortfolio(Portfolio portfolio)
+    public long Create(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        var portfolioExists = GetPortfolioById(portfolio.Id);
+        var portfolioExists = GetById(portfolio.Id);
 
-        if (portfolioExists is not null) throw new GenericResourceAlreadyExistsException($"Portfolio with Id: {portfolio.Id} already exists.");
+        if (portfolioExists is not null) throw new BadRequestException($"Portfolio with Id: {portfolio.Id} already exists.");
 
         repository.Add(portfolio);
         _unitOfWork.SaveChanges();
@@ -35,14 +35,14 @@ public class PortfolioService : IPortfolioService
 
     public decimal GetTotalBalance(long portfolioId)
     {
-        var portfolioFound = GetPortfolioById(portfolioId);
+        var portfolioFound = GetById(portfolioId);
 
-        if (portfolioFound is null) throw new GenericNotFoundException($"Portfolio with Id: {portfolioId} not found.");
+        if (portfolioFound is null) throw new NotFoundException($"Portfolio with Id: {portfolioId} not found.");
 
         return portfolioFound.TotalBalance;
     }
 
-    public Portfolio GetPortfolioById(long id)
+    public Portfolio GetById(long id)
     {
         var repository = _repositoryFactory.Repository<Portfolio>();
         var query = repository.SingleResultQuery()
@@ -52,7 +52,7 @@ public class PortfolioService : IPortfolioService
         return repository.FirstOrDefault(query);
     }
 
-    public IEnumerable<Portfolio> GetAllPortfolios()
+    public IEnumerable<Portfolio> GetAll()
     {
         var repository = _repositoryFactory.Repository<Portfolio>();
         var query = repository.MultipleResultQuery()
@@ -64,17 +64,17 @@ public class PortfolioService : IPortfolioService
     public void Update(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        var portfolioToUpdate = VerifyPortfolioAlreadyExists(portfolio);
+        var portfolioToUpdate = Exists(portfolio);
 
         repository.Update(portfolioToUpdate);
         _unitOfWork.SaveChanges();
     }
 
-    private Portfolio VerifyPortfolioAlreadyExists(Portfolio portfolio)
+    private Portfolio Exists(Portfolio portfolio)
     {
-        var updatedPortfolio = GetPortfolioById(portfolio.Id);
+        var updatedPortfolio = GetById(portfolio.Id);
 
-        if (updatedPortfolio is null) throw new GenericNotFoundException($"Portfolio with Id: {portfolio.Id} not found.");
+        if (updatedPortfolio is null) throw new NotFoundException($"Portfolio with Id: {portfolio.Id} not found.");
 
         portfolio.CreatedAt = updatedPortfolio.CreatedAt;
         return portfolio;
@@ -83,7 +83,7 @@ public class PortfolioService : IPortfolioService
     public bool UpdateBalanceAfterPurchase(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        var portfolioToUpdate = VerifyPortfolioAlreadyExists(portfolio);
+        var portfolioToUpdate = Exists(portfolio);
 
         repository.Update(portfolioToUpdate);
         _unitOfWork.SaveChanges();

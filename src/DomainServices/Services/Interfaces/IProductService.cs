@@ -5,10 +5,10 @@ namespace DomainServices.Services.Interfaces;
 
 public interface IProductService
 {
-    long CreateProduct(Product product);
-    IEnumerable<Product> GetAllProducts();
-    Product GetProductById(long id);
-    Product GetAllProducsBySymbol(string symbol);
-    void UpdateProduct(Product product);
+    long Create(Product product);
+    IEnumerable<Product> GetAll();
+    Product GetById(long id);
+    Product GetBySymbol(string symbol);
+    void Update(Product product);
     void Delete(long id);
 }

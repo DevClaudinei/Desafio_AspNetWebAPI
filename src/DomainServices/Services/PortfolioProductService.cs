@@ -18,7 +18,7 @@ public class PortfolioProductService : IPortfolioProductService
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public long Add(PortfolioProduct portfolioProduct)
+    public long Create(PortfolioProduct portfolioProduct)
     {
         var repository = _unitOfWork.Repository<PortfolioProduct>();
         portfolioProduct.ConvertedAt = DateTime.Now;
@@ -29,7 +29,7 @@ public class PortfolioProductService : IPortfolioProductService
         return portfolioProduct.Id;
     }
 
-    public IEnumerable<PortfolioProduct> GetAllPortfolioProduct()
+    public IEnumerable<PortfolioProduct> GetAll()
     {
         var repository = _repositoryFactory.Repository<PortfolioProduct>();
         var query = repository.MultipleResultQuery();
@@ -37,7 +37,7 @@ public class PortfolioProductService : IPortfolioProductService
         return repository.Search(query);
     }
 
-    public PortfolioProduct GetPortfolioProductById(long id)
+    public PortfolioProduct GetById(long id)
     {
         var repository = _repositoryFactory.Repository<PortfolioProduct>();
         var customerFound = repository.SingleResultQuery()

@@ -26,7 +26,7 @@ public class CustomersController : ControllerBase
             var createdCustomer = _appService.Create(createCustomerRequest);
             return Created("~http://localhost:5160/api/Customers", createdCustomer);
         }
-        catch (GenericResourceAlreadyExistsException e)
+        catch (BadRequestException e)
         {
             return BadRequest(e.Message);
         }
@@ -47,7 +47,7 @@ public class CustomersController : ControllerBase
             var customerFoundId = _appService.GetCustomerById(id);
             return Ok(customerFoundId);
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -61,7 +61,7 @@ public class CustomersController : ControllerBase
             var customerFoundName = _appService.GetAllCustomerByName(fullName);
             return Ok(customerFoundName);
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -75,7 +75,7 @@ public class CustomersController : ControllerBase
             _appService.Update(id, updateCustomerRequest);
             return Ok();
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -89,11 +89,11 @@ public class CustomersController : ControllerBase
             _appService.Delete(id);
             return NoContent();
         }
-        catch (GenericBalancesException e)
+        catch (BadRequestException e)
         {
             return NotFound(e.Message);
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }

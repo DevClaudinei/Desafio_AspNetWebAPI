@@ -5,9 +5,9 @@ namespace DomainServices.Services.Interfaces;
 
 public interface IPortfolioService
 {
-    long CreatePortfolio(Portfolio portfolio);
-    IEnumerable<Portfolio> GetAllPortfolios();
-    Portfolio GetPortfolioById(long id);
+    long Create(Portfolio portfolio);
+    IEnumerable<Portfolio> GetAll();
+    Portfolio GetById(long id);
     decimal GetTotalBalance(long portfolioId);
     void Update(Portfolio portfolio);
     public bool UpdateBalanceAfterPurchase(Portfolio portfolio);

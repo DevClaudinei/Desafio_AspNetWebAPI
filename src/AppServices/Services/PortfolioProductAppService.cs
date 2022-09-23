@@ -26,19 +26,19 @@ public class PortfolioProductAppService : IPortfolioProductAppService
 
     public long Create(PortfolioProduct investment)
     {
-        return _portfolioProductService.Add(investment);
+        return _portfolioProductService.Create(investment);
     }
 
     public IEnumerable<PortfolioProductResult> GetAllPortfolioProduct()
     {
-        var portfolioProductsFound = _portfolioProductService.GetAllPortfolioProduct();
+        var portfolioProductsFound = _portfolioProductService.GetAll();
         return _mapper.Map<IEnumerable<PortfolioProductResult>>(portfolioProductsFound);
     }
 
     public PortfolioProductResult GetPortfolioProductById(long id)
     {
-        var portfolioProductFound = _portfolioProductService.GetPortfolioProductById(id);
-        if (portfolioProductFound is null) throw new GenericNotFoundException($"PortfolioProduct for id: {id} not found.");
+        var portfolioProductFound = _portfolioProductService.GetById(id);
+        if (portfolioProductFound is null) throw new NotFoundException($"PortfolioProduct for id: {id} not found.");
 
         return _mapper.Map<PortfolioProductResult>(portfolioProductFound);
     }

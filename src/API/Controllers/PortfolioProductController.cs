@@ -32,7 +32,7 @@ namespace API.Controllers
                 var customerFoundId = _appService.GetPortfolioProductById(id);
                 return Ok(customerFoundId);
             }
-            catch (GenericNotFoundException e)
+            catch (NotFoundException e)
             {
                 return BadRequest(e.Message);
             }

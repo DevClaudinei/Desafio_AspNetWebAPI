@@ -19,10 +19,10 @@ public class ProductService : IProductService
         _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
     }
 
-    public long CreateProduct(Product product)
+    public long Create(Product product)
     {
         var repository = _unitOfWork.Repository<Product>();
-        CheckIfProductAlreadyExists(product);
+        Exists(product);
 
         repository.Add(product);
         _unitOfWork.SaveChanges();
@@ -30,17 +30,17 @@ public class ProductService : IProductService
         return product.Id;
     }
 
-    private bool CheckIfProductAlreadyExists(Product product)
+    private bool Exists(Product product)
     {
         var repository = _repositoryFactory.Repository<Product>();
 
         if (repository.Any(x => x.Symbol.Equals(product.Symbol)))
-            throw new GenericResourceAlreadyExistsException($"Product: {product.Symbol} is already registered");
+            throw new BadRequestException($"Product: {product.Symbol} is already registered");
 
         return true;
     }
 
-    public IEnumerable<Product> GetAllProducts()
+    public IEnumerable<Product> GetAll()
     {
         var repository = _repositoryFactory.Repository<Product>();
         var query = repository.MultipleResultQuery();
@@ -48,7 +48,7 @@ public class ProductService : IProductService
         return repository.Search(query);
     }
 
-    public Product GetAllProducsBySymbol(string symbol)
+    public Product GetBySymbol(string symbol)
     {
         var repository = _repositoryFactory.Repository<Product>();
         var query = repository.SingleResultQuery()
@@ -57,7 +57,7 @@ public class ProductService : IProductService
         return repository.SingleOrDefault(query);
     }
 
-    public Product GetProductById(long id)
+    public Product GetById(long id)
     {
         var repository = _repositoryFactory.Repository<Product>();
         var query = repository.SingleResultQuery()
@@ -66,10 +66,10 @@ public class ProductService : IProductService
         return repository.SingleOrDefault(query);
     }
 
-    public void UpdateProduct(Product product)
+    public void Update(Product product)
     {
-        var updatedProduct = GetProductById(product.Id);
-        if (updatedProduct is null) throw new GenericNotFoundException($"Product not found for id: {product.Id}.");
+        var updatedProduct = GetById(product.Id);
+        if (updatedProduct is null) throw new NotFoundException($"Product not found for id: {product.Id}.");
 
         var repository = _unitOfWork.Repository<Product>();
         updatedProduct.UnitPrice = product.UnitPrice;
@@ -81,9 +81,9 @@ public class ProductService : IProductService
     public void Delete(long id)
     {
         var repository = _unitOfWork.Repository<Product>();
-        var productToDelete = GetProductById(id);
+        var productToDelete = GetById(id);
 
-        if (productToDelete is null) throw new GenericNotFoundException($"Product not found for id: {id}.");
+        if (productToDelete is null) throw new NotFoundException($"Product not found for id: {id}.");
 
         repository.Remove(x => x.Id.Equals(id));
     }

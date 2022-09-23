@@ -24,11 +24,11 @@ public class PortfoliosController : Controller
             var createdPortfolio = _portfolioAppService.CreatePortfolio(portfolioCreate);
             return Created("~http://localhost:5160/api/Customers", createdPortfolio);
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return BadRequest(e.Message);
         }
-        catch(GenericResourceAlreadyExistsException e)
+        catch(BadRequestException e)
         {
             return BadRequest(e.Message);
         }
@@ -42,11 +42,11 @@ public class PortfoliosController : Controller
             var investmentCustomer = _portfolioAppService.Invest(investmentRequest, customerBankId);
             return Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer);
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return BadRequest(e.Message);
         }
-        catch (GenericBalancesException e)
+        catch (BadRequestException e)
         {
             return BadRequest(e.Message);
         }
@@ -67,7 +67,7 @@ public class PortfoliosController : Controller
             var portfolioFound = _portfolioAppService.GetPortfolioById(id);
             return Ok(portfolioFound);
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -81,7 +81,7 @@ public class PortfoliosController : Controller
             var portfolioBalance = _portfolioAppService.GetTotalBalance(portfolioId);
             return Ok(portfolioBalance);
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return BadRequest(e.Message);
         }
@@ -95,7 +95,7 @@ public class PortfoliosController : Controller
             _portfolioAppService.Delete(id);
             return NoContent();
         }
-        catch (GenericNotFoundException e)
+        catch (NotFoundException e)
         {
             return NotFound(e.Message);
         }

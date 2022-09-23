@@ -5,7 +5,7 @@ namespace DomainServices.Services.Interfaces;
 
 public interface IPortfolioProductService
 {
-    long Add(PortfolioProduct portfolioProduct);
-    IEnumerable<PortfolioProduct> GetAllPortfolioProduct();
-    PortfolioProduct GetPortfolioProductById(long id);
+    long Create(PortfolioProduct portfolioProduct);
+    IEnumerable<PortfolioProduct> GetAll();
+    PortfolioProduct GetById(long id);
 }

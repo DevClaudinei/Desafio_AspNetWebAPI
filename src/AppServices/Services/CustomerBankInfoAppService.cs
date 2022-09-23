@@ -23,30 +23,30 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo()
     {
-        var customersBankInfo = _customerBankInfoService.Get();
+        var customersBankInfo = _customerBankInfoService.GetAll();
         return _mapper.Map<IEnumerable<CustomerBankInfoResult>>(customersBankInfo);
     }
 
     public CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account)
     {
-        var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoByAccount(account);
-        if (customerBankInfo is null) throw new GenericNotFoundException($"CustomerBankInfo for account: {account} was not found.");
+        var customerBankInfo = _customerBankInfoService.GetByAccount(account);
+        if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for account: {account} was not found.");
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
 
     public CustomerBankInfoResult Get(long id)
     {
-        var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoById(id);
-        if (customerBankInfo is null) throw new GenericNotFoundException($"CustomerBankInfo for id: {id} not found.");
+        var customerBankInfo = _customerBankInfoService.GetById(id);
+        if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
 
     private CustomerBankInfo GetById(long id)
     {
-        var customerBankInfo = _customerBankInfoService.GetCustomerBankInfoById(id);
-        if (customerBankInfo is null) throw new GenericNotFoundException($"CustomerBankInfo for id: {id} not found.");
+        var customerBankInfo = _customerBankInfoService.GetById(id);
+        if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
 
         return customerBankInfo;
     }
@@ -84,7 +84,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public bool RedeemInvestedAmount(long customerId, decimal purchaseValue) 
     {
-        var customerBankInfos = _customerBankInfoService.Get();
+        var customerBankInfos = _customerBankInfoService.GetAll();
 
         foreach (var customerBankInfo in customerBankInfos)
         {

@@ -43,15 +43,15 @@ public class PortfolioAppService : IPortfolioAppService
         foreach (var customerBankInfo in hasCustomerBankInfo)
         {
             if (customerBankInfo.CustomerId != portfolio.CustomerId) 
-                throw new GenericNotFoundException($"Unable to create portfolio for the Customer with Id: {portfolio.CustomerId} not found");
+                throw new NotFoundException($"Unable to create portfolio for the Customer with Id: {portfolio.CustomerId} not found");
         }
 
-        return _portfolioService.CreatePortfolio(portfolio);
+        return _portfolioService.Create(portfolio);
     }
 
     public IEnumerable<PortfolioResult> GetAllPortfolios()
     {
-        var portfoliosFound = _portfolioService.GetAllPortfolios();
+        var portfoliosFound = _portfolioService.GetAll();
         var portfolioMapp = _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
 
         foreach (var portfolios in portfoliosFound)
@@ -67,9 +67,9 @@ public class PortfolioAppService : IPortfolioAppService
 
     public PortfolioResult GetPortfolioById(long id)
     {
-        var portfolioFound = _portfolioService.GetPortfolioById(id);
+        var portfolioFound = _portfolioService.GetById(id);
 
-        if (portfolioFound is null) throw new GenericNotFoundException($"Portfolio for Id: {id} not found.");
+        if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
 
         var portfolioMapp = _mapper.Map<PortfolioResult>(portfolioFound);
         portfolioMapp.Products = _mapper.Map<IEnumerable<PortfolioProductResult>>(portfolioFound.PortfolioProducts);
@@ -79,9 +79,9 @@ public class PortfolioAppService : IPortfolioAppService
 
     private Portfolio GetById(long id)
     {
-        var portfolioFound = _portfolioService.GetPortfolioById(id);
+        var portfolioFound = _portfolioService.GetById(id);
 
-        if (portfolioFound is null) throw new GenericNotFoundException($"Portfolio for Id: {id} not found.");
+        if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
 
         return portfolioFound;
     }
@@ -99,7 +99,7 @@ public class PortfolioAppService : IPortfolioAppService
 
     public void Delete(long id)
     {
-        var portfolios = _portfolioService.GetAllPortfolios();
+        var portfolios = _portfolioService.GetAll();
         var portfolioToDelete = new Portfolio();
 
         foreach (var portfolio in portfolios)
@@ -141,7 +141,7 @@ public class PortfolioAppService : IPortfolioAppService
         var customerAccountBalance = _customerBankInfoAppService.CheckCustomerAccountBalance(investment.NetValue, customerBankId);
 
         if (customerAccountBalance is false ) 
-            throw new GenericBalancesException($"Insufficient balance to invest.");
+            throw new BadRequestException($"Insufficient balance to invest.");
 
         return true;
     }

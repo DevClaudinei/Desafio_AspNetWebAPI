@@ -24,27 +24,27 @@ public class ProductAppService : IProductAppService
     public long Create(CreateProductRequest createProductRequest)
     {
         var product = _mapper.Map<Product>(createProductRequest);
-        return _productService.CreateProduct(product);
+        return _productService.Create(product);
     }
 
     public IEnumerable<ProductResult> GetAllProducts()
     {
-        var product = _productService.GetAllProducts();
+        var product = _productService.GetAll();
         return _mapper.Map<IEnumerable<ProductResult>>(product);
     }
 
     public ProductResult GetAllProductBySymbol(string symbol)
     {
-        var product = _productService.GetAllProducsBySymbol(symbol);
-        if (product is null) throw new GenericNotFoundException($"Product for the symbol: {symbol} was not found.");
+        var product = _productService.GetBySymbol(symbol);
+        if (product is null) throw new NotFoundException($"Product for the symbol: {symbol} was not found.");
 
         return _mapper.Map<ProductResult>(product);
     }
 
     public ProductResult GetProductById(long id)
     {
-        var product = _productService.GetProductById(id);
-        if (product is null) throw new GenericNotFoundException($"Product for the Id: {id} was not found.");
+        var product = _productService.GetById(id);
+        if (product is null) throw new NotFoundException($"Product for the Id: {id} was not found.");
 
         return _mapper.Map<ProductResult>(product);
     }
@@ -52,7 +52,7 @@ public class ProductAppService : IProductAppService
     public void Update(UpdateProductRequest updateProductRequest)
     {
         var productToUpdate = _mapper.Map<Product>(updateProductRequest);
-        _productService.UpdateProduct(productToUpdate);
+        _productService.Update(productToUpdate);
     }
 
     public void Delete(long id)

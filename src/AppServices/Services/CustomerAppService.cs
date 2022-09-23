@@ -50,7 +50,7 @@ public class CustomerAppService : ICustomerAppService
     public CustomerResult GetCustomerById(long id)
     {
         var customerFound = _customerService.GetById(id);
-        if (customerFound is null) throw new GenericNotFoundException($"Customer for Id: {id} was not found.");
+        if (customerFound is null) throw new NotFoundException($"Customer for Id: {id} was not found.");
 
         return _mapper.Map<CustomerResult>(customerFound);
     }
@@ -58,7 +58,7 @@ public class CustomerAppService : ICustomerAppService
     public IEnumerable<CustomerResult> GetAllCustomerByName(string fullName)
     {
         var customersFound = _customerService.GetAllByFullName(fullName);
-        if (customersFound.Count() == 0) throw new GenericNotFoundException($"Client for name: {fullName} could not be found.");
+        if (customersFound.Count() == 0) throw new NotFoundException($"Client for name: {fullName} could not be found.");
 
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
@@ -89,7 +89,7 @@ public class CustomerAppService : ICustomerAppService
             if (item.CustomerId != id) continue;
 
             if (item.CustomerId == id && item.TotalBalance > 0) 
-                throw new GenericBalancesException($"Customer needs to redeem their balance before being deleted.");
+                throw new BadRequestException($"Customer needs to redeem their balance before being deleted.");
 
             if (item.CustomerId == id && item.TotalBalance == 0) exclusionOfValidCustomer = true;
         }
@@ -106,7 +106,7 @@ public class CustomerAppService : ICustomerAppService
             if (item.CustomerId != id) continue;
 
             if (item.CustomerId == id && item.AccountBalance > 0)
-                throw new GenericBalancesException($"Customer needs to redeem their balance before being deleted.");
+                throw new BadRequestException($"Customer needs to redeem their balance before being deleted.");
 
             if (item.CustomerId == id && item.AccountBalance == 0) exclusionOfValidCustomer = true;
         }
