@@ -19,7 +19,7 @@ public class CustomerBankInfosController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var customersBankInfoFound = _customerBankInfoAppService.GetAllCustomerBankInfo();
+        var customersBankInfoFound = _customerBankInfoAppService.GetAll();
         return Ok(customersBankInfoFound);
     }
     
@@ -42,7 +42,7 @@ public class CustomerBankInfosController : ControllerBase
     {
         try
         {
-            var customerFoundName = _customerBankInfoAppService.GetAllCustomerBackInfoByAccount(account);
+            var customerFoundName = _customerBankInfoAppService.GetByAccount(account);
             return Ok(customerFoundName);
         }
         catch (NotFoundException e)

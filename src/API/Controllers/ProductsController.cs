@@ -33,7 +33,7 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var productsFound = _productAppService.GetAllProducts();
+        var productsFound = _productAppService.GetAll();
         return Ok(productsFound);
     }
 
@@ -42,7 +42,7 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            var productFound = _productAppService.GetProductById(id);
+            var productFound = _productAppService.GetById(id);
             return Ok(productFound);
         }
         catch (NotFoundException e)
@@ -56,7 +56,7 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            var productsFound = _productAppService.GetAllProductBySymbol(symbol);
+            var productsFound = _productAppService.GetBySymbol(symbol);
             return Ok(productsFound);
         }
         catch (NotFoundException e)

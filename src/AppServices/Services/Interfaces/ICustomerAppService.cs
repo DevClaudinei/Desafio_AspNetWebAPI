@@ -7,8 +7,8 @@ public interface ICustomerAppService
 {
     long Create(CreateCustomerRequest createCustomerRequest);
     IEnumerable<CustomerResult> Get();
-    CustomerResult GetCustomerById(long id);
-    IEnumerable<CustomerResult> GetAllCustomerByName(string fullName);
+    CustomerResult GetById(long id);
+    IEnumerable<CustomerResult> GetByName(string fullName);
     void Update(long id, UpdateCustomerRequest updateCustomerRequest);
     void Delete(long id);
 }

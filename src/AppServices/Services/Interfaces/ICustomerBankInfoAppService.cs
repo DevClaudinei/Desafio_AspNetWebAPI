@@ -8,9 +8,9 @@ namespace AppServices.Services.Interfaces;
 public interface ICustomerBankInfoAppService
 {
     void Create(long customerId);
-    IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo();
+    IEnumerable<CustomerBankInfoResult> GetAll();
     CustomerBankInfoResult Get(long id);
-    CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account);
+    CustomerBankInfoResult GetByAccount(string account);
     void DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
     void WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
     bool UpdateBalanceAfterPurchase(long customerBankId, decimal purchaseValue);

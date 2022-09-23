@@ -27,13 +27,13 @@ public class ProductAppService : IProductAppService
         return _productService.Create(product);
     }
 
-    public IEnumerable<ProductResult> GetAllProducts()
+    public IEnumerable<ProductResult> GetAll()
     {
         var product = _productService.GetAll();
         return _mapper.Map<IEnumerable<ProductResult>>(product);
     }
 
-    public ProductResult GetAllProductBySymbol(string symbol)
+    public ProductResult GetBySymbol(string symbol)
     {
         var product = _productService.GetBySymbol(symbol);
         if (product is null) throw new NotFoundException($"Product for the symbol: {symbol} was not found.");
@@ -41,7 +41,7 @@ public class ProductAppService : IProductAppService
         return _mapper.Map<ProductResult>(product);
     }
 
-    public ProductResult GetProductById(long id)
+    public ProductResult GetById(long id)
     {
         var product = _productService.GetById(id);
         if (product is null) throw new NotFoundException($"Product for the Id: {id} was not found.");

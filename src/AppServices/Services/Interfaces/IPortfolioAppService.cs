@@ -6,8 +6,8 @@ namespace AppServices.Services.Interfaces;
 
 public interface IPortfolioAppService
 {
-    long CreatePortfolio(CreatePortfolioRequest portfolioCreate);
-    IEnumerable<PortfolioResult> GetAllPortfolios();
+    long Create(CreatePortfolioRequest portfolioCreate);
+    IEnumerable<PortfolioResult> GetAll();
     PortfolioResult GetPortfolioById(long id);
     decimal GetTotalBalance(long portfolioId);
     public bool UpdateBalanceAfterPurchase(PortfolioResult portfolioResult, decimal purchaseValue);

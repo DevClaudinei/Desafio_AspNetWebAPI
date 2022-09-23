@@ -35,10 +35,10 @@ public class PortfolioAppService : IPortfolioAppService
         _portfolioProductAppService = portfolioProductAppService ?? throw new ArgumentNullException(nameof(portfolioProductAppService));
     }
 
-    public long CreatePortfolio(CreatePortfolioRequest portfolioCreate)
+    public long Create(CreatePortfolioRequest portfolioCreate)
     {
         var portfolio = _mapper.Map<Portfolio>(portfolioCreate);
-        var hasCustomerBankInfo = _customerBankInfoAppService.GetAllCustomerBankInfo();
+        var hasCustomerBankInfo = _customerBankInfoAppService.GetAll();
         
         foreach (var customerBankInfo in hasCustomerBankInfo)
         {
@@ -49,7 +49,7 @@ public class PortfolioAppService : IPortfolioAppService
         return _portfolioService.Create(portfolio);
     }
 
-    public IEnumerable<PortfolioResult> GetAllPortfolios()
+    public IEnumerable<PortfolioResult> GetAll()
     {
         var portfoliosFound = _portfolioService.GetAll();
         var portfolioMapp = _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
@@ -115,7 +115,7 @@ public class PortfolioAppService : IPortfolioAppService
 
     public long Invest(CreateInvestmentRequest request, long customerBankId)
     {
-        var productFound = _productAppService.GetProductById(request.ProductId);
+        var productFound = _productAppService.GetById(request.ProductId);
         var portfolioFound = GetById(request.PortfolioId);
         var investment = _mapper.Map<PortfolioProduct>(request);
 

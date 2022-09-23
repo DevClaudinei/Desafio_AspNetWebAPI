@@ -20,7 +20,7 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var customersFound = _appService.GetAllPortfolioProduct();
+            var customersFound = _appService.GetAll();
             return Ok(customersFound);
         }
 
@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                var customerFoundId = _appService.GetPortfolioProductById(id);
+                var customerFoundId = _appService.GetById(id);
                 return Ok(customerFoundId);
             }
             catch (NotFoundException e)

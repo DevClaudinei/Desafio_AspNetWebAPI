@@ -21,7 +21,7 @@ public class PortfoliosController : Controller
     {
         try
         {
-            var createdPortfolio = _portfolioAppService.CreatePortfolio(portfolioCreate);
+            var createdPortfolio = _portfolioAppService.Create(portfolioCreate);
             return Created("~http://localhost:5160/api/Customers", createdPortfolio);
         }
         catch (NotFoundException e)
@@ -55,7 +55,7 @@ public class PortfoliosController : Controller
     [HttpGet]
     public IActionResult Get()
     {
-        var portfoliosFound = _portfolioAppService.GetAllPortfolios();
+        var portfoliosFound = _portfolioAppService.GetAll();
         return Ok(portfoliosFound);
     }
 

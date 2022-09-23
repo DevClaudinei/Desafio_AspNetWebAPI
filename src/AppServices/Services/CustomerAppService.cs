@@ -47,7 +47,7 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
 
-    public CustomerResult GetCustomerById(long id)
+    public CustomerResult GetById(long id)
     {
         var customerFound = _customerService.GetById(id);
         if (customerFound is null) throw new NotFoundException($"Customer for Id: {id} was not found.");
@@ -55,7 +55,7 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<CustomerResult>(customerFound);
     }
 
-    public IEnumerable<CustomerResult> GetAllCustomerByName(string fullName)
+    public IEnumerable<CustomerResult> GetByName(string fullName)
     {
         var customersFound = _customerService.GetAllByFullName(fullName);
         if (customersFound.Count() == 0) throw new NotFoundException($"Client for name: {fullName} could not be found.");
@@ -71,8 +71,8 @@ public class CustomerAppService : ICustomerAppService
 
     public void Delete(long id)
     {
-        var customerAccountBalance = _customerBankInfoAppService.GetAllCustomerBankInfo();
-        var customerTotaltBalance = _portfolioAppService.GetAllPortfolios();
+        var customerAccountBalance = _customerBankInfoAppService.GetAll();
+        var customerTotaltBalance = _portfolioAppService.GetAll();
         
         CheckCustomerBankInfoAccountBalance(customerAccountBalance, id);
         CheckPortfolioTotalBalance(customerTotaltBalance, id);

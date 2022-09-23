@@ -21,13 +21,13 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         _customerBankInfoService = customerBankInfoService ?? throw new ArgumentNullException(nameof(customerBankInfoService));
     }
 
-    public IEnumerable<CustomerBankInfoResult> GetAllCustomerBankInfo()
+    public IEnumerable<CustomerBankInfoResult> GetAll()
     {
         var customersBankInfo = _customerBankInfoService.GetAll();
         return _mapper.Map<IEnumerable<CustomerBankInfoResult>>(customersBankInfo);
     }
 
-    public CustomerBankInfoResult GetAllCustomerBackInfoByAccount(string account)
+    public CustomerBankInfoResult GetByAccount(string account)
     {
         var customerBankInfo = _customerBankInfoService.GetByAccount(account);
         if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for account: {account} was not found.");

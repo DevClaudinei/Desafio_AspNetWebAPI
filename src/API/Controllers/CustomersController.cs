@@ -44,7 +44,7 @@ public class CustomersController : ControllerBase
     {
         try
         {
-            var customerFoundId = _appService.GetCustomerById(id);
+            var customerFoundId = _appService.GetById(id);
             return Ok(customerFoundId);
         }
         catch (NotFoundException e)
@@ -58,7 +58,7 @@ public class CustomersController : ControllerBase
     {
         try
         {
-            var customerFoundName = _appService.GetAllCustomerByName(fullName);
+            var customerFoundName = _appService.GetByName(fullName);
             return Ok(customerFoundName);
         }
         catch (NotFoundException e)

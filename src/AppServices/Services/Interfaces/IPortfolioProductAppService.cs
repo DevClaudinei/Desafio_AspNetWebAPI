@@ -7,6 +7,6 @@ namespace AppServices.Services.Interfaces;
 public interface IPortfolioProductAppService
 {
     long Create(PortfolioProduct investment);
-    IEnumerable<PortfolioProductResult> GetAllPortfolioProduct();
-    PortfolioProductResult GetPortfolioProductById(long id);
+    IEnumerable<PortfolioProductResult> GetAll();
+    PortfolioProductResult GetById(long id);
 }

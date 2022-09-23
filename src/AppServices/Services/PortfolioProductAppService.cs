@@ -15,10 +15,7 @@ public class PortfolioProductAppService : IPortfolioProductAppService
     private readonly IMapper _mapper;
     private readonly IPortfolioProductService _portfolioProductService;
     
-    public PortfolioProductAppService(
-        IMapper mapper,
-        IPortfolioProductService portfolioProductService
-    )
+    public PortfolioProductAppService(IMapper mapper, IPortfolioProductService portfolioProductService)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _portfolioProductService = portfolioProductService ?? throw new ArgumentNullException(nameof(portfolioProductService));
@@ -29,13 +26,13 @@ public class PortfolioProductAppService : IPortfolioProductAppService
         return _portfolioProductService.Create(investment);
     }
 
-    public IEnumerable<PortfolioProductResult> GetAllPortfolioProduct()
+    public IEnumerable<PortfolioProductResult> GetAll()
     {
         var portfolioProductsFound = _portfolioProductService.GetAll();
         return _mapper.Map<IEnumerable<PortfolioProductResult>>(portfolioProductsFound);
     }
 
-    public PortfolioProductResult GetPortfolioProductById(long id)
+    public PortfolioProductResult GetById(long id)
     {
         var portfolioProductFound = _portfolioProductService.GetById(id);
         if (portfolioProductFound is null) throw new NotFoundException($"PortfolioProduct for id: {id} not found.");
