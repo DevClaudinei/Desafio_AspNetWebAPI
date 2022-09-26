@@ -35,12 +35,31 @@ public class PortfoliosController : Controller
     }
 
     [HttpPost("/investment")]
-    public IActionResult Post(CreateInvestmentRequest investmentRequest, long customerBankId)
+    public IActionResult Post(InvestmentRequest investmentRequest)
     {
         try
         {
-            var investmentCustomer = _portfolioAppService.Invest(investmentRequest, customerBankId);
+            var investmentCustomer = _portfolioAppService.Invest(investmentRequest);
             return Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer);
+        }
+        catch (NotFoundException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (BadRequestException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("/uninvest")]
+    public IActionResult Post(WithdrawInvestmentRequest withdrawInvestmentRequest)
+    {
+        try
+        {
+            var uninvest = _portfolioAppService.WithdrawInvestment(withdrawInvestmentRequest);
+            return Created("~http://localhost:5160/api/PortfolioProducts", uninvest);
+
         }
         catch (NotFoundException e)
         {
