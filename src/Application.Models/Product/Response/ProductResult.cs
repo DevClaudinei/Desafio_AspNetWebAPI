@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Application.Models.Product.Response;
+﻿namespace Application.Models.Product.Response;
 
 public class ProductResult
 {
