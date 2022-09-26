@@ -1,4 +1,5 @@
-﻿using DomainModels.Entities;
+﻿using DomainModels;
+using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
@@ -6,6 +7,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace DomainServices.Services;
 
@@ -23,9 +25,6 @@ public class PortfolioService : IPortfolioService
     public long Create(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        var portfolioExists = GetById(portfolio.Id);
-
-        if (portfolioExists is not null) throw new BadRequestException($"Portfolio with Id: {portfolio.Id} already exists.");
 
         repository.Add(portfolio);
         _unitOfWork.SaveChanges();
@@ -33,13 +32,20 @@ public class PortfolioService : IPortfolioService
         return portfolio.Id;
     }
 
-    public decimal GetTotalBalance(long portfolioId)
+    protected TResult GetFieldById<T, TResult>(long id, Expression<Func<T, TResult>> selector)
+        where T : class, IEntity
     {
-        var portfolioFound = GetById(portfolioId);
+        var repository = _repositoryFactory.Repository<T>();
+        var query = repository.SingleResultQuery()
+            .AndFilter(x => x.Id.Equals(id))
+            .Select(selector);
 
-        if (portfolioFound is null) throw new NotFoundException($"Portfolio with Id: {portfolioId} not found.");
+        return repository.SingleOrDefault(query);
+    }
 
-        return portfolioFound.TotalBalance;
+    public decimal GetTotalBalance(long id)
+    {
+        return GetFieldById<Portfolio, decimal>(id, x => x.TotalBalance);
     }
 
     public Portfolio GetById(long id)
@@ -55,37 +61,23 @@ public class PortfolioService : IPortfolioService
     public IEnumerable<Portfolio> GetAll()
     {
         var repository = _repositoryFactory.Repository<Portfolio>();
-        var query = repository.MultipleResultQuery()
-            .Include(source => source.Include(x => x.PortfolioProducts));
+        var query = repository.MultipleResultQuery();
 
         return repository.Search(query);
     }
 
-    public void Update(Portfolio portfolio)
+    private bool Exists(long id)
     {
-        var repository = _unitOfWork.Repository<Portfolio>();
-        var portfolioToUpdate = Exists(portfolio);
-
-        repository.Update(portfolioToUpdate);
-        _unitOfWork.SaveChanges();
-    }
-
-    private Portfolio Exists(Portfolio portfolio)
-    {
-        var updatedPortfolio = GetById(portfolio.Id);
-
-        if (updatedPortfolio is null) throw new NotFoundException($"Portfolio with Id: {portfolio.Id} not found.");
-
-        portfolio.CreatedAt = updatedPortfolio.CreatedAt;
-        return portfolio;
+        var repository = _repositoryFactory.Repository<Portfolio>();
+        return repository.Any(x => x.Id.Equals(id));
     }
 
     public bool UpdateBalanceAfterPurchase(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        var portfolioToUpdate = Exists(portfolio);
+        Exists(portfolio.Id);
 
-        repository.Update(portfolioToUpdate);
+        repository.Update(portfolio);
         _unitOfWork.SaveChanges();
 
         return true;
@@ -94,7 +86,8 @@ public class PortfolioService : IPortfolioService
     public void Delete(long id)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        GetTotalBalance(id);
+        var totalBalance = GetTotalBalance(id);
+        if (totalBalance > 0) throw new BadRequestException($"Não é possível deletar carteira, pois ela ainda possui saldo.");
 
         repository.Remove(x => x.Id.Equals(id));
     }

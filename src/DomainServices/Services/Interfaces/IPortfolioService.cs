@@ -9,7 +9,6 @@ public interface IPortfolioService
     IEnumerable<Portfolio> GetAll();
     Portfolio GetById(long id);
     decimal GetTotalBalance(long portfolioId);
-    void Update(Portfolio portfolio);
     public bool UpdateBalanceAfterPurchase(Portfolio portfolio);
     void Delete(long id);
 }

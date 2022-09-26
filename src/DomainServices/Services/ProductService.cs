@@ -5,6 +5,7 @@ using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace DomainServices.Services;
 
@@ -22,7 +23,9 @@ public class ProductService : IProductService
     public long Create(Product product)
     {
         var repository = _unitOfWork.Repository<Product>();
-        Exists(product);
+        var exists = Exists(x => x.Symbol.Equals(product.Symbol));
+        
+        if (exists) throw new BadRequestException($"Product: {product.Symbol} are already registered");
 
         repository.Add(product);
         _unitOfWork.SaveChanges();
@@ -30,14 +33,10 @@ public class ProductService : IProductService
         return product.Id;
     }
 
-    private bool Exists(Product product)
+    private bool Exists(Expression<Func<Product, bool>> predicate)
     {
         var repository = _repositoryFactory.Repository<Product>();
-
-        if (repository.Any(x => x.Symbol.Equals(product.Symbol)))
-            throw new BadRequestException($"Product: {product.Symbol} is already registered");
-
-        return true;
+        return repository.Any(predicate);
     }
 
     public IEnumerable<Product> GetAll()
@@ -68,11 +67,8 @@ public class ProductService : IProductService
 
     public void Update(Product product)
     {
-        var updatedProduct = GetById(product.Id);
-        if (updatedProduct is null) throw new NotFoundException($"Product not found for id: {product.Id}.");
-
         var repository = _unitOfWork.Repository<Product>();
-        updatedProduct.UnitPrice = product.UnitPrice;
+        Exists(x => x.Id.Equals(product.Id));
 
         repository.Update(product);
         _unitOfWork.SaveChanges();
@@ -81,9 +77,9 @@ public class ProductService : IProductService
     public void Delete(long id)
     {
         var repository = _unitOfWork.Repository<Product>();
-        var productToDelete = GetById(id);
+        var exists = Exists(x => x.Id.Equals(id));
 
-        if (productToDelete is null) throw new NotFoundException($"Product not found for id: {id}.");
+        if (!exists) throw new NotFoundException($"Product not found for id: {id}.");
 
         repository.Remove(x => x.Id.Equals(id));
     }
