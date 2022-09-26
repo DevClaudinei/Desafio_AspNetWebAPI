@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DomainModels.Entities;
 
-public class Customer : BaseModel
+public class Customer : IEntity
 {
     public Customer() { }
 
@@ -54,4 +54,7 @@ public class Customer : BaseModel
     public int Number { get; set; }
     public virtual CustomerBankInfo CustomerBankInfo { get; set; }
     public virtual ICollection<Portfolio> Portfolios { get; set; }
+    public long Id { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? ModifiedAt { get; set; }
 }

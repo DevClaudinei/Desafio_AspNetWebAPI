@@ -2,7 +2,7 @@
 
 namespace DomainModels.Entities;
 
-public class CustomerBankInfo : BaseModel
+public class CustomerBankInfo : IEntity
 {
     public CustomerBankInfo(long customerId) 
     {
@@ -14,4 +14,7 @@ public class CustomerBankInfo : BaseModel
     public decimal AccountBalance { get; set; } = 0; // saldo da conta
     public virtual Customer Customer { get; set; }
     public long CustomerId { get; set; }
+    public long Id { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? ModifiedAt { get; set; }
 }
