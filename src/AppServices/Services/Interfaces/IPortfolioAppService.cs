@@ -12,5 +12,6 @@ public interface IPortfolioAppService
     decimal GetTotalBalance(long portfolioId);
     public bool UpdateBalanceAfterPurchase(PortfolioResult portfolioResult, decimal purchaseValue);
     void Delete(long id);
-    long Invest(CreateInvestmentRequest request, long customerId);
+    long Invest(InvestmentRequest request);
+    long WithdrawInvestment(WithdrawInvestmentRequest request);
 }

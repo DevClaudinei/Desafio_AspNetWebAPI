@@ -1,9 +1,10 @@
-﻿using Application.Models.PortfolioProduct.Response;
+﻿using Application.Models.Portfolio.Request;
+using Application.Models.PortfolioProduct.Response;
+using Application.Models.Product.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
 using DomainServices.Exceptions;
-using DomainServices.Services;
 using DomainServices.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -38,5 +39,21 @@ public class PortfolioProductAppService : IPortfolioProductAppService
         if (portfolioProductFound is null) throw new NotFoundException($"PortfolioProduct for id: {id} not found.");
 
         return _mapper.Map<PortfolioProductResult>(portfolioProductFound);
+    }
+
+    public void WithdrawInvestment(long id, WithdrawInvestmentRequest withdrawInvestment)
+    {
+        var portfolioProductToUpdate = _mapper.Map<PortfolioProduct>(withdrawInvestment);
+        _portfolioProductService.WithdrawInvestment(id, portfolioProductToUpdate);
+    }
+
+    public int GetQuantityOfQuotes(long portfolioId, long productId, int quotes)
+    {
+        return _portfolioProductService.GetQuantityOfQuotes(portfolioId, productId, quotes);
+    }
+
+    public void RemoveProduct(Portfolio portfolioFound, ProductResult productFound)
+    {
+        _portfolioProductService.RemoveProduct(portfolioFound, productFound);
     }
 }

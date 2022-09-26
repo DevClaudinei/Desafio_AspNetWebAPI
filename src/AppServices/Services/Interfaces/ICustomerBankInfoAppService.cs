@@ -16,5 +16,6 @@ public interface ICustomerBankInfoAppService
     bool UpdateBalanceAfterPurchase(long customerBankId, decimal purchaseValue);
     bool UpdateBalanceAfterRescue(CustomerBankInfo customerBankinfo, decimal purchaseValue);
     bool RedeemInvestedAmount(long customerId, decimal purchaseValue);
-    bool CheckCustomerAccountBalance(decimal netValue, long customerBankInfoId);
+    bool CanWithdrawAmountFromAccountBalance(decimal netValue, long customerBankInfoId);
+    long GetCustomerBankInfoId(long id);
 }

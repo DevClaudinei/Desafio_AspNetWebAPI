@@ -51,6 +51,11 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return customerBankInfo;
     }
 
+    public long GetCustomerBankInfoId(long customerId)
+    {
+        return _customerBankInfoService.RetornaIdDeContaAtravesDeCustomerID(customerId);
+    }
+
     public void DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
     {
         var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(updateCustomerBankInfoRequest);
@@ -95,11 +100,12 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return true;
     }
 
-    public bool CheckCustomerAccountBalance(decimal netValue, long customerBankInfoId)
+    public bool CanWithdrawAmountFromAccountBalance(decimal amount, long customerBankInfoId)
     {
-        var customerBankInfo = Get(customerBankInfoId);
-        if (customerBankInfo.AccountBalance < netValue) return false;
-            
+        var accountBalance = _customerBankInfoService.GetAccountBalanceById(customerBankInfoId);
+
+        if (accountBalance < amount) return false;
+
         return true;
     }
 }

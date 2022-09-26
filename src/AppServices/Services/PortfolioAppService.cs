@@ -1,7 +1,6 @@
 ﻿using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
 using Application.Models.PortfolioProduct.Response;
-using Application.Models.Product.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -99,50 +98,66 @@ public class PortfolioAppService : IPortfolioAppService
 
     public void Delete(long id)
     {
-        var portfolios = _portfolioService.GetAll();
-        var portfolioToDelete = new Portfolio();
-
-        foreach (var portfolio in portfolios)
-        {
-            if (portfolio.Id.Equals(id)) portfolioToDelete = portfolio;
-        }
+        var portfolio = _portfolioService.GetById(id);
 
         var portfolioTotalBalance = _portfolioService.GetTotalBalance(id);
-        _customerBankInfoAppService.RedeemInvestedAmount(portfolioToDelete.CustomerId, portfolioTotalBalance);
+        _customerBankInfoAppService.RedeemInvestedAmount(portfolio.CustomerId, portfolioTotalBalance);
 
         _portfolioService.Delete(id);
     }
 
-    public long Invest(CreateInvestmentRequest request, long customerBankId)
+    public long Invest(InvestmentRequest request)
     {
-        var productFound = _productAppService.GetById(request.ProductId);
         var portfolioFound = GetById(request.PortfolioId);
+        var productFound = _productAppService.GetById(request.ProductId);
+        var portfolioProduct = new PortfolioProduct(productFound.UnitPrice, request.Quotes);
         var investment = _mapper.Map<PortfolioProduct>(request);
+        investment.NetValue = portfolioProduct.NetValue;
+        var customerBankId = _customerBankInfoAppService.GetCustomerBankInfoId(portfolioFound.CustomerId);
 
-        CheckCustomerAccountBalance(investment, customerBankId, productFound);
+        CheckCustomerAccountBalance(investment.NetValue, customerBankId);
+
+        if (!(request.ConvertedAt <= DateTime.UtcNow)) throw new BadRequestException("Não é possível investir com data futura.");
 
         var createdInvestment = _portfolioProductAppService.Create(investment);
-
-        PostInvestmentUpdates(portfolioFound, customerBankId, investment);
+        PostInvestmentUpdates(portfolioFound, customerBankId, investment.NetValue);
 
         return createdInvestment;
     }
 
-    private void PostInvestmentUpdates(Portfolio portfolioFound, long customerBankId, PortfolioProduct investment)
+    public long WithdrawInvestment( WithdrawInvestmentRequest request)
     {
-        portfolioFound.TotalBalance += investment.NetValue;
-        _portfolioService.UpdateBalanceAfterPurchase(portfolioFound);
-        _customerBankInfoAppService.UpdateBalanceAfterPurchase(customerBankId, investment.NetValue);
+        var portfolioFound = GetById(request.PortfolioId);
+        var productFound = _productAppService.GetById(request.ProductId);
+        var portfolioProduct = new PortfolioProduct(productFound.UnitPrice, request.Quotes);
+        var investment = _mapper.Map<PortfolioProduct>(request);
+        investment.NetValue = portfolioProduct.NetValue;
+        var customerBankId = _customerBankInfoAppService.GetCustomerBankInfoId(portfolioFound.CustomerId);
+        var totalDeCotasNaCarteira = _portfolioProductAppService
+            .GetQuantityOfQuotes(portfolioFound.Id, request.ProductId, request.Quotes);
+        
+
+        if (totalDeCotasNaCarteira < request.Quotes) throw new BadRequestException("Não é possível sacar o investimento.");
+
+        var withdrawInvestment = _portfolioProductAppService.Create(investment);
+        PostInvestmentUpdates(portfolioFound, customerBankId, -investment.NetValue);
+        _portfolioProductAppService.RemoveProduct(portfolioFound, productFound);
+        return withdrawInvestment;
     }
 
-    private bool CheckCustomerAccountBalance(PortfolioProduct investment, long customerBankId, ProductResult productFound)
+    private void PostInvestmentUpdates(Portfolio portfolioFound, long customerBankId, decimal netValue)
     {
-        investment.NetValue = productFound.UnitPrice * investment.Quotes;
-        var customerAccountBalance = _customerBankInfoAppService.CheckCustomerAccountBalance(investment.NetValue, customerBankId);
+        portfolioFound.TotalBalance += netValue;
+        _portfolioService.UpdateBalanceAfterPurchase(portfolioFound);
+        _customerBankInfoAppService.UpdateBalanceAfterPurchase(customerBankId, netValue);
+    }
+
+    private void CheckCustomerAccountBalance(decimal netValue, long customerBankId)
+    {
+        var customerAccountBalance = _customerBankInfoAppService
+            .CanWithdrawAmountFromAccountBalance(netValue, customerBankId);
 
         if (customerAccountBalance is false ) 
             throw new BadRequestException($"Insufficient balance to invest.");
-
-        return true;
     }
 }
