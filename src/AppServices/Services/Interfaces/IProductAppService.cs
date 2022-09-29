@@ -1,5 +1,6 @@
 ﻿using Application.Models.Product.Request;
 using Application.Models.Product.Response;
+using DomainModels.Entities;
 using System.Collections.Generic;
 
 namespace AppServices.Services.Interfaces;
@@ -12,4 +13,5 @@ public interface IProductAppService
     ProductResult GetBySymbol(string symbol);
     void Update(UpdateProductRequest updateProductRequest);
     void Delete(long id);
+    public Product Get(long id);
 }

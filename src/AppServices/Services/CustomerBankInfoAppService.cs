@@ -1,5 +1,5 @@
-﻿using Application.Models;
-using Application.Models.Response;
+﻿using Application.Models.CustomerBackInfo.Requests;
+using Application.Models.CustomerBackInfo.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -71,7 +71,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
     public bool UpdateBalanceAfterPurchase(long customerBankInfoId, decimal purchaseValue)
     {
         var customerBankinfo = GetById(customerBankInfoId);
-        customerBankinfo.AccountBalance -= purchaseValue;
+        customerBankinfo.AccountBalance += purchaseValue;
         var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(customerBankinfo);
         return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankInfoToUpdate);
     }

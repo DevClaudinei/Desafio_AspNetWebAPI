@@ -49,6 +49,14 @@ public class ProductAppService : IProductAppService
         return _mapper.Map<ProductResult>(product);
     }
 
+    public Product Get(long id)
+    {
+        var product = _productService.GetById(id);
+        if (product is null) throw new NotFoundException($"Product for the Id: {id} was not found.");
+
+        return product;
+    }
+
     public void Update(UpdateProductRequest updateProductRequest)
     {
         var productToUpdate = _mapper.Map<Product>(updateProductRequest);

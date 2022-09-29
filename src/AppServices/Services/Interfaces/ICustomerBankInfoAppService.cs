@@ -1,5 +1,5 @@
-﻿using Application.Models;
-using Application.Models.Response;
+﻿using Application.Models.CustomerBackInfo.Requests;
+using Application.Models.CustomerBackInfo.Response;
 using DomainModels.Entities;
 using System.Collections.Generic;
 

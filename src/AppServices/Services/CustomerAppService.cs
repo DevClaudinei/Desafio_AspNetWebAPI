@@ -1,6 +1,7 @@
-using Application.Models;
+using Application.Models.Customer.Requests;
+using Application.Models.Customer.Response;
+using Application.Models.CustomerBackInfo.Response;
 using Application.Models.Portfolio.Response;
-using Application.Models.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
