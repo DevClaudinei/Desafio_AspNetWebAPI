@@ -15,6 +15,7 @@ public static class AutoMapperConfiguration
 
         var assembly = Assembly.Load("AppServices");
 
-        services.AddAutoMapper((serviceProvider, mapperConfiguration) => mapperConfiguration.AddMaps(assembly), assembly);
+        services.AddAutoMapper((serviceProvider, mapperConfiguration) => mapperConfiguration
+        .AddMaps(assembly), assembly);
     }
 }

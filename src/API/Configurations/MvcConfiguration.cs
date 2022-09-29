@@ -10,6 +10,7 @@ public static class MvcConfiguration
     {
         services
             .AddControllers()
-            .AddFluentValidation(options => options.RegisterValidatorsFromAssembly(Assembly.Load("AppServices")));
+            .AddFluentValidation(options => options
+            .RegisterValidatorsFromAssembly(Assembly.Load("AppServices")));
     }
 }
