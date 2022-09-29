@@ -17,5 +17,4 @@ public class Product
     public string Symbol { get; set; } // nome do ativo
     public decimal UnitPrice { get; set; } // preço de cada cota de um ativo
     public virtual ICollection<Portfolio> Portfolios { get; set; }
-    //public virtual ICollection<PortfolioProduct> PortfolioProducts { get; set; }
 }
