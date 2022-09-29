@@ -1,4 +1,5 @@
-using Application.Models;
+using Application.Models.Customer.Requests;
+using Application.Models.Customer.Response;
 using AutoMapper;
 using DomainModels.Entities;
 
