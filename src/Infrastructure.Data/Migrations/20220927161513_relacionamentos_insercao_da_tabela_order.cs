@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class relacionamentosmudancanoformatodosids : Migration
+    public partial class relacionamentos_insercao_da_tabela_order : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -113,7 +113,7 @@ namespace Infrastructure.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "PortfolioProduct",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -126,15 +126,67 @@ namespace Infrastructure.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PortfolioProduct", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PortfolioProduct_Portfolios_PortfolioId",
+                        name: "FK_Orders_Portfolios_PortfolioId",
                         column: x => x.PortfolioId,
                         principalTable: "Portfolios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PortfolioProduct_Products_ProductId",
+                        name: "FK_Orders_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "PortfolioProduct",
+                columns: table => new
+                {
+                    PortfoliosId = table.Column<long>(type: "bigint", nullable: false),
+                    ProductsId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PortfolioProduct", x => new { x.PortfoliosId, x.ProductsId });
+                    table.ForeignKey(
+                        name: "FK_PortfolioProduct_Portfolios_PortfoliosId",
+                        column: x => x.PortfoliosId,
+                        principalTable: "Portfolios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PortfolioProduct_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "PortfolioProducts",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    PortfolioId = table.Column<long>(type: "bigint", nullable: false),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PortfolioProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PortfolioProducts_Portfolios_PortfolioId",
+                        column: x => x.PortfolioId,
+                        principalTable: "Portfolios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PortfolioProducts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -149,13 +201,28 @@ namespace Infrastructure.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_PortfolioProduct_PortfolioId",
-                table: "PortfolioProduct",
+                name: "IX_Orders_PortfolioId",
+                table: "Orders",
                 column: "PortfolioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PortfolioProduct_ProductId",
+                name: "IX_Orders_ProductId",
+                table: "Orders",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PortfolioProduct_ProductsId",
                 table: "PortfolioProduct",
+                column: "ProductsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PortfolioProducts_PortfolioId",
+                table: "PortfolioProducts",
+                column: "PortfolioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PortfolioProducts_ProductId",
+                table: "PortfolioProducts",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -170,7 +237,13 @@ namespace Infrastructure.Data.Migrations
                 name: "CustomerBankInfos");
 
             migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "PortfolioProduct");
+
+            migrationBuilder.DropTable(
+                name: "PortfolioProducts");
 
             migrationBuilder.DropTable(
                 name: "Portfolios");

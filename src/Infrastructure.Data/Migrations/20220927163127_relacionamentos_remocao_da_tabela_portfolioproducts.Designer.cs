@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220830020505_relacionamentos-mudanca-no-formato-dos-ids")]
-    partial class relacionamentosmudancanoformatodosids
+    [Migration("20220927163127_relacionamentos_remocao_da_tabela_portfolioproducts")]
+    partial class relacionamentos_remocao_da_tabela_portfolioproducts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -141,6 +141,36 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("CustomerBankInfos", (string)null);
                 });
 
+            modelBuilder.Entity("DomainModels.Entities.Order", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("ConvertedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("NetValue")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<long>("PortfolioId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quotes")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PortfolioId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Orders", (string)null);
+                });
+
             modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
                 {
                     b.Property<long>("Id")
@@ -170,36 +200,6 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Portfolios", (string)null);
                 });
 
-            modelBuilder.Entity("DomainModels.Entities.PortfolioProduct", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("ConvertedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal>("NetValue")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<long>("PortfolioId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Quotes")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PortfolioId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("PortfolioProduct");
-                });
-
             modelBuilder.Entity("DomainModels.Entities.Product", b =>
                 {
                     b.Property<long>("Id")
@@ -219,6 +219,21 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
+            modelBuilder.Entity("PortfolioProduct", b =>
+                {
+                    b.Property<long>("PortfoliosId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("PortfoliosId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("PortfolioProduct");
+                });
+
             modelBuilder.Entity("DomainModels.Entities.CustomerBankInfo", b =>
                 {
                     b.HasOne("DomainModels.Entities.Customer", "Customer")
@@ -230,21 +245,10 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
-                {
-                    b.HasOne("DomainModels.Entities.Customer", "Customer")
-                        .WithMany("Portfolios")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("DomainModels.Entities.PortfolioProduct", b =>
+            modelBuilder.Entity("DomainModels.Entities.Order", b =>
                 {
                     b.HasOne("DomainModels.Entities.Portfolio", "Portfolio")
-                        .WithMany("PortfolioProducts")
+                        .WithMany()
                         .HasForeignKey("PortfolioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -260,16 +264,37 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
+                {
+                    b.HasOne("DomainModels.Entities.Customer", "Customer")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("PortfolioProduct", b =>
+                {
+                    b.HasOne("DomainModels.Entities.Portfolio", null)
+                        .WithMany()
+                        .HasForeignKey("PortfoliosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainModels.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DomainModels.Entities.Customer", b =>
                 {
                     b.Navigation("CustomerBankInfo");
 
                     b.Navigation("Portfolios");
-                });
-
-            modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
-                {
-                    b.Navigation("PortfolioProducts");
                 });
 #pragma warning restore 612, 618
         }
