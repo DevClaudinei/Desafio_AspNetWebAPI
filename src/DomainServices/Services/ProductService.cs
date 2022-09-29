@@ -1,6 +1,7 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
+using EntityFrameworkCore.Repository.Extensions;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
 using System;

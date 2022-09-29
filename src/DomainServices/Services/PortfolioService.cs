@@ -1,4 +1,5 @@
-﻿using DomainModels;
+﻿using Application.Models.Order;
+using DomainModels;
 using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
@@ -52,7 +53,7 @@ public class PortfolioService : IPortfolioService
     {
         var repository = _repositoryFactory.Repository<Portfolio>();
         var query = repository.SingleResultQuery()
-            .Include(source => source.Include(x => x.PortfolioProducts))
+            .Include(x => x.Include(x => x.Products))
             .AndFilter(x => x.Id.Equals(id));
 
         return repository.FirstOrDefault(query);
@@ -61,21 +62,17 @@ public class PortfolioService : IPortfolioService
     public IEnumerable<Portfolio> GetAll()
     {
         var repository = _repositoryFactory.Repository<Portfolio>();
-        var query = repository.MultipleResultQuery();
+        var query = repository.MultipleResultQuery()
+            .Include(x => x.Include(x => x.Products));
 
         return repository.Search(query);
+    
     }
 
-    private bool Exists(long id)
-    {
-        var repository = _repositoryFactory.Repository<Portfolio>();
-        return repository.Any(x => x.Id.Equals(id));
-    }
-
-    public bool UpdateBalanceAfterPurchase(Portfolio portfolio)
+    public bool Update(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        Exists(portfolio.Id);
+        //portfolio.Products.Clear();
 
         repository.Update(portfolio);
         _unitOfWork.SaveChanges();
@@ -90,5 +87,23 @@ public class PortfolioService : IPortfolioService
         if (totalBalance > 0) throw new BadRequestException($"Não é possível deletar carteira, pois ela ainda possui saldo.");
 
         repository.Remove(x => x.Id.Equals(id));
+    }
+
+    public void AddProduct(Portfolio portfolio, Product product)
+    {
+        portfolio.Products.Clear();
+        portfolio.Products.Add(product);
+        Update(portfolio);
+    }
+
+    public void RemoveProduct(Portfolio portfolio, Product product)
+    {
+        portfolio.Products.Remove(product);
+        Update(portfolio);
+    }
+
+    public void UpdateWithdraw(Order order, long productId, Portfolio portfolio)
+    {
+        
     }
 }
