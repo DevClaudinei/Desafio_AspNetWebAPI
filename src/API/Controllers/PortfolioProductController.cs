@@ -10,17 +10,17 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class PortfolioProductController : Controller
     {
-        private readonly IPortfolioProductAppService _portfolioProductService;
+        private readonly IOrderAppService _orderAppService;
 
-        public PortfolioProductController(IPortfolioProductAppService appService, IMapper mapper)
+        public PortfolioProductController(IOrderAppService appService, IMapper mapper)
         {
-            _portfolioProductService = appService ?? throw new ArgumentNullException(nameof(appService));
+            _orderAppService = appService ?? throw new ArgumentNullException(nameof(appService));
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var portfolioProductsFound = _portfolioProductService.GetAll();
+            var portfolioProductsFound = _orderAppService.GetAllOrder();
             return Ok(portfolioProductsFound);
         }
 
@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                var portfolioProductFound = _portfolioProductService.GetById(id);
+                var portfolioProductFound = _orderAppService.GetOrderById(id);
                 return Ok(portfolioProductFound);
             }
             catch (NotFoundException e)

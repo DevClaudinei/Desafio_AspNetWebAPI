@@ -1,4 +1,4 @@
-using Application.Models;
+using Application.Models.Customer.Requests;
 using AppServices.Services;
 using AutoMapper;
 using DomainServices.Exceptions;
