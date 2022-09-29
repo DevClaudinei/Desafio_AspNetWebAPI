@@ -1,4 +1,4 @@
-using Application.Models;
+using Application.Models.CustomerBackInfo.Requests;
 using FluentValidation;
 
 namespace AppServices.Validations.CustomerBankInfo;

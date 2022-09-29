@@ -1,4 +1,4 @@
-using Application.Models;
+using Application.Models.Customer.Requests;
 using FluentValidation;
 using FluentValidation.Validators;
 
