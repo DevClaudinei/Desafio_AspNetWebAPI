@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Application.Models.PortfolioProduct.Response;
+namespace Application.Models.Order;
 
-public class PortfolioProductResult
+public class OrderResult
 {
     public long Id { get; set; }
     public int Quotes { get; set; }

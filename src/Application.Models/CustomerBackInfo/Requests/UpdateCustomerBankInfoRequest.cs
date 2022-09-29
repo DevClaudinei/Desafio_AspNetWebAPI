@@ -1,11 +1,11 @@
-namespace Application.Models;
+namespace Application.Models.CustomerBackInfo.Requests;
 
 public class UpdateCustomerBankInfoRequest
 {
     protected UpdateCustomerBankInfoRequest() { }
 
     public UpdateCustomerBankInfoRequest(decimal accountBalance)
-    { 
+    {
         AccountBalance = accountBalance;
     }
 

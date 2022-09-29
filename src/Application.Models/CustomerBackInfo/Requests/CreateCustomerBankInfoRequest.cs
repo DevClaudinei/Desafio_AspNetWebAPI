@@ -1,4 +1,4 @@
-namespace Application.Models;
+namespace Application.Models.CustomerBackInfo.Requests;
 public class CreateCustomerBankInfoRequest
 {
     public CreateCustomerBankInfoRequest(string account, long customerId)

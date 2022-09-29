@@ -4,4 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="PortfolioProducts\**" />
+    <Compile Remove="PortfolioProduct\**" />
+    <EmbeddedResource Remove="PortfolioProducts\**" />
+    <EmbeddedResource Remove="PortfolioProduct\**" />
+    <None Remove="PortfolioProducts\**" />
+    <None Remove="PortfolioProduct\**" />
+  </ItemGroup>
+
 </Project>

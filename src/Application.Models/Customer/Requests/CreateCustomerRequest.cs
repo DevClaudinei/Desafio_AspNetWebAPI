@@ -1,6 +1,6 @@
 using System;
 
-namespace Application.Models;
+namespace Application.Models.Customer.Requests;
 public class CreateCustomerRequest
 {
     public CreateCustomerRequest(
