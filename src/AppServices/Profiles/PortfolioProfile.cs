@@ -7,8 +7,8 @@ namespace AppServices.Profiles;
 
 public class PortfolioProfile : Profile
 {
-	public PortfolioProfile()
-	{
+    public PortfolioProfile()
+    {
         CreateMap<Portfolio, PortfolioResult>();
         CreateMap<CreatePortfolioRequest, Portfolio>();
     }

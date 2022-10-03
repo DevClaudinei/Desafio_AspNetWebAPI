@@ -7,8 +7,8 @@ namespace AppServices.Profiles;
 
 public class OrderProfile : Profile
 {
-	public OrderProfile()
-	{
+    public OrderProfile()
+    {
         CreateMap<Order, OrderResult>();
         CreateMap<InvestmentRequest, Order>();
         CreateMap<OrderResult, Order>();
