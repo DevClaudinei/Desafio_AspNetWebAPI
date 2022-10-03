@@ -1,59 +1,45 @@
-﻿//using Application.Models.Portfolio.Request;
-//using Application.Models.PortfolioProduct.Response;
-//using Application.Models.Product.Response;
-//using AppServices.Services.Interfaces;
-//using AutoMapper;
-//using DomainModels.Entities;
-//using DomainServices.Exceptions;
-//using DomainServices.Services.Interfaces;
-//using System;
-//using System.Collections.Generic;
+﻿using AppServices.Services.Interfaces;
+using AutoMapper;
+using DomainModels.Entities;
+using DomainServices.Exceptions;
+using DomainServices.Services.Interfaces;
+using System.Collections.Generic;
 
-//namespace AppServices.Services;
+namespace AppServices.Services;
 
-//public class PortfolioProductAppService : IOrderAppService
-//{
-//    private readonly IMapper _mapper;
-//    private readonly IPortfolioProductService _portfolioProductService;
-    
-//    public PortfolioProductAppService(IMapper mapper, IPortfolioProductService portfolioProductService)
-//    {
-//        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-//        _portfolioProductService = portfolioProductService ?? throw new ArgumentNullException(nameof(portfolioProductService));
-//    }
+public class PortfolioProductAppService : IPortfolioProductAppService
+{
+    private readonly IMapper _mapper;
+    private readonly IPortfolioProductService _portfolioProductService;
 
-//    public long Create(Order investment)
-//    {
-//        return _portfolioProductService.Create(investment);
-//    }
+    public PortfolioProductAppService(IMapper mapper, IPortfolioProductService portfolioProductService)
+    {
+        _mapper = mapper ?? throw new System.ArgumentNullException(nameof(mapper));
+        _portfolioProductService = portfolioProductService ?? throw new System.ArgumentNullException(nameof(portfolioProductService));
+    }
 
-//    public IEnumerable<OrderResult> GetAllOrder()
-//    {
-//        var portfolioProductsFound = _portfolioProductService.GetAll();
-//        return _mapper.Map<IEnumerable<OrderResult>>(portfolioProductsFound);
-//    }
+    public IEnumerable<PortfolioProduct> GetAll()
+    {
+        var portfolioProducts = _portfolioProductService.GetAll();
+        return _mapper.Map<IEnumerable<PortfolioProduct>>(portfolioProducts);
+    }
 
-//    public OrderResult GetOrderById(long id)
-//    {
-//        var portfolioProductFound = _portfolioProductService.GetById(id);
-//        if (portfolioProductFound is null) throw new NotFoundException($"PortfolioProduct for id: {id} not found.");
+    public PortfolioProduct GetById(long portfolioId, long productId)
+    {
+        var portfolioProduct = _portfolioProductService.GetById(portfolioId, productId);
+        if (portfolioProduct is null)
+            throw new NotFoundException($"PortfolioProduct with Portfolioid: {portfolioId} and ProductId: {productId} not found.");
+        
+        return portfolioProduct;
+    }
 
-//        return _mapper.Map<OrderResult>(portfolioProductFound);
-//    }
+    public void AddProduct(Portfolio portfolio, Product product)
+    {
+        _portfolioProductService.AddProduct(portfolio, product);
+    }
 
-//    public void WithdrawInvestment(long id, WithdrawInvestmentRequest withdrawInvestment)
-//    {
-//        var portfolioProductToUpdate = _mapper.Map<Order>(withdrawInvestment);
-//        _portfolioProductService.WithdrawInvestment(id, portfolioProductToUpdate);
-//    }
-
-//    public int GetQuantityOfQuotes(long portfolioId, long productId, int quotes)
-//    {
-//        return _portfolioProductService.GetQuantityOfQuotes(portfolioId, productId, quotes);
-//    }
-
-//    public void RemoveProduct(Portfolio portfolioFound, Product productFound)
-//    {
-//        _portfolioProductService.RemoveProduct(portfolioFound, productFound);
-//    }
-//}
+    public void RemoveProduct(Portfolio portfolio, Product product)
+    {
+        _portfolioProductService.RemoveProduct(portfolio, product);
+    }
+}

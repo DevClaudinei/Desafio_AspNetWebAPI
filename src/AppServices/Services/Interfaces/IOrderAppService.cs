@@ -9,6 +9,7 @@ public interface IOrderAppService
     long Create(Order investment);
     IEnumerable<OrderResult> GetAllOrder();
     OrderResult GetOrderById(long id);
-    IEnumerable<OrderResult> GetQuantityOfQuotes(long portfolioId, long productId);
+    Order Get(long id);
+    int GetQuantityOfQuotes(long portfolioId, long productId);
     void Update(long id, OrderResult order, long portfoliotId, long productId);
 }

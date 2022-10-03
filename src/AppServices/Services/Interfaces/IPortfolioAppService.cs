@@ -1,4 +1,5 @@
-﻿using Application.Models.Portfolio.Request;
+﻿using Application.Models.Enum;
+using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
 using System.Collections.Generic;
 
@@ -12,6 +13,5 @@ public interface IPortfolioAppService
     decimal GetTotalBalance(long portfolioId);
     public bool UpdateBalanceAfterPurchase(PortfolioResult portfolioResult, decimal purchaseValue);
     void Delete(long id);
-    long Invest(InvestmentRequest request);
-    long WithdrawInvestment(WithdrawInvestmentRequest request);
+    long Invest(InvestmentRequest request, OrderDirection orderDirection);
 }

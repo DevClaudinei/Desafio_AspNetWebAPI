@@ -28,6 +28,14 @@ public class OrderAppService : IOrderAppService
         return _orderService.Create(investment);
     }
 
+    public Order Get(long id)
+    {
+        var order = _orderService.GetOrderById(id);
+        if (order is null) throw new NotFoundException($"Order for id: {id} not found.");
+
+        return order;
+    }
+
     public IEnumerable<OrderResult> GetAllOrder()
     {
         var order = _orderService.GetAllOrder();
@@ -42,12 +50,9 @@ public class OrderAppService : IOrderAppService
         return _mapper.Map<OrderResult>(order);
     }
 
-    public IEnumerable<OrderResult> GetQuantityOfQuotes(long portfolioId, long productId)
+    public int GetQuantityOfQuotes(long portfolioId, long productId)
     {
-        var order = _orderService.GetQuantityOfQuotes(portfolioId, productId);
-        if (order is null) throw new NotFoundException($"Não existe order contendo {portfolioId} e {productId}");
-
-        return _mapper.Map<IEnumerable<OrderResult>>(order);
+        return _orderService.GetQuantityOfQuotesBuy(portfolioId, productId);
     }
 
     public void Update(long id, OrderResult order, long portfoliotId, long productId)

@@ -1,4 +1,4 @@
-﻿using Application.Models.Order;
+﻿using Application.Models.Enum;
 using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
 using Application.Models.Product.Response;
@@ -15,24 +15,27 @@ namespace AppServices.Services;
 public class PortfolioAppService : IPortfolioAppService
 {
     private readonly IMapper _mapper;
+    private readonly IOrderAppService _orderAppService;
     private readonly IPortfolioService _portfolioService;
     private readonly IProductAppService _productAppService;
-    private readonly IOrderAppService _orderAppService;
+    private readonly IPortfolioProductAppService _portfolioProductAppService;
     private readonly ICustomerBankInfoAppService _customerBankInfoAppService;
 
     public PortfolioAppService(
         IMapper mapper,
         IPortfolioService portfolioService,
         IProductAppService productAppService,
-        ICustomerBankInfoAppService customerBankInfoAppService,
-        IOrderAppService portfolioProductAppService
+        IOrderAppService orderAppService,
+        IPortfolioProductAppService portfolioProductAppService,
+        ICustomerBankInfoAppService customerBankInfoAppService
     )
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _portfolioService = portfolioService ?? throw new ArgumentNullException(nameof(portfolioService));
         _productAppService = productAppService ?? throw new ArgumentNullException(nameof(productAppService));
         _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
-        _orderAppService = portfolioProductAppService ?? throw new ArgumentNullException(nameof(portfolioProductAppService));
+        _orderAppService = orderAppService ?? throw new ArgumentNullException(nameof(orderAppService));
+        _portfolioProductAppService = portfolioProductAppService ?? throw new ArgumentNullException(nameof(portfolioProductAppService));
     }
 
     public long Create(CreatePortfolioRequest portfolioCreate)
@@ -107,26 +110,67 @@ public class PortfolioAppService : IPortfolioAppService
         _portfolioService.Delete(id);
     }
 
-    public long Invest(InvestmentRequest request)
+    public long Invest(InvestmentRequest request, OrderDirection orderDirection)
     {
         var portfolioFound = GetById(request.PortfolioId);
         var productFound = _productAppService.Get(request.ProductId);
-        var order = new Order(productFound.UnitPrice, request.Quotes);
-        var investment = _mapper.Map<Order>(request);
-        investment.NetValue = order.NetValue;
-        var customerBankId = _customerBankInfoAppService.GetCustomerBankInfoId(portfolioFound.CustomerId);
+        var order = PrepareOrder(productFound.UnitPrice, request, orderDirection);
+        var customerBankId = CheckCustomerAccountBalance(portfolioFound.CustomerId, order);
+        var createdInvestment = _orderAppService.Create(order);
 
-        CheckCustomerAccountBalance(investment.NetValue, customerBankId);
+        if (orderDirection != OrderDirection.Buy)
+            UninvestimentRealize(order, customerBankId, portfolioFound, productFound);
 
-        if (!(request.ConvertedAt <= DateTime.UtcNow)) throw new BadRequestException("Não é possível investir com data futura.");
-
-        var createdInvestment = _orderAppService.Create(investment);
-
-        PostInvestmentUpdates(portfolioFound, customerBankId, investment.NetValue);
-
-        _portfolioService.AddProduct(portfolioFound, productFound);
+        if (orderDirection == OrderDirection.Buy)
+            InvestimentRealize(order, customerBankId, portfolioFound, productFound);
 
         return createdInvestment;
+    }
+
+    private Order PrepareOrder(decimal unitPrice, InvestmentRequest request, OrderDirection orderDirection)
+    {
+        var order = new Order(unitPrice, request.Quotes);
+ 
+        var investment = _mapper.Map<Order>(request);
+        investment.NetValue = order.NetValue;
+
+        return investment;
+    }
+
+    private long CheckCustomerAccountBalance(long customerId, Order order)
+    {
+        var customerBankId = _customerBankInfoAppService.GetCustomerBankInfoId(customerId);
+        var customerAccountBalance = _customerBankInfoAppService
+            .CanWithdrawAmountFromAccountBalance(order.NetValue, customerBankId);
+
+        if (customerAccountBalance is false)
+            throw new BadRequestException($"Insufficient balance to invest.");
+
+        return customerBankId;
+    }
+
+    private void UninvestimentRealize(Order order, long customerBankId, Portfolio portfolioFound, Product productFound)
+    {
+        CheckCustomerQuotes(portfolioFound, productFound);
+        PostInvestmentUpdates(portfolioFound, customerBankId, - order.NetValue);
+    }   
+
+    private void InvestimentRealize(Order order, long customerBankId, Portfolio portfolioFound, Product productFound)
+    {
+        if (!(order.ConvertedAt <= DateTime.UtcNow)) throw new BadRequestException("Não é possível investir com data futura.");
+
+        PostInvestmentUpdates(portfolioFound, customerBankId, order.NetValue);
+        _portfolioProductAppService.AddProduct(portfolioFound, productFound);
+    }
+
+    private bool CheckCustomerQuotes(Portfolio portfolioFound, Product productFound)
+    {
+        var quantityCotes = _orderAppService.GetQuantityOfQuotes(portfolioFound.Id, productFound.Id);
+
+        if(quantityCotes == 0)
+            _portfolioProductAppService.RemoveProduct(portfolioFound, productFound);
+
+        return true;
     }
 
     private void PostInvestmentUpdates(Portfolio portfolioFound, long customerBankId, decimal netValue)
@@ -134,59 +178,5 @@ public class PortfolioAppService : IPortfolioAppService
         portfolioFound.TotalBalance += netValue;
         _portfolioService.Update(portfolioFound);
         _customerBankInfoAppService.UpdateBalanceAfterPurchase(customerBankId, -netValue);
-    }
-
-    private void CheckCustomerAccountBalance(decimal netValue, long customerBankId)
-    {
-        var customerAccountBalance = _customerBankInfoAppService
-            .CanWithdrawAmountFromAccountBalance(netValue, customerBankId);
-
-        if (customerAccountBalance is false)
-            throw new BadRequestException($"Insufficient balance to invest.");
-    }
-
-    private OrderResult VerificarRemocaoDeCotas(IEnumerable<OrderResult> orders, WithdrawInvestmentRequest request)
-    {
-        var orderResult = new OrderResult();
-
-        foreach (var order in orders)
-        {
-            if (order.Quotes - request.Quotes > 0)
-            { 
-                orderResult = order;
-                orderResult.Quotes -= request.Quotes;
-                orderResult.NetValue = orderResult.NetValue / request.Quotes;
-                break;
-            }
-
-            if (request.Quotes > order.Quotes) throw new BadRequestException("O numero de cotas solicitadas é maior que a existente.");
-        }
-
-        return orderResult;
-    }
-
-    public long WithdrawInvestment(WithdrawInvestmentRequest request)
-    {
-        var portfolioFound = GetById(request.PortfolioId);
-        var productFound = _productAppService.Get(request.ProductId);
-        var portfolioProduct = new Order(productFound.UnitPrice, request.Quotes);
-        var investment = _mapper.Map<Order>(request);
-        
-        investment.NetValue = portfolioProduct.NetValue;
-        
-        var customerBankId = _customerBankInfoAppService.GetCustomerBankInfoId(portfolioFound.CustomerId);
-        var orders = _orderAppService
-            .GetQuantityOfQuotes(portfolioFound.Id, request.ProductId);
-        var order = VerificarRemocaoDeCotas(orders, request);
-
-        PostInvestmentUpdates(portfolioFound, customerBankId, -investment.NetValue);
-
-        var withdrawInvestment = _orderAppService.Create(investment);
-        _orderAppService.Update(order.Id, order, productFound.Id, portfolioFound.Id);
-
-        if (order.Quotes == 0)
-            _portfolioService.RemoveProduct(portfolioFound, productFound);
-
-        return withdrawInvestment;
     }
 }
