@@ -13,7 +13,7 @@ public class Portfolio : IEntity
         CustomerId = customerId;
     }
 
-    public decimal TotalBalance { get; set; } // patrimônio da carteira somando todos os ativos
+    public decimal TotalBalance { get; set; }
     public long CustomerId { get; set; }
     public virtual Customer Customer { get; set; }
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();

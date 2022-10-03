@@ -12,8 +12,8 @@ public class UpdateProductRequest
     }
 
     public long Id { get; set; }
-    public string Symbol { get; set; } // nome do ativo
-    public decimal UnitPrice { get; set; } // preço de cada cota de um ativo
+    public string Symbol { get; set; }
+    public decimal UnitPrice { get; set; }
     public long PortfolioId { get; set; }
-    public int Quotes { get; set; } // quantidade de cotas
+    public int Quotes { get; set; }
 }
