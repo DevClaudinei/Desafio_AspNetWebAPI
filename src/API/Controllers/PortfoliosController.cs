@@ -1,4 +1,5 @@
-﻿using Application.Models.Portfolio.Request;
+﻿using Application.Models.Enum;
+using Application.Models.Portfolio.Request;
 using AppServices.Services.Interfaces;
 using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -34,32 +35,13 @@ public class PortfoliosController : Controller
         }
     }
 
-    [HttpPost("/investment")]
-    public IActionResult Post(InvestmentRequest investmentRequest)
+    [HttpPost("{orderDirection}/investment")]
+    public IActionResult Post(InvestmentRequest investmentRequest, OrderDirection orderDirection)
     {
         try
         {
-            var investmentCustomer = _portfolioAppService.Invest(investmentRequest);
+            var investmentCustomer = _portfolioAppService.Invest(investmentRequest, orderDirection);
             return Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer);
-        }
-        catch (NotFoundException e)
-        {
-            return BadRequest(e.Message);
-        }
-        catch (BadRequestException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpPost("/uninvest")]
-    public IActionResult Post(WithdrawInvestmentRequest withdrawInvestmentRequest)
-    {
-        try
-        {
-            var uninvest = _portfolioAppService.WithdrawInvestment(withdrawInvestmentRequest);
-            return Created("~http://localhost:5160/api/PortfolioProducts", uninvest);
-
         }
         catch (NotFoundException e)
         {
