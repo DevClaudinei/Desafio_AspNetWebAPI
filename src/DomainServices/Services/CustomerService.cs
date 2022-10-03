@@ -30,7 +30,7 @@ public class CustomerService : ICustomerService
         return customer.Id;
     }
 
-    private bool VerifyCustomerAlreadyExists(Customer customer)
+    private void VerifyCustomerAlreadyExists(Customer customer)
     {
         var repository = _repositoryFactory.Repository<Customer>();
 
@@ -39,8 +39,6 @@ public class CustomerService : ICustomerService
 
         if (repository.Any(x => x.Cpf.Equals(customer.Cpf)))
             throw new BadRequestException($"Customer already exists for CPF: {customer.Cpf}");
-
-        return true;
     }
 
     public IEnumerable<Customer> GetAll()
