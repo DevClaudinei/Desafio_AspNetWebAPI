@@ -1,5 +1,4 @@
-﻿using Application.Models.Order;
-using DomainModels;
+﻿using DomainModels;
 using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
@@ -66,13 +65,12 @@ public class PortfolioService : IPortfolioService
             .Include(x => x.Include(x => x.Products));
 
         return repository.Search(query);
-    
     }
 
     public bool Update(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
-        //portfolio.Products.Clear();
+        portfolio.Products.Clear();
 
         repository.Update(portfolio);
         _unitOfWork.SaveChanges();
@@ -87,23 +85,5 @@ public class PortfolioService : IPortfolioService
         if (totalBalance > 0) throw new BadRequestException($"Não é possível deletar carteira, pois ela ainda possui saldo.");
 
         repository.Remove(x => x.Id.Equals(id));
-    }
-
-    public void AddProduct(Portfolio portfolio, Product product)
-    {
-        portfolio.Products.Clear();
-        portfolio.Products.Add(product);
-        Update(portfolio);
-    }
-
-    public void RemoveProduct(Portfolio portfolio, Product product)
-    {
-        portfolio.Products.Remove(product);
-        Update(portfolio);
-    }
-
-    public void UpdateWithdraw(Order order, long productId, Portfolio portfolio)
-    {
-        
     }
 }

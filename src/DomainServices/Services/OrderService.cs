@@ -4,6 +4,7 @@ using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainServices.Services;
 
@@ -45,25 +46,28 @@ public class OrderService : IOrderService
         return repository.SingleOrDefault(customerFound);
     }
 
-    public IEnumerable<Order> GetQuantityOfQuotes(long portfolioId, long productId)
+    public int GetQuantityOfQuotesBuy(long portfolioId, long productId)
     {
         var repository = _repositoryFactory.Repository<Order>();
-        var query = repository.SingleResultQuery()
-            .AndFilter(x => x.ProductId.Equals(productId))
-            .AndFilter(x => x.PortfolioId.Equals(portfolioId));
+        var quotesBuyed = repository.FromSql($"SELECT * FROM CustomerDB.Orders " +
+            $"WHERE PortfolioId = {portfolioId} AND ProductId = {productId} AND Direction = 1")
+            .Sum(x => x.Quotes);
+        var quotesSelled = repository.FromSql($"SELECT * FROM CustomerDB.Orders " +
+            $"WHERE PortfolioId = {portfolioId} AND ProductId = {productId} AND Direction = 2")
+            .Sum(x => x.Quotes);
+        var totalQuotes = quotesSelled - quotesBuyed;
 
-        return repository.Search(query);
+        return totalQuotes;
     }
 
     public void Update(long id, Order order, long portfoliotId, long productId)
     {
         var repository = _unitOfWork.Repository<Order>();
 
-        order.PortfolioId = portfoliotId;
-        order.ProductId = productId;
-
-        repository.Update(order);
-        _unitOfWork.SaveChanges();
-
+        if (repository.Any(x => x.Id.Equals(order.Id)))
+        {
+            repository.Update(order);
+            _unitOfWork.SaveChanges();
+        }
     }
 }

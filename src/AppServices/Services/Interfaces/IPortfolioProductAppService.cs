@@ -1,5 +1,4 @@
-﻿using Application.Models.PortfolioProduct;
-using DomainModels.Entities;
+﻿using DomainModels.Entities;
 using System.Collections.Generic;
 
 namespace AppServices.Services.Interfaces;

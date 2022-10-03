@@ -1,15 +1,12 @@
-﻿using Application.Models.Product.Response;
-using DomainModels.Entities;
+﻿using DomainModels.Entities;
 using System.Collections.Generic;
 
 namespace DomainServices.Services.Interfaces;
 
 public interface IPortfolioProductService
 {
-    long Create(PortfolioProduct portfolioProduct);
+    void AddProduct(Portfolio portfolio, Product product);
     IEnumerable<PortfolioProduct> GetAll();
-    PortfolioProduct GetById(long id);
-    int GetQuantityOfQuotes(long portfolioId, long productId, int quotes);
-    void RemoveProduct(Portfolio portfolioFound, ProductResult productFound);
-    void WithdrawInvestment(long id, PortfolioProduct portfolioProductToUpdate);
+    PortfolioProduct GetById(long portfolioId, long productId);
+    void RemoveProduct(Portfolio portfolio, Product product);
 }

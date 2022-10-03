@@ -12,7 +12,4 @@ public interface IPortfolioService
     decimal GetTotalBalance(long portfolioId);
     public bool Update(Portfolio portfolio);
     void Delete(long id);
-    public void AddProduct(Portfolio portfolio, Product product);
-    public void RemoveProduct(Portfolio portfolio, Product product);
-    void UpdateWithdraw(Order order, long productId, Portfolio portfolio);
 }
