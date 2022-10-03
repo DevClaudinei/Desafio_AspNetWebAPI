@@ -51,12 +51,12 @@ public class CustomerBankInfosController : ControllerBase
         }
     }
 
-    [HttpPatch("{id}/deposit")]
-    public IActionResult DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    [HttpPatch("{id}/deposit/{amount}")]
+    public IActionResult Deposit(long id, decimal amount)
     {
         try
         {
-            _customerBankInfoAppService.DepositMoney(id, updateCustomerBankInfoRequest);
+            _customerBankInfoAppService.Deposit(id, amount);
             return Ok();
         }
         catch (BadRequestException e)
@@ -69,12 +69,12 @@ public class CustomerBankInfosController : ControllerBase
         }
     }
 
-    [HttpPatch("{id}/withdraw")]
-    public IActionResult WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    [HttpPatch("{id}/withdraw/{amount}")]
+    public IActionResult Withdraw(long id, decimal amount)
     {
         try
         {
-            _customerBankInfoAppService.WithdrawMoney(id, updateCustomerBankInfoRequest);
+            _customerBankInfoAppService.Withdraw(id, amount);
             return Ok();
         }
         catch (BadRequestException e)
