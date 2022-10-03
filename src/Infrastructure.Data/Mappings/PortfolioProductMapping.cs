@@ -9,9 +9,15 @@ public class PortfolioProductMapping : IEntityTypeConfiguration<PortfolioProduct
 {
     public void Configure(EntityTypeBuilder<PortfolioProduct> builder)
     {
-        builder.ToTable("PortfolioProduct");
+        builder.ToTable("PortfolioProducts");
 
         builder.HasKey(x => x.Id);
+
+        builder.Property(a => a.PortfolioId)
+            .IsRequired();
+
+        builder.Property(a => a.ProductId)
+            .IsRequired();
 
         builder.Property(x => x.Id)
         .ValueGeneratedOnAdd();

@@ -15,13 +15,7 @@ public class ProductMapping : IEntityTypeConfiguration<Product>
             .ValueGeneratedOnAdd();
 
         builder.HasMany(x => x.Portfolios)
-            .WithMany(x => x.Products)
-            .UsingEntity<PortfolioProduct>(
-                pp => pp.HasOne(p => p.Portfolio)
-                .WithMany().HasForeignKey(pp => pp.PortfolioId),
-                pp => pp.HasOne(p => p.Product)
-                .WithMany().HasForeignKey(pp => pp.ProductId)
-            );
+           .WithMany(x => x.Products);
 
         builder.Property(x => x.Symbol)
             .IsRequired()

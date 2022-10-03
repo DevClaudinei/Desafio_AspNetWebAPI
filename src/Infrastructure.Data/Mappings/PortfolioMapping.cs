@@ -15,7 +15,13 @@ public class PortfolioMapping : IEntityTypeConfiguration<Portfolio>
             .ValueGeneratedOnAdd();
 
         builder.HasMany(x => x.Products)
-            .WithMany(x => x.Portfolios);
+            .WithMany(x => x.Portfolios)
+            .UsingEntity<PortfolioProduct>(
+               pp => pp.HasOne(p => p.Product)
+               .WithMany().HasForeignKey(pp => pp.ProductId),
+               pp => pp.HasOne(p => p.Portfolio)
+               .WithMany().HasForeignKey(pp => pp.PortfolioId)
+           );
 
         builder.Property(x => x.TotalBalance)
             .HasColumnType("decimal(10,2)");

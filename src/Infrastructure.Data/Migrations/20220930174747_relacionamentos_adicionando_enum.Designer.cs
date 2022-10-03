@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220927201832_relacionamentos_renomeando_tabela_portfolioproducts")]
-    partial class relacionamentos_renomeando_tabela_portfolioproducts
+    [Migration("20220930174747_relacionamentos_adicionando_enum")]
+    partial class relacionamentos_adicionando_enum
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -150,6 +150,9 @@ namespace Infrastructure.Data.Migrations
                     b.Property<DateTime>("ConvertedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int>("Direction")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("NetValue")
                         .HasColumnType("decimal(10,2)");
 
@@ -209,16 +212,26 @@ namespace Infrastructure.Data.Migrations
                     b.Property<long>("PortfolioId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("PortfolioId1")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ProductId1")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PortfolioId");
 
+                    b.HasIndex("PortfolioId1");
+
                     b.HasIndex("ProductId");
 
-                    b.ToTable("PortfolioProduct", (string)null);
+                    b.HasIndex("ProductId1");
+
+                    b.ToTable("PortfolioProducts", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Entities.Product", b =>
@@ -289,11 +302,19 @@ namespace Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DomainModels.Entities.Portfolio", null)
+                        .WithMany("PortfolioProducts")
+                        .HasForeignKey("PortfolioId1");
+
                     b.HasOne("DomainModels.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("DomainModels.Entities.Product", null)
+                        .WithMany("PortfolioProducts")
+                        .HasForeignKey("ProductId1");
 
                     b.Navigation("Portfolio");
 
@@ -305,6 +326,16 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("CustomerBankInfo");
 
                     b.Navigation("Portfolios");
+                });
+
+            modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
+                {
+                    b.Navigation("PortfolioProducts");
+                });
+
+            modelBuilder.Entity("DomainModels.Entities.Product", b =>
+                {
+                    b.Navigation("PortfolioProducts");
                 });
 #pragma warning restore 612, 618
         }

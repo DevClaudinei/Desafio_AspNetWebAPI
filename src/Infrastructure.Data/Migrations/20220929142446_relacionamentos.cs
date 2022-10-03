@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class relacionamentos_insercao_da_tabela_order : Migration
+    public partial class relacionamentos : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -143,31 +143,6 @@ namespace Infrastructure.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "PortfolioProduct",
-                columns: table => new
-                {
-                    PortfoliosId = table.Column<long>(type: "bigint", nullable: false),
-                    ProductsId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PortfolioProduct", x => new { x.PortfoliosId, x.ProductsId });
-                    table.ForeignKey(
-                        name: "FK_PortfolioProduct_Portfolios_PortfoliosId",
-                        column: x => x.PortfoliosId,
-                        principalTable: "Portfolios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PortfolioProduct_Products_ProductsId",
-                        column: x => x.ProductsId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "PortfolioProducts",
                 columns: table => new
                 {
@@ -211,11 +186,6 @@ namespace Infrastructure.Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PortfolioProduct_ProductsId",
-                table: "PortfolioProduct",
-                column: "ProductsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PortfolioProducts_PortfolioId",
                 table: "PortfolioProducts",
                 column: "PortfolioId");
@@ -238,9 +208,6 @@ namespace Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Orders");
-
-            migrationBuilder.DropTable(
-                name: "PortfolioProduct");
 
             migrationBuilder.DropTable(
                 name: "PortfolioProducts");

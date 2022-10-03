@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220927161513_relacionamentos_insercao_da_tabela_order")]
-    partial class relacionamentos_insercao_da_tabela_order
+    [Migration("20220929142446_relacionamentos")]
+    partial class relacionamentos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -240,21 +240,6 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
-            modelBuilder.Entity("PortfolioProduct", b =>
-                {
-                    b.Property<long>("PortfoliosId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProductsId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("PortfoliosId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("PortfolioProduct");
-                });
-
             modelBuilder.Entity("DomainModels.Entities.CustomerBankInfo", b =>
                 {
                     b.HasOne("DomainModels.Entities.Customer", "Customer")
@@ -313,21 +298,6 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Portfolio");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("PortfolioProduct", b =>
-                {
-                    b.HasOne("DomainModels.Entities.Portfolio", null)
-                        .WithMany()
-                        .HasForeignKey("PortfoliosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DomainModels.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("DomainModels.Entities.Customer", b =>

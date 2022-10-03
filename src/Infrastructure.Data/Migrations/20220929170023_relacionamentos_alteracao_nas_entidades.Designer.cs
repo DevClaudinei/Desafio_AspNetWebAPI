@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220927163127_relacionamentos_remocao_da_tabela_portfolioproducts")]
-    partial class relacionamentos_remocao_da_tabela_portfolioproducts
+    [Migration("20220929170023_relacionamentos_alteracao_nas_entidades")]
+    partial class relacionamentos_alteracao_nas_entidades
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -156,6 +156,9 @@ namespace Infrastructure.Data.Migrations
                     b.Property<long>("PortfolioId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("PortfolioProductId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
@@ -165,6 +168,8 @@ namespace Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PortfolioId");
+
+                    b.HasIndex("PortfolioProductId");
 
                     b.HasIndex("ProductId");
 
@@ -200,6 +205,37 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Portfolios", (string)null);
                 });
 
+            modelBuilder.Entity("DomainModels.Entities.PortfolioProduct", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PortfolioId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("PortfolioId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ProductId1")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PortfolioId");
+
+                    b.HasIndex("PortfolioId1");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
+
+                    b.ToTable("PortfolioProducts", (string)null);
+                });
+
             modelBuilder.Entity("DomainModels.Entities.Product", b =>
                 {
                     b.Property<long>("Id")
@@ -217,21 +253,6 @@ namespace Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products", (string)null);
-                });
-
-            modelBuilder.Entity("PortfolioProduct", b =>
-                {
-                    b.Property<long>("PortfoliosId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProductsId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("PortfoliosId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("PortfolioProduct");
                 });
 
             modelBuilder.Entity("DomainModels.Entities.CustomerBankInfo", b =>
@@ -252,6 +273,10 @@ namespace Infrastructure.Data.Migrations
                         .HasForeignKey("PortfolioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("DomainModels.Entities.PortfolioProduct", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("PortfolioProductId");
 
                     b.HasOne("DomainModels.Entities.Product", "Product")
                         .WithMany()
@@ -275,19 +300,31 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("PortfolioProduct", b =>
+            modelBuilder.Entity("DomainModels.Entities.PortfolioProduct", b =>
                 {
-                    b.HasOne("DomainModels.Entities.Portfolio", null)
+                    b.HasOne("DomainModels.Entities.Portfolio", "Portfolio")
                         .WithMany()
-                        .HasForeignKey("PortfoliosId")
+                        .HasForeignKey("PortfolioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainModels.Entities.Portfolio", null)
+                        .WithMany("PortfolioProducts")
+                        .HasForeignKey("PortfolioId1");
+
+                    b.HasOne("DomainModels.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DomainModels.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("PortfolioProducts")
+                        .HasForeignKey("ProductId1");
+
+                    b.Navigation("Portfolio");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DomainModels.Entities.Customer", b =>
@@ -295,6 +332,21 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("CustomerBankInfo");
 
                     b.Navigation("Portfolios");
+                });
+
+            modelBuilder.Entity("DomainModels.Entities.Portfolio", b =>
+                {
+                    b.Navigation("PortfolioProducts");
+                });
+
+            modelBuilder.Entity("DomainModels.Entities.PortfolioProduct", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("DomainModels.Entities.Product", b =>
+                {
+                    b.Navigation("PortfolioProducts");
                 });
 #pragma warning restore 612, 618
         }
