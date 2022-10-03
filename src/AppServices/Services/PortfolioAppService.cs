@@ -105,7 +105,7 @@ public class PortfolioAppService : IPortfolioAppService
         var portfolio = _portfolioService.GetById(id);
 
         var portfolioTotalBalance = _portfolioService.GetTotalBalance(id);
-        _customerBankInfoAppService.RedeemInvestedAmount(portfolio.CustomerId, portfolioTotalBalance);
+        _customerBankInfoAppService.Withdraw(portfolio.CustomerId, portfolioTotalBalance);
 
         _portfolioService.Delete(id);
     }
@@ -157,7 +157,8 @@ public class PortfolioAppService : IPortfolioAppService
 
     private void InvestimentRealize(Order order, long customerBankId, Portfolio portfolioFound, Product productFound)
     {
-        if (!(order.ConvertedAt <= DateTime.UtcNow)) throw new BadRequestException("Não é possível investir com data futura.");
+        if (!(order.ConvertedAt <= DateTime.UtcNow)) 
+            throw new BadRequestException("It is not possible to make an investment with a future date.");
 
         PostInvestmentUpdates(portfolioFound, customerBankId, order.NetValue);
         _portfolioProductAppService.AddProduct(portfolioFound, productFound);
@@ -177,6 +178,6 @@ public class PortfolioAppService : IPortfolioAppService
     {
         portfolioFound.TotalBalance += netValue;
         _portfolioService.Update(portfolioFound);
-        _customerBankInfoAppService.UpdateBalanceAfterPurchase(customerBankId, -netValue);
+        _customerBankInfoAppService.Withdraw(customerBankId, -netValue);
     }
 }

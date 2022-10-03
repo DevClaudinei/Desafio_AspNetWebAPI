@@ -90,7 +90,7 @@ public class CustomerAppService : ICustomerAppService
             if (item.CustomerId != id) continue;
 
             if (item.CustomerId == id && item.TotalBalance > 0) 
-                throw new BadRequestException($"Customer needs to redeem their balance before being deleted.");
+                throw new BadRequestException($"Customer needs to withdraw their balance before being deleted.");
 
             if (item.CustomerId == id && item.TotalBalance == 0) exclusionOfValidCustomer = true;
         }
@@ -107,7 +107,7 @@ public class CustomerAppService : ICustomerAppService
             if (item.CustomerId != id) continue;
 
             if (item.CustomerId == id && item.AccountBalance > 0)
-                throw new BadRequestException($"Customer needs to redeem their balance before being deleted.");
+                throw new BadRequestException($"Customer needs to Withdraw their balance before being deleted.");
 
             if (item.CustomerId == id && item.AccountBalance == 0) exclusionOfValidCustomer = true;
         }

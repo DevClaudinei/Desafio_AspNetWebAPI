@@ -11,11 +11,8 @@ public interface ICustomerBankInfoAppService
     IEnumerable<CustomerBankInfoResult> GetAll();
     CustomerBankInfoResult Get(long id);
     CustomerBankInfoResult GetByAccount(string account);
-    void DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
-    void WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest);
-    bool UpdateBalanceAfterPurchase(long customerBankId, decimal purchaseValue);
-    bool UpdateBalanceAfterRescue(CustomerBankInfo customerBankinfo, decimal purchaseValue);
-    bool RedeemInvestedAmount(long customerId, decimal purchaseValue);
+    void Deposit(long id,decimal amount);
+    void Withdraw(long id, decimal amount);
     bool CanWithdrawAmountFromAccountBalance(decimal netValue, long customerBankInfoId);
     long GetCustomerBankInfoId(long id);
 }

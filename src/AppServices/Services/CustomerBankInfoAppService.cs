@@ -1,5 +1,4 @@
-﻿using Application.Models.CustomerBackInfo.Requests;
-using Application.Models.CustomerBackInfo.Response;
+﻿using Application.Models.CustomerBackInfo.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -56,48 +55,19 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _customerBankInfoService.RetornaIdDeContaAtravesDeCustomerID(customerId);
     }
 
-    public void DepositMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    public void Deposit(long id, decimal amount)
     {
-        var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(updateCustomerBankInfoRequest);
-        _customerBankInfoService.DepositMoney(id, customerBankInfoToUpdate);
+        _customerBankInfoService.Deposit(id, amount);
     }
 
-    public void WithdrawMoney(long id, UpdateCustomerBankInfoRequest updateCustomerBankInfoRequest)
+    public void Withdraw(long id, decimal amount)
     {
-        var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(updateCustomerBankInfoRequest);
-        _customerBankInfoService.WithdrawMoney(id, customerBankInfoToUpdate);
-    }
-
-    public bool UpdateBalanceAfterPurchase(long customerBankInfoId, decimal purchaseValue)
-    {
-        var customerBankinfo = GetById(customerBankInfoId);
-        customerBankinfo.AccountBalance += purchaseValue;
-        var customerBankInfoToUpdate = _mapper.Map<CustomerBankInfo>(customerBankinfo);
-        return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankInfoToUpdate);
-    }
-
-    public bool UpdateBalanceAfterRescue(CustomerBankInfo customerBankinfo, decimal purchaseValue)
-    {
-        customerBankinfo.AccountBalance += purchaseValue;
-        return _customerBankInfoService.UpdateBalanceAfterPurchase(customerBankinfo);
+        _customerBankInfoService.Withdraw(id, amount);
     }
 
     public void Create(long customerId)
     {
         _customerBankInfoService.Create(customerId);
-    }
-
-    public bool RedeemInvestedAmount(long customerId, decimal purchaseValue) 
-    {
-        var customerBankInfos = _customerBankInfoService.GetAll();
-
-        foreach (var customerBankInfo in customerBankInfos)
-        {
-            if (customerBankInfo.CustomerId == customerId) 
-                UpdateBalanceAfterRescue(customerBankInfo, purchaseValue);
-        }
-
-        return true;
     }
 
     public bool CanWithdrawAmountFromAccountBalance(decimal amount, long customerBankInfoId)
