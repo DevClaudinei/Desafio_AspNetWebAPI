@@ -9,8 +9,8 @@ public class OrderProfile : Profile
 {
 	public OrderProfile()
 	{
-        CreateMap<Order, OrderResult>().ReverseMap();
-        CreateMap<WithdrawInvestmentRequest, Order>();
+        CreateMap<Order, OrderResult>();
         CreateMap<InvestmentRequest, Order>();
+        CreateMap<OrderResult, Order>();
     }
 }
