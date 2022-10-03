@@ -1,7 +1,6 @@
 ﻿using Application.Models.CustomerBackInfo.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
-using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
 using System;
@@ -34,7 +33,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
 
-    public CustomerBankInfoResult Get(long id)
+    public CustomerBankInfoResult GetById(long id)
     {
         var customerBankInfo = _customerBankInfoService.GetById(id);
         if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
@@ -42,17 +41,9 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
 
-    private CustomerBankInfo GetById(long id)
-    {
-        var customerBankInfo = _customerBankInfoService.GetById(id);
-        if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
-
-        return customerBankInfo;
-    }
-
     public long GetCustomerBankInfoId(long customerId)
     {
-        return _customerBankInfoService.RetornaIdDeContaAtravesDeCustomerID(customerId);
+        return _customerBankInfoService.GetCustomerBankInfoId(customerId);
     }
 
     public void Deposit(long id, decimal amount)

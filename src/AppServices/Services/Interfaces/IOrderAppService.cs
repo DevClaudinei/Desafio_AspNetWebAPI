@@ -11,5 +11,5 @@ public interface IOrderAppService
     OrderResult GetOrderById(long id);
     Order Get(long id);
     int GetQuantityOfQuotes(long portfolioId, long productId);
-    void Update(long id, OrderResult order, long portfoliotId, long productId);
+    void Update(long id, OrderResult order);
 }

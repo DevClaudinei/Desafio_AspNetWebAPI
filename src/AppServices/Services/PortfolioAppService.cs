@@ -41,13 +41,10 @@ public class PortfolioAppService : IPortfolioAppService
     public long Create(CreatePortfolioRequest portfolioCreate)
     {
         var portfolio = _mapper.Map<Portfolio>(portfolioCreate);
-        var hasCustomerBankInfo = _customerBankInfoAppService.GetAll();
+        var customerBankInfoId = _customerBankInfoAppService.GetCustomerBankInfoId(portfolioCreate.CustomerId);
 
-        foreach (var customerBankInfo in hasCustomerBankInfo)
-        {
-            if (customerBankInfo.CustomerId != portfolio.CustomerId)
-                throw new NotFoundException($"Unable to create portfolio for the Customer with Id: {portfolio.CustomerId} not found");
-        }
+        if (customerBankInfoId < 1)
+            throw new NotFoundException($"Customer for Id: {portfolio.CustomerId} not found");
 
         return _portfolioService.Create(portfolio);
     }
@@ -92,12 +89,6 @@ public class PortfolioAppService : IPortfolioAppService
     public decimal GetTotalBalance(long portfolioId)
     {
         return _portfolioService.GetTotalBalance(portfolioId);
-    }
-
-    public bool UpdateBalanceAfterPurchase(PortfolioResult portfolioResult, decimal purchaseValue)
-    {
-        var portfolioToUpdate = _mapper.Map<Portfolio>(portfolioResult);
-        return _portfolioService.Update(portfolioToUpdate);
     }
 
     public void Delete(long id)
@@ -152,32 +143,37 @@ public class PortfolioAppService : IPortfolioAppService
     private void UninvestimentRealize(Order order, long customerBankId, Portfolio portfolioFound, Product productFound)
     {
         CheckCustomerQuotes(portfolioFound, productFound);
-        PostInvestmentUpdates(portfolioFound, customerBankId, - order.NetValue);
+        PostUninvestmentUpdates(portfolioFound, customerBankId, order.NetValue);
     }   
 
     private void InvestimentRealize(Order order, long customerBankId, Portfolio portfolioFound, Product productFound)
     {
         if (!(order.ConvertedAt <= DateTime.UtcNow)) 
             throw new BadRequestException("It is not possible to make an investment with a future date.");
-
+        
         PostInvestmentUpdates(portfolioFound, customerBankId, order.NetValue);
         _portfolioProductAppService.AddProduct(portfolioFound, productFound);
     }
 
-    private bool CheckCustomerQuotes(Portfolio portfolioFound, Product productFound)
+    private void CheckCustomerQuotes(Portfolio portfolioFound, Product productFound)
     {
         var quantityCotes = _orderAppService.GetQuantityOfQuotes(portfolioFound.Id, productFound.Id);
 
         if(quantityCotes == 0)
             _portfolioProductAppService.RemoveProduct(portfolioFound, productFound);
-
-        return true;
     }
 
     private void PostInvestmentUpdates(Portfolio portfolioFound, long customerBankId, decimal netValue)
     {
         portfolioFound.TotalBalance += netValue;
         _portfolioService.Update(portfolioFound);
-        _customerBankInfoAppService.Withdraw(customerBankId, -netValue);
+        _customerBankInfoAppService.Withdraw(customerBankId, netValue);
+    }
+
+    private void PostUninvestmentUpdates(Portfolio portfolioFound, long customerBankId, decimal netValue)
+    {
+        portfolioFound.TotalBalance += netValue;
+        _portfolioService.Update(portfolioFound);
+        _customerBankInfoAppService.Deposit(customerBankId, netValue);
     }
 }

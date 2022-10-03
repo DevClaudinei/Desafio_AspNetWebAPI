@@ -28,7 +28,7 @@ public class CustomerBankInfosController : ControllerBase
     {
         try
         {
-            var customersBankInfoFound = _customerBankInfoAppService.Get(id);
+            var customersBankInfoFound = _customerBankInfoAppService.GetById(id);
             return Ok(customersBankInfoFound);
         }
         catch (NotFoundException e)

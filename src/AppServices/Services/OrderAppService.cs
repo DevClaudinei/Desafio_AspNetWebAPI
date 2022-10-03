@@ -30,7 +30,7 @@ public class OrderAppService : IOrderAppService
 
     public Order Get(long id)
     {
-        var order = _orderService.GetOrderById(id);
+        var order = _orderService.GetById(id);
         if (order is null) throw new NotFoundException($"Order for id: {id} not found.");
 
         return order;
@@ -44,7 +44,7 @@ public class OrderAppService : IOrderAppService
 
     public OrderResult GetOrderById(long id)
     {
-        var order = _orderService.GetOrderById(id);
+        var order = _orderService.GetById(id);
         if (order is null) throw new NotFoundException($"Order for id: {id} not found.");
 
         return _mapper.Map<OrderResult>(order);
@@ -52,13 +52,13 @@ public class OrderAppService : IOrderAppService
 
     public int GetQuantityOfQuotes(long portfolioId, long productId)
     {
-        return _orderService.GetQuantityOfQuotesBuy(portfolioId, productId);
+        return _orderService.GetQuantityOfQuotes(portfolioId, productId);
     }
 
-    public void Update(long id, OrderResult order, long portfoliotId, long productId)
+    public void Update(long id, OrderResult order)
     {
         var orderToUpdate = _mapper.Map<Order>(order);
 
-        _orderService.Update(id, orderToUpdate, portfoliotId, productId);
+        _orderService.Update(id, orderToUpdate);
     }
 }

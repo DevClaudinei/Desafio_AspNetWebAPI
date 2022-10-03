@@ -11,7 +11,6 @@ public interface IPortfolioAppService
     IEnumerable<PortfolioResult> GetAll();
     PortfolioResult GetPortfolioById(long id);
     decimal GetTotalBalance(long portfolioId);
-    public bool UpdateBalanceAfterPurchase(PortfolioResult portfolioResult, decimal purchaseValue);
     void Delete(long id);
     long Invest(InvestmentRequest request, OrderDirection orderDirection);
 }
