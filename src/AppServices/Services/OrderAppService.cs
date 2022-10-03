@@ -36,9 +36,9 @@ public class OrderAppService : IOrderAppService
         return order;
     }
 
-    public IEnumerable<OrderResult> GetAllOrder()
+    public IEnumerable<OrderResult> GetAll()
     {
-        var order = _orderService.GetAllOrder();
+        var order = _orderService.GetAll();
         return _mapper.Map<IEnumerable<OrderResult>>(order);
     }
 

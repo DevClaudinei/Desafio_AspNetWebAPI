@@ -20,7 +20,7 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var order = _orderAppService.GetAllOrder();
+            var order = _orderAppService.GetAll();
             return Ok(order);
         }
 

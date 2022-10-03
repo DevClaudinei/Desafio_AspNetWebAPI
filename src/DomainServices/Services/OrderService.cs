@@ -29,7 +29,7 @@ public class OrderService : IOrderService
         return order.Id;
     }
 
-    public IEnumerable<Order> GetAllOrder()
+    public IEnumerable<Order> GetAll()
     {
         var repository = _repositoryFactory.Repository<Order>();
         var query = repository.MultipleResultQuery();
