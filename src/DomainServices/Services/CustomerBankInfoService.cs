@@ -72,35 +72,23 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         return GetFieldById<CustomerBankInfo, decimal>(id, x => x.AccountBalance);
     }
 
-    public void DepositMoney(long id, CustomerBankInfo customerBankInfo)
+    public void Deposit(long id, decimal amount)
     {
         var repository = _unitOfWork.Repository<CustomerBankInfo>();
-        customerBankInfo.Id = id;
-        var updatedCustomerBankInfo = VerifyCustomerBankInfoHasBalance(customerBankInfo);
-        customerBankInfo.AccountBalance = updatedCustomerBankInfo.AccountBalance + customerBankInfo.AccountBalance;
+        var customerBankInfo = GetById(id);
+        customerBankInfo.AccountBalance += amount;
 
-        repository.Update(customerBankInfo);
+        repository.Update(customerBankInfo, x => x.AccountBalance);
         _unitOfWork.SaveChanges();
     }
 
-    private CustomerBankInfo VerifyCustomerBankInfoHasBalance(CustomerBankInfo customerBankInfo)
-    {
-        var updatedCustomerBankInfo = Exists(customerBankInfo);
-
-        if (customerBankInfo.AccountBalance < 0) 
-            throw new BadRequestException($"CustomerBankInfo cannot update balance for negative amounts.");
-
-        return updatedCustomerBankInfo;
-    }
-
-    public void WithdrawMoney(long id, CustomerBankInfo customerBankInfo)
+    public void Withdraw(long id, decimal amount)
     {
         var repository = _unitOfWork.Repository<CustomerBankInfo>();
-        customerBankInfo.Id = id;
-        var updatedCustomerBankInfo = Exists(customerBankInfo);
-        var customerBankInfoToUpdate = CheckIfWithdrawalIsValid(updatedCustomerBankInfo, customerBankInfo);
+        var customerBankInfo = GetById(id);
+        customerBankInfo.AccountBalance -= amount;
 
-        repository.Update(customerBankInfoToUpdate);
+        repository.Update(customerBankInfo, x => x.AccountBalance);
         _unitOfWork.SaveChanges();
     }
 
@@ -110,7 +98,7 @@ public class CustomerBankInfoService : ICustomerBankInfoService
 
         customerBankInfo.AccountBalance = updatedCustomerBankInfo.AccountBalance - customerBankInfo.AccountBalance;
 
-        if (updatedCustomerBankInfo.AccountBalance <= 0) throw new BadRequestException($"Requested balance cannot be redeemed.");
+        if (updatedCustomerBankInfo.AccountBalance <= 0) throw new BadRequestException($"Requested balance cannot be withdraw.");
 
         return customerBankInfo;
     }
@@ -131,18 +119,6 @@ public class CustomerBankInfoService : ICustomerBankInfoService
         customerBankInfo.CreatedAt = updatedCustomerBankInfo.CreatedAt;
 
         return updatedCustomerBankInfo;
-    }
-    
-    public bool UpdateBalanceAfterPurchase(CustomerBankInfo customerBankInfo)
-    {
-        var repository = _unitOfWork.Repository<CustomerBankInfo>();
-        var customerBankInfoToUpdate = GetById(customerBankInfo.Id);
-        customerBankInfo.CreatedAt = customerBankInfoToUpdate.CreatedAt;
-
-        repository.Update(customerBankInfo);
-        _unitOfWork.SaveChanges();
-
-        return true;
     }
 
     public void Create(long customerId)

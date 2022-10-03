@@ -2,6 +2,7 @@
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -43,6 +44,8 @@ public class PortfolioProductService : IPortfolioProductService
     {
         var repository = _repositoryFactory.Repository<PortfolioProduct>();
         var query = repository.MultipleResultQuery()
+            .Include(x => x.Include(x => x.Portfolio))
+            .Include(x => x.Include(x => x.Product))
             .AndFilter(x => x.Portfolio.Id.Equals(portfolioId))
             .AndFilter(x => x.ProductId.Equals(productId));
 

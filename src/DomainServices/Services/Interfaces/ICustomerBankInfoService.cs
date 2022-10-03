@@ -10,8 +10,7 @@ public interface ICustomerBankInfoService
     CustomerBankInfo GetById(long id);
     CustomerBankInfo GetByAccount(string account);
     decimal GetAccountBalanceById(long id);
-    void DepositMoney(long id, CustomerBankInfo customerBankInfo);
-    void WithdrawMoney(long id, CustomerBankInfo customerBankInfo);
-    bool UpdateBalanceAfterPurchase(CustomerBankInfo customerBankInfo);
+    void Deposit(long id, decimal amount);
+    void Withdraw(long id, decimal amount);
     long RetornaIdDeContaAtravesDeCustomerID(long id);
 }
