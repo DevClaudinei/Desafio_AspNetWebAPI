@@ -37,7 +37,7 @@ public class OrderService : IOrderService
         return repository.Search(query);
     }
 
-    public Order GetOrderById(long id)
+    public Order GetById(long id)
     {
         var repository = _repositoryFactory.Repository<Order>();
         var customerFound = repository.SingleResultQuery()
@@ -46,7 +46,7 @@ public class OrderService : IOrderService
         return repository.SingleOrDefault(customerFound);
     }
 
-    public int GetQuantityOfQuotesBuy(long portfolioId, long productId)
+    public int GetQuantityOfQuotes(long portfolioId, long productId)
     {
         var repository = _repositoryFactory.Repository<Order>();
         var quotesBuyed = repository.FromSql($"SELECT * FROM CustomerDB.Orders " +
@@ -55,12 +55,12 @@ public class OrderService : IOrderService
         var quotesSelled = repository.FromSql($"SELECT * FROM CustomerDB.Orders " +
             $"WHERE PortfolioId = {portfolioId} AND ProductId = {productId} AND Direction = 2")
             .Sum(x => x.Quotes);
-        var totalQuotes = quotesSelled - quotesBuyed;
+        var totalQuotes = quotesBuyed - quotesSelled;
 
         return totalQuotes;
     }
 
-    public void Update(long id, Order order, long portfoliotId, long productId)
+    public void Update(long id, Order order)
     {
         var repository = _unitOfWork.Repository<Order>();
 

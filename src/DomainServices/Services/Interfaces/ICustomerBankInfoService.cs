@@ -12,5 +12,5 @@ public interface ICustomerBankInfoService
     decimal GetAccountBalanceById(long id);
     void Deposit(long id, decimal amount);
     void Withdraw(long id, decimal amount);
-    long RetornaIdDeContaAtravesDeCustomerID(long id);
+    long GetCustomerBankInfoId(long id);
 }

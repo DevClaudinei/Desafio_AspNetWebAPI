@@ -67,22 +67,20 @@ public class PortfolioService : IPortfolioService
         return repository.Search(query);
     }
 
-    public bool Update(Portfolio portfolio)
+    public void Update(Portfolio portfolio)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
         portfolio.Products.Clear();
 
         repository.Update(portfolio);
         _unitOfWork.SaveChanges();
-
-        return true;
     }
 
     public void Delete(long id)
     {
         var repository = _unitOfWork.Repository<Portfolio>();
         var totalBalance = GetTotalBalance(id);
-        if (totalBalance > 0) throw new BadRequestException($"Não é possível deletar carteira, pois ela ainda possui saldo.");
+        if (totalBalance > 0) throw new BadRequestException($"Unable to delete portfolio, because she still has a balance.");
 
         repository.Remove(x => x.Id.Equals(id));
     }
