@@ -23,25 +23,25 @@ public class PortfolioAppService : IPortfolioAppService
 
     public PortfolioAppService(
         IMapper mapper,
+        IOrderAppService orderAppService,
         IPortfolioService portfolioService,
         IProductAppService productAppService,
-        IOrderAppService orderAppService,
         IPortfolioProductAppService portfolioProductAppService,
         ICustomerBankInfoAppService customerBankInfoAppService
     )
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _orderAppService = orderAppService ?? throw new ArgumentNullException(nameof(orderAppService));
         _portfolioService = portfolioService ?? throw new ArgumentNullException(nameof(portfolioService));
         _productAppService = productAppService ?? throw new ArgumentNullException(nameof(productAppService));
-        _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
-        _orderAppService = orderAppService ?? throw new ArgumentNullException(nameof(orderAppService));
         _portfolioProductAppService = portfolioProductAppService ?? throw new ArgumentNullException(nameof(portfolioProductAppService));
+        _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
     }
 
-    public long Create(CreatePortfolioRequest portfolioCreate)
+    public long Create(CreatePortfolioRequest createPortfolioRequest)
     {
-        var portfolio = _mapper.Map<Portfolio>(portfolioCreate);
-        var customerBankInfoId = _customerBankInfoAppService.GetCustomerBankInfoId(portfolioCreate.CustomerId);
+        var portfolio = _mapper.Map<Portfolio>(createPortfolioRequest);
+        var customerBankInfoId = _customerBankInfoAppService.GetCustomerBankInfoId(createPortfolioRequest.CustomerId);
 
         if (customerBankInfoId < 1)
             throw new NotFoundException($"Customer for Id: {portfolio.CustomerId} not found");
@@ -86,9 +86,9 @@ public class PortfolioAppService : IPortfolioAppService
         return portfolioFound;
     }
 
-    public decimal GetTotalBalance(long portfolioId)
+    public decimal GetTotalBalance(long id)
     {
-        return _portfolioService.GetTotalBalance(portfolioId);
+        return _portfolioService.GetTotalBalance(id);
     }
 
     public void Delete(long id)
@@ -105,75 +105,75 @@ public class PortfolioAppService : IPortfolioAppService
     {
         var portfolioFound = GetById(request.PortfolioId);
         var productFound = _productAppService.Get(request.ProductId);
-        var order = PrepareOrder(productFound.UnitPrice, request, orderDirection);
-        var customerBankId = CheckCustomerAccountBalance(portfolioFound.CustomerId, order);
+        var order = PrepareOrder(productFound.UnitPrice, request);
         var createdInvestment = _orderAppService.Create(order);
 
         if (orderDirection != OrderDirection.Buy)
-            UninvestimentRealize(order, customerBankId, portfolioFound, productFound);
+            UninvestimentRealize(order, portfolioFound, productFound);
 
         if (orderDirection == OrderDirection.Buy)
-            InvestimentRealize(order, customerBankId, portfolioFound, productFound);
+            InvestimentRealize(order, portfolioFound, productFound);
 
         return createdInvestment;
     }
 
-    private Order PrepareOrder(decimal unitPrice, InvestmentRequest request, OrderDirection orderDirection)
+    private Order PrepareOrder(decimal unitPrice, InvestmentRequest request)
     {
         var order = new Order(unitPrice, request.Quotes);
- 
+
         var investment = _mapper.Map<Order>(request);
         investment.NetValue = order.NetValue;
 
         return investment;
     }
 
+    private void InvestimentRealize(Order order, Portfolio portfolio, Product product)
+    {
+        var customerBankId = CheckCustomerAccountBalance(portfolio.CustomerId, order);
+
+        if ((order.ConvertedAt >= DateTime.UtcNow))
+            throw new BadRequestException("It is not possible to make an investment with a future date.");
+
+        PostInvestmentUpdates(portfolio, customerBankId, order.NetValue);
+        _portfolioProductAppService.AddProduct(portfolio, product);
+    }
+
     private long CheckCustomerAccountBalance(long customerId, Order order)
     {
         var customerBankId = _customerBankInfoAppService.GetCustomerBankInfoId(customerId);
-        var customerAccountBalance = _customerBankInfoAppService
+        _customerBankInfoAppService
             .CanWithdrawAmountFromAccountBalance(order.NetValue, customerBankId);
-
-        if (customerAccountBalance is false)
-            throw new BadRequestException($"Insufficient balance to invest.");
 
         return customerBankId;
     }
 
-    private void UninvestimentRealize(Order order, long customerBankId, Portfolio portfolioFound, Product productFound)
+    private void PostInvestmentUpdates(Portfolio portfolio, long customerBankId, decimal netValue)
     {
-        CheckCustomerQuotes(portfolioFound, productFound);
-        PostUninvestmentUpdates(portfolioFound, customerBankId, order.NetValue);
-    }   
-
-    private void InvestimentRealize(Order order, long customerBankId, Portfolio portfolioFound, Product productFound)
-    {
-        if (!(order.ConvertedAt <= DateTime.UtcNow)) 
-            throw new BadRequestException("It is not possible to make an investment with a future date.");
-        
-        PostInvestmentUpdates(portfolioFound, customerBankId, order.NetValue);
-        _portfolioProductAppService.AddProduct(portfolioFound, productFound);
-    }
-
-    private void CheckCustomerQuotes(Portfolio portfolioFound, Product productFound)
-    {
-        var quantityCotes = _orderAppService.GetQuantityOfQuotes(portfolioFound.Id, productFound.Id);
-
-        if(quantityCotes == 0)
-            _portfolioProductAppService.RemoveProduct(portfolioFound, productFound);
-    }
-
-    private void PostInvestmentUpdates(Portfolio portfolioFound, long customerBankId, decimal netValue)
-    {
-        portfolioFound.TotalBalance += netValue;
-        _portfolioService.Update(portfolioFound);
+        portfolio.TotalBalance += netValue;
+        _portfolioService.Update(portfolio);
         _customerBankInfoAppService.Withdraw(customerBankId, netValue);
     }
 
-    private void PostUninvestmentUpdates(Portfolio portfolioFound, long customerBankId, decimal netValue)
+    private void UninvestimentRealize(Order order, Portfolio portfolio, Product product)
     {
-        portfolioFound.TotalBalance += netValue;
-        _portfolioService.Update(portfolioFound);
+        var customerBankId = _customerBankInfoAppService.GetCustomerBankInfoId(portfolio.CustomerId);
+
+        CheckCustomerQuotes(portfolio, product);
+        PostUninvestmentUpdates(portfolio, customerBankId, order.NetValue);
+    }
+
+    private void CheckCustomerQuotes(Portfolio portfolio, Product product)
+    {
+        var quantityCotes = _orderAppService.GetQuantityOfQuotes(portfolio.Id, product.Id);
+
+        if (quantityCotes == 0)
+            _portfolioProductAppService.RemoveProduct(portfolio, product);
+    }
+
+    private void PostUninvestmentUpdates(Portfolio portfolio, long customerBankId, decimal netValue)
+    {
+        portfolio.TotalBalance -= netValue;
+        _portfolioService.Update(portfolio);
         _customerBankInfoAppService.Deposit(customerBankId, netValue);
     }
 }

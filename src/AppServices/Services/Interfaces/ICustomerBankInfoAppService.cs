@@ -13,6 +13,6 @@ public interface ICustomerBankInfoAppService
     CustomerBankInfoResult GetByAccount(string account);
     void Deposit(long id,decimal amount);
     void Withdraw(long id, decimal amount);
-    bool CanWithdrawAmountFromAccountBalance(decimal netValue, long customerBankInfoId);
+    void CanWithdrawAmountFromAccountBalance(decimal netValue, long customerBankInfoId);
     long GetCustomerBankInfoId(long id);
 }

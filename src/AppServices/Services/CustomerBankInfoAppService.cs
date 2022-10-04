@@ -61,12 +61,10 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
         _customerBankInfoService.Create(customerId);
     }
 
-    public bool CanWithdrawAmountFromAccountBalance(decimal amount, long customerBankInfoId)
+    public void CanWithdrawAmountFromAccountBalance(decimal amount, long customerBankInfoId)
     {
         var accountBalance = _customerBankInfoService.GetAccountBalanceById(customerBankInfoId);
 
-        if (accountBalance < amount) return false;
-
-        return true;
+        if (accountBalance < amount) throw new BadRequestException($"Insufficient balance to invest.");
     }
 }
