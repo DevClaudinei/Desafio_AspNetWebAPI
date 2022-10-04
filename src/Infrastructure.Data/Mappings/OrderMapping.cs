@@ -24,5 +24,8 @@ public class OrderMapping : IEntityTypeConfiguration<Order>
 
         builder.Property(x => x.ConvertedAt)
             .IsRequired();
+
+        builder.Property(x => x.Direction)
+            .IsRequired();
     }
 }
