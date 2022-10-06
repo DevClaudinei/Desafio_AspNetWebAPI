@@ -57,8 +57,9 @@ public class ProductAppService : IProductAppService
         return product;
     }
 
-    public void Update(UpdateProductRequest updateProductRequest)
+    public void Update(long id, UpdateProductRequest updateProductRequest)
     {
+        updateProductRequest.Id = id;
         var productToUpdate = _mapper.Map<Product>(updateProductRequest);
         _productService.Update(productToUpdate);
     }

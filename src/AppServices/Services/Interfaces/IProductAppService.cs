@@ -11,7 +11,7 @@ public interface IProductAppService
     IEnumerable<ProductResult> GetAll();
     ProductResult GetById(long id);
     ProductResult GetBySymbol(string symbol);
-    void Update(UpdateProductRequest updateProductRequest);
+    void Update(long id, UpdateProductRequest updateProductRequest);
     void Delete(long id);
     public Product Get(long id);
 }

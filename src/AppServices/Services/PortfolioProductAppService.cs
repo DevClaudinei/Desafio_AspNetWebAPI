@@ -1,4 +1,7 @@
-﻿using AppServices.Services.Interfaces;
+﻿using Application.Models.Portfolio.Response;
+using Application.Models.PortfolioProduct;
+using Application.Models.Product.Response;
+using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
 using DomainServices.Exceptions;
@@ -29,7 +32,12 @@ public class PortfolioProductAppService : IPortfolioProductAppService
         var portfolioProduct = _portfolioProductService.GetById(portfolioId, productId);
         if (portfolioProduct is null)
             throw new NotFoundException($"PortfolioProduct with Portfolioid: {portfolioId} and ProductId: {productId} not found.");
+      
+        var portfolioProductMapp = _mapper.Map<PortfolioProductResult>(portfolioProduct);
         
+        portfolioProductMapp.Portfolios = _mapper.Map<IEnumerable<PortfolioResult>>(portfolioProductMapp.Portfolios);
+        portfolioProductMapp.Products = _mapper.Map<IEnumerable<ProductResult>>(portfolioProductMapp.Products);
+
         return portfolioProduct;
     }
 

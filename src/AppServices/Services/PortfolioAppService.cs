@@ -52,17 +52,17 @@ public class PortfolioAppService : IPortfolioAppService
     public IEnumerable<PortfolioResult> GetAll()
     {
         var portfoliosFound = _portfolioService.GetAll();
-        var portfolioMapp = _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
+        var portfolioMap = _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
 
         foreach (var portfolios in portfoliosFound)
         {
-            foreach (var product in portfolioMapp)
+            foreach (var product in portfolioMap)
             {
                 product.Products = _mapper.Map<IEnumerable<ProductResult>>(portfolios.Products);
             }
         }
 
-        return portfolioMapp;
+        return portfolioMap;
     }
 
     public PortfolioResult GetPortfolioById(long id)
@@ -131,7 +131,7 @@ public class PortfolioAppService : IPortfolioAppService
     {
         var customerBankId = CheckCustomerAccountBalance(portfolio.CustomerId, order);
 
-        if ((order.ConvertedAt >= DateTime.UtcNow))
+        if ((order.ConvertedAt <= DateTime.UtcNow))
             throw new BadRequestException("It is not possible to make an investment with a future date.");
 
         PostInvestmentUpdates(portfolio, customerBankId, order.NetValue);
