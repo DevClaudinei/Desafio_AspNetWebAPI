@@ -17,5 +17,4 @@ public class Product
     public string Symbol { get; set; }
     public decimal UnitPrice { get; set; }
     public virtual ICollection<Portfolio> Portfolios { get; set; } = new List<Portfolio>();
-    public virtual ICollection<PortfolioProduct> PortfolioProducts { get; set; } = new List<PortfolioProduct>();
 }

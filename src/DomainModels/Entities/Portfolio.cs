@@ -17,7 +17,6 @@ public class Portfolio : IEntity
     public long CustomerId { get; set; }
     public virtual Customer Customer { get; set; }
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
-    public virtual ICollection<PortfolioProduct> PortfolioProducts { get; set; } = new List<PortfolioProduct>();
     public long Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? ModifiedAt { get; set; }
