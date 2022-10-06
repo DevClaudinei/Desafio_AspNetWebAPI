@@ -13,7 +13,7 @@ public class CustomersController : ControllerBase
 {
     private readonly ICustomerAppService _appService;
 
-    public CustomersController(ICustomerAppService appService, IMapper mapper)
+    public CustomersController(ICustomerAppService appService)
     {
         _appService = appService ?? throw new ArgumentNullException(nameof(appService));
     }

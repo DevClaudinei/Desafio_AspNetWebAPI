@@ -1,5 +1,4 @@
 ﻿using AppServices.Services.Interfaces;
-using AutoMapper;
 using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,7 +11,7 @@ namespace API.Controllers
     {
         private readonly IOrderAppService _orderAppService;
 
-        public OrdersController(IOrderAppService appService, IMapper mapper)
+        public OrdersController(IOrderAppService appService)
         {
             _orderAppService = appService ?? throw new ArgumentNullException(nameof(appService));
         }

@@ -1,6 +1,4 @@
-﻿using Application.Models.Customer.Requests;
-using AppServices.Services;
-using AppServices.Services.Interfaces;
+﻿using AppServices.Services.Interfaces;
 using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 

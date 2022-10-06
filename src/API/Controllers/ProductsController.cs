@@ -70,8 +70,7 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            updateProductRequest.Id = id;
-            _productAppService.Update(updateProductRequest);
+            _productAppService.Update(id, updateProductRequest);
             return Ok();
         }
         catch (NotFoundException e)
