@@ -131,7 +131,7 @@ public class PortfolioAppService : IPortfolioAppService
     {
         var customerBankId = CheckCustomerAccountBalance(portfolio.CustomerId, order);
 
-        if ((order.ConvertedAt <= DateTime.UtcNow))
+        if ((order.ConvertedAt >= DateTime.UtcNow))
             throw new BadRequestException("It is not possible to make an investment with a future date.");
 
         PostInvestmentUpdates(portfolio, customerBankId, order.NetValue);

@@ -43,7 +43,7 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public long GetCustomerBankInfoId(long customerId)
     {
-        return _customerBankInfoService.GetCustomerBankInfoId(customerId);
+        return _customerBankInfoService.GetIdByCustomerId(customerId);
     }
 
     public void Deposit(long id, decimal amount)
