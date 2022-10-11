@@ -1,63 +1,59 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
+using EntityFrameworkCore.Repository.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 
 namespace DomainServices.Services;
 
-public class PortfolioProductService : IPortfolioProductService
+public class PortfolioProductService : BaseService, IPortfolioProductService
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepositoryFactory _repositoryFactory;
+    private readonly IRepository<PortfolioProduct> _portfolioProductService;
 
-    public PortfolioProductService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
+    public PortfolioProductService(
+        IUnitOfWork<ApplicationDbContext> unitOfWork,
+        IRepositoryFactory<ApplicationDbContext> repositoryFactory
+    ) : base(unitOfWork, repositoryFactory)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
+        _portfolioProductService = repositoryFactory.Repository<PortfolioProduct>();
     }
 
     public void AddProduct(Portfolio portfolio, Product product)
     {
-        var repository = _unitOfWork.Repository<PortfolioProduct>();
-
-        if (!repository.Any(x => x.ProductId.Equals(product.Id)))
+        if (!_portfolioProductService.Any(x => x.ProductId.Equals(product.Id)))
         {
             var portfolioProduct = new PortfolioProduct(portfolio.Id, product.Id);
 
-            repository.Add(portfolioProduct);
-            _unitOfWork.SaveChanges();
+            _portfolioProductService.Add(portfolioProduct);
+            UnitOfWork.SaveChanges();
         }
     }
 
     public IEnumerable<PortfolioProduct> GetAll()
     {
-        var repository = _repositoryFactory.Repository<PortfolioProduct>();
-        var query = repository.MultipleResultQuery();
+        var query = _portfolioProductService.MultipleResultQuery();
 
-        return repository.Search(query);
+        return _portfolioProductService.Search(query);
     }
 
     public PortfolioProduct GetById(long portfolioId, long productId)
     {
-        var repository = _repositoryFactory.Repository<PortfolioProduct>();
-        var query = repository.MultipleResultQuery()
+        var query = _portfolioProductService.MultipleResultQuery()
             .Include(x => x.Include(x => x.Portfolio))
             .Include(x => x.Include(x => x.Product))
             .AndFilter(x => x.Portfolio.Id.Equals(portfolioId))
             .AndFilter(x => x.ProductId.Equals(productId));
 
-        return repository.SingleOrDefault(query);
+        return _portfolioProductService.SingleOrDefault(query);
     }
 
     public void RemoveProduct(Portfolio portfolio, Product product)
     {
-        var repository = _unitOfWork.Repository<PortfolioProduct>();
         var portfolioProductToRemove = GetById(portfolio.Id, product.Id);
 
-        repository.Remove(portfolioProductToRemove);
-        _unitOfWork.SaveChanges();
+        _portfolioProductService.Remove(portfolioProductToRemove);
+        UnitOfWork.SaveChanges();
     }
 }

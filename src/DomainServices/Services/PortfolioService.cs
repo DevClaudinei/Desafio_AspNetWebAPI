@@ -1,46 +1,32 @@
-﻿using DomainModels;
-using DomainModels.Entities;
+﻿using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
+using EntityFrameworkCore.Repository.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace DomainServices.Services;
 
-public class PortfolioService : IPortfolioService
+public class PortfolioService : BaseService, IPortfolioService
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepositoryFactory _repositoryFactory;
+    private readonly IRepository<Portfolio> _portfolioService;
 
-    public PortfolioService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
+    public PortfolioService(
+        IUnitOfWork<ApplicationDbContext> unitOfWork,
+        IRepositoryFactory<ApplicationDbContext> repositoryFactory
+    ) : base(unitOfWork, repositoryFactory)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
+        _portfolioService = repositoryFactory.Repository<Portfolio>();
     }
 
     public long Create(Portfolio portfolio)
     {
-        var repository = _unitOfWork.Repository<Portfolio>();
-
-        repository.Add(portfolio);
-        _unitOfWork.SaveChanges();
+        _portfolioService.Add(portfolio);
+        UnitOfWork.SaveChanges();
 
         return portfolio.Id;
-    }
-
-    protected TResult GetFieldById<T, TResult>(long id, Expression<Func<T, TResult>> selector)
-        where T : class, IEntity
-    {
-        var repository = _repositoryFactory.Repository<T>();
-        var query = repository.SingleResultQuery()
-            .AndFilter(x => x.Id.Equals(id))
-            .Select(selector);
-
-        return repository.SingleOrDefault(query);
     }
 
     public decimal GetTotalBalance(long id)
@@ -50,38 +36,35 @@ public class PortfolioService : IPortfolioService
 
     public Portfolio GetById(long id)
     {
-        var repository = _repositoryFactory.Repository<Portfolio>();
-        var query = repository.SingleResultQuery()
+        var query = _portfolioService.SingleResultQuery()
             .Include(x => x.Include(x => x.Products))
             .AndFilter(x => x.Id.Equals(id));
 
-        return repository.FirstOrDefault(query);
+        return _portfolioService.FirstOrDefault(query);
     }
 
     public IEnumerable<Portfolio> GetAll()
     {
-        var repository = _repositoryFactory.Repository<Portfolio>();
-        var query = repository.MultipleResultQuery()
+        var query = _portfolioService.MultipleResultQuery()
             .Include(x => x.Include(x => x.Products));
 
-        return repository.Search(query);
+        return _portfolioService.Search(query);
     }
 
     public void Update(Portfolio portfolio)
     {
-        var repository = _unitOfWork.Repository<Portfolio>();
         portfolio.Products.Clear();
 
-        repository.Update(portfolio);
-        _unitOfWork.SaveChanges();
+        _portfolioService.Update(portfolio);
+        UnitOfWork.SaveChanges();
     }
 
     public void Delete(long id)
     {
-        var repository = _unitOfWork.Repository<Portfolio>();
         var totalBalance = GetTotalBalance(id);
-        if (totalBalance > 0) throw new BadRequestException($"Unable to delete portfolio, because she still has a balance.");
+        if (totalBalance > 0) 
+            throw new BadRequestException($"Unable to delete portfolio, because there is still a balance to withdraw");
 
-        repository.Remove(x => x.Id.Equals(id));
+        _portfolioService.Remove(x => x.Id.Equals(id));
     }
 }

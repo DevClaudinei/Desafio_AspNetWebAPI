@@ -1,7 +1,7 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
-using EntityFrameworkCore.Repository.Extensions;
+using EntityFrameworkCore.Repository.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
 using System;
@@ -10,78 +10,72 @@ using System.Linq.Expressions;
 
 namespace DomainServices.Services;
 
-public class ProductService : IProductService
+public class ProductService : BaseService, IProductService
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepositoryFactory _repositoryFactory;
+    private readonly IRepository<Product> _productService;
 
-    public ProductService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
+    public ProductService(
+        IUnitOfWork<ApplicationDbContext> unitOfWork,
+        IRepositoryFactory<ApplicationDbContext> repositoryFactory
+    ) : base(unitOfWork, repositoryFactory)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
+        _productService = repositoryFactory.Repository<Product>();
     }
 
     public long Create(Product product)
     {
-        var repository = _unitOfWork.Repository<Product>();
         var exists = Exists(x => x.Symbol.Equals(product.Symbol));
         
         if (exists) throw new BadRequestException($"Product: {product.Symbol} are already registered");
 
-        repository.Add(product);
-        _unitOfWork.SaveChanges();
+        _productService.Add(product);
+        UnitOfWork.SaveChanges();
 
         return product.Id;
     }
 
     private bool Exists(Expression<Func<Product, bool>> predicate)
     {
-        var repository = _repositoryFactory.Repository<Product>();
-        return repository.Any(predicate);
+        return _productService.Any(predicate);
     }
 
     public IEnumerable<Product> GetAll()
     {
-        var repository = _repositoryFactory.Repository<Product>();
-        var query = repository.MultipleResultQuery();
+        var query = _productService.MultipleResultQuery();
 
-        return repository.Search(query);
+        return _productService.Search(query);
     }
 
     public Product GetBySymbol(string symbol)
     {
-        var repository = _repositoryFactory.Repository<Product>();
-        var query = repository.SingleResultQuery()
+        var query = _productService.SingleResultQuery()
             .AndFilter(x => x.Symbol.Equals(symbol));
 
-        return repository.SingleOrDefault(query);
+        return _productService.SingleOrDefault(query);
     }
 
     public Product GetById(long id)
     {
-        var repository = _repositoryFactory.Repository<Product>();
-        var query = repository.SingleResultQuery()
+        var query = _productService.SingleResultQuery()
             .AndFilter(x => x.Id.Equals(id));
 
-        return repository.SingleOrDefault(query);
+        return _productService.SingleOrDefault(query);
     }
 
     public void Update(Product product)
     {
-        var repository = _unitOfWork.Repository<Product>();
         Exists(x => x.Id.Equals(product.Id));
 
-        repository.Update(product);
-        _unitOfWork.SaveChanges();
+        _productService.Update(product);
+        UnitOfWork.SaveChanges();
     }
 
     public void Delete(long id)
     {
-        var repository = _unitOfWork.Repository<Product>();
         var exists = Exists(x => x.Id.Equals(id));
 
         if (!exists) throw new NotFoundException($"Product not found for id: {id}.");
 
-        repository.Remove(x => x.Id.Equals(id));
+        _productService.Remove(x => x.Id.Equals(id));
     }
 }

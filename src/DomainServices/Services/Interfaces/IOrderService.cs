@@ -1,5 +1,4 @@
-﻿using Application.Models.Enum;
-using DomainModels.Entities;
+﻿using DomainModels.Entities;
 using System.Collections.Generic;
 
 namespace DomainServices.Services.Interfaces;

@@ -1,73 +1,79 @@
 ﻿using DomainModels.Entities;
+using DomainModels.Enum;
 using DomainServices.Services.Interfaces;
+using EntityFrameworkCore.Repository.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DomainServices.Services;
 
-public class OrderService : IOrderService
+public class OrderService : BaseService, IOrderService
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepositoryFactory _repositoryFactory;
+    private readonly IRepository<Order> _orderService;
 
-    public OrderService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
+    public OrderService(
+        IUnitOfWork<ApplicationDbContext> unitOfWork,
+        IRepositoryFactory<ApplicationDbContext> repositoryFactory
+    ) : base(unitOfWork, repositoryFactory)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
+        _orderService = RepositoryFactory.Repository<Order>();
     }
 
     public long Create(Order order)
     {
-        var repository = _unitOfWork.Repository<Order>();
-
-        repository.Add(order);
-        _unitOfWork.SaveChanges();
+        _orderService.Add(order);
+        UnitOfWork.SaveChanges();
 
         return order.Id;
     }
 
     public IEnumerable<Order> GetAll()
     {
-        var repository = _repositoryFactory.Repository<Order>();
-        var query = repository.MultipleResultQuery();
+        var query = _orderService.MultipleResultQuery();
 
-        return repository.Search(query);
+        return _orderService.Search(query);
     }
 
     public Order GetById(long id)
     {
-        var repository = _repositoryFactory.Repository<Order>();
-        var customerFound = repository.SingleResultQuery()
+        var customerFound = _orderService.SingleResultQuery()
             .AndFilter(x => x.Id.Equals(id));
 
-        return repository.SingleOrDefault(customerFound);
+        return _orderService.SingleOrDefault(customerFound);
+    }
+
+    private IEnumerable<Order> GetAllWithParameters(long portfolioId, long productId)
+    {
+        var query = _orderService.MultipleResultQuery()
+            .AndFilter(x => x.PortfolioId.Equals(portfolioId))
+            .AndFilter(x => x.ProductId.Equals(productId));
+
+        return _orderService.Search(query);
     }
 
     public int GetQuantityOfQuotes(long portfolioId, long productId)
     {
-        var repository = _repositoryFactory.Repository<Order>();
-        var quotesBuyed = repository.FromSql($"SELECT * FROM CustomerDB.Orders " +
-            $"WHERE PortfolioId = {portfolioId} AND ProductId = {productId} AND Direction = 1")
-            .Sum(x => x.Quotes);
-        var quotesSelled = repository.FromSql($"SELECT * FROM CustomerDB.Orders " +
-            $"WHERE PortfolioId = {portfolioId} AND ProductId = {productId} AND Direction = 2")
-            .Sum(x => x.Quotes);
-        var totalQuotes = quotesBuyed - quotesSelled;
+        var orders = GetAllWithParameters(portfolioId, productId);
+        var quantity = 0;
 
-        return totalQuotes;
+        foreach (var order in orders)
+        {
+            if (order.Direction == OrderDirection.Buy)
+                quantity += order.Quotes;
+            if (order.Direction == OrderDirection.Sell)
+                quantity -= order.Quotes;
+        }
+
+        return quantity;
     }
 
     public void Update(long id, Order order)
     {
-        var repository = _unitOfWork.Repository<Order>();
-
-        if (repository.Any(x => x.Id.Equals(order.Id)))
+        if (_orderService.Any(x => x.Id.Equals(order.Id)))
         {
-            repository.Update(order);
-            _unitOfWork.SaveChanges();
+            _orderService.Update(order);
+            UnitOfWork.SaveChanges();
         }
     }
 }
