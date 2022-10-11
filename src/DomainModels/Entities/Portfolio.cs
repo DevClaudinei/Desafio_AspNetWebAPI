@@ -16,7 +16,7 @@ public class Portfolio : IEntity
     public decimal TotalBalance { get; set; }
     public long CustomerId { get; set; }
     public virtual Customer Customer { get; set; }
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    public virtual ICollection<Product> Products { get; set; }
     public long Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? ModifiedAt { get; set; }

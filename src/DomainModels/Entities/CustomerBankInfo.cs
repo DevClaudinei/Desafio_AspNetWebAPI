@@ -7,7 +7,7 @@ public class CustomerBankInfo : IEntity
     public CustomerBankInfo(long customerId) 
     {
         CustomerId = customerId;
-        Account = new Random().Next(1, 100).ToString();
+        Account = Guid.NewGuid().ToString();
     }
 
     public string Account { get; set; }
