@@ -5,7 +5,7 @@ namespace DomainModels.Entities;
 
 public class Customer : IEntity
 {
-    public Customer() { }
+    protected Customer() { }
 
     public Customer(
         string fullName,

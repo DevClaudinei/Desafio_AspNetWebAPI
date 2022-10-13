@@ -4,6 +4,8 @@ namespace DomainModels.Entities;
 
 public class CustomerBankInfo : IEntity
 {
+    protected CustomerBankInfo() { }
+
     public CustomerBankInfo(long customerId) 
     {
         CustomerId = customerId;
