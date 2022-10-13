@@ -13,6 +13,7 @@ public class ProductUpdateValidator : AbstractValidator<UpdateProductRequest>
 
         RuleFor(x => x.UnitPrice)
             .NotEmpty()
-            .NotNull();
+            .NotNull()
+            .GreaterThan(0);
     }
 }

@@ -13,6 +13,7 @@ public class ProductCreateValidation : AbstractValidator<CreateProductRequest>
 
         RuleFor(x => x.UnitPrice)
             .NotEmpty()
-            .NotNull();
+            .NotNull()
+            .GreaterThan(0);
     }
 }

@@ -9,6 +9,7 @@ public class PortfolioCreateValidator : AbstractValidator<CreatePortfolioRequest
 	{
 		RuleFor(x => x.CustomerId)
 			.NotEmpty()
-			.NotNull();
-	}
+			.NotNull()
+            .GreaterThan(0);
+    }
 }
