@@ -22,7 +22,9 @@ public class OrderService : BaseService, IOrderService
 
     public long Create(Order order)
     {
-        _orderService.Add(order);
+        var repository = UnitOfWork.Repository<Order>();
+
+        repository.Add(order);
         UnitOfWork.SaveChanges();
 
         return order.Id;
@@ -70,9 +72,11 @@ public class OrderService : BaseService, IOrderService
 
     public void Update(long id, Order order)
     {
+        var repository = UnitOfWork.Repository<Order>();
+
         if (_orderService.Any(x => x.Id.Equals(order.Id)))
         {
-            _orderService.Update(order);
+            repository.Update(order);
             UnitOfWork.SaveChanges();
         }
     }

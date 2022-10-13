@@ -23,7 +23,9 @@ public class PortfolioService : BaseService, IPortfolioService
 
     public long Create(Portfolio portfolio)
     {
-        _portfolioService.Add(portfolio);
+        var repository = UnitOfWork.Repository<Portfolio>();
+
+        repository.Add(portfolio);
         UnitOfWork.SaveChanges();
 
         return portfolio.Id;
@@ -53,18 +55,21 @@ public class PortfolioService : BaseService, IPortfolioService
 
     public void Update(Portfolio portfolio)
     {
+        var repository = UnitOfWork.Repository<Portfolio>();
         portfolio.Products.Clear();
 
-        _portfolioService.Update(portfolio);
+        repository.Update(portfolio);
         UnitOfWork.SaveChanges();
     }
 
     public void Delete(long id)
     {
+        var repository = UnitOfWork.Repository<Portfolio>();
         var totalBalance = GetTotalBalance(id);
+
         if (totalBalance > 0) 
             throw new BadRequestException($"Unable to delete portfolio, because there is still a balance to withdraw");
 
-        _portfolioService.Remove(x => x.Id.Equals(id));
+        repository.Remove(x => x.Id.Equals(id));
     }
 }

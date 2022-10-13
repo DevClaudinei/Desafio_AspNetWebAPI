@@ -22,11 +22,13 @@ public class PortfolioProductService : BaseService, IPortfolioProductService
 
     public void AddProduct(Portfolio portfolio, Product product)
     {
+        var repository = UnitOfWork.Repository<PortfolioProduct>();
+
         if (!_portfolioProductService.Any(x => x.ProductId.Equals(product.Id)))
         {
             var portfolioProduct = new PortfolioProduct(portfolio.Id, product.Id);
 
-            _portfolioProductService.Add(portfolioProduct);
+            repository.Add(portfolioProduct);
             UnitOfWork.SaveChanges();
         }
     }
@@ -51,9 +53,10 @@ public class PortfolioProductService : BaseService, IPortfolioProductService
 
     public void RemoveProduct(Portfolio portfolio, Product product)
     {
+        var repository = UnitOfWork.Repository<PortfolioProduct>();
         var portfolioProductToRemove = GetById(portfolio.Id, product.Id);
 
-        _portfolioProductService.Remove(portfolioProductToRemove);
+        repository.Remove(portfolioProductToRemove);
         UnitOfWork.SaveChanges();
     }
 }

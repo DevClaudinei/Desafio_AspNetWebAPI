@@ -22,9 +22,10 @@ public class CustomerService : BaseService, ICustomerService
 
     public long CreateCustomer(Customer customer)
     {
+        var repository = UnitOfWork.Repository<Customer>();
         VerifyCustomerAlreadyExists(customer);
         
-        _customerService.Add(customer);
+        repository.Add(customer);
         UnitOfWork.SaveChanges();
 
         return customer.Id;
@@ -32,7 +33,6 @@ public class CustomerService : BaseService, ICustomerService
 
     private void VerifyCustomerAlreadyExists(Customer customer)
     {
-
         if (_customerService.Any(x => x.Email.Equals(customer.Email)))
             throw new BadRequestException($"Customer already exists for email: {customer.Email}");
 
@@ -73,20 +73,22 @@ public class CustomerService : BaseService, ICustomerService
 
     public void Update(long id, Customer customer)
     {
+        var repository = UnitOfWork.Repository<Customer>();
         VerifyCustomerAlreadyExists(customer);
         var updatedCustomer = CustomerAlreadyExists(id);
         
         customer.Id = id;
         customer.CreatedAt = updatedCustomer.CreatedAt;
 
-        _customerService.Update(customer);
+        repository.Update(customer);
         UnitOfWork.SaveChanges();
     }
 
     public void Delete(long id)
     {
+        var repository = UnitOfWork.Repository<Customer>();
         CustomerAlreadyExists(id);
 
-        _customerService.Remove(x => x.Id.Equals(id));
+        repository.Remove(x => x.Id.Equals(id));
     }
 }

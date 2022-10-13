@@ -59,7 +59,7 @@ public class CustomerAppService : ICustomerAppService
     public IEnumerable<CustomerResult> GetByName(string fullName)
     {
         var customersFound = _customerService.GetAllByFullName(fullName);
-        if (customersFound.Count() == 0) throw new NotFoundException($"Client for name: {fullName} could not be found.");
+        if (!customersFound.Any()) throw new NotFoundException($"Client for name: {fullName} could not be found.");
 
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }

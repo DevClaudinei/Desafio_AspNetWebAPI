@@ -3,16 +3,14 @@ using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.Repository.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DomainServices.Services;
 
 public class CustomerBankInfoService : BaseService, ICustomerBankInfoService
 {
     private readonly IRepository<CustomerBankInfo> _customerBankInfoService;
-
+    
     public CustomerBankInfoService(
         IUnitOfWork<ApplicationDbContext> unitOfWork,
         IRepositoryFactory<ApplicationDbContext> repositoryFactory
@@ -60,27 +58,30 @@ public class CustomerBankInfoService : BaseService, ICustomerBankInfoService
 
     public void Deposit(long id, decimal amount)
     {
+        var repository = UnitOfWork.Repository<CustomerBankInfo>();
         var customerBankInfo = GetById(id);
         customerBankInfo.AccountBalance += amount;
 
-        _customerBankInfoService.Update(customerBankInfo, x => x.AccountBalance);
+        repository.Update(customerBankInfo, x => x.AccountBalance);
         UnitOfWork.SaveChanges();
     }
 
     public void Withdraw(long id, decimal amount)
     {
+        var repository = UnitOfWork.Repository<CustomerBankInfo>();
         var customerBankInfo = GetById(id);
         customerBankInfo.AccountBalance -= amount;
 
-        _customerBankInfoService.Update(customerBankInfo, x => x.AccountBalance);
+        repository.Update(customerBankInfo, x => x.AccountBalance);
         UnitOfWork.SaveChanges();
     }
 
     public void Create(long customerId)
     {
+        var repository = UnitOfWork.Repository<CustomerBankInfo>();
         var customerBankInfo = new CustomerBankInfo(customerId);
 
-        _customerBankInfoService.Add(customerBankInfo);
+        repository.Add(customerBankInfo);
         UnitOfWork.SaveChanges();
     }
 }

@@ -24,11 +24,12 @@ public class ProductService : BaseService, IProductService
 
     public long Create(Product product)
     {
+        var repository = UnitOfWork.Repository<Product>();
         var exists = Exists(x => x.Symbol.Equals(product.Symbol));
         
         if (exists) throw new BadRequestException($"Product: {product.Symbol} are already registered");
 
-        _productService.Add(product);
+        repository.Add(product);
         UnitOfWork.SaveChanges();
 
         return product.Id;
@@ -64,18 +65,20 @@ public class ProductService : BaseService, IProductService
 
     public void Update(Product product)
     {
+        var repository = UnitOfWork.Repository<Product>();
         Exists(x => x.Id.Equals(product.Id));
 
-        _productService.Update(product);
+        repository.Update(product);
         UnitOfWork.SaveChanges();
     }
 
     public void Delete(long id)
     {
+        var repository = UnitOfWork.Repository<Product>();
         var exists = Exists(x => x.Id.Equals(id));
 
         if (!exists) throw new NotFoundException($"Product not found for id: {id}.");
 
-        _productService.Remove(x => x.Id.Equals(id));
+        repository.Remove(x => x.Id.Equals(id));
     }
 }
