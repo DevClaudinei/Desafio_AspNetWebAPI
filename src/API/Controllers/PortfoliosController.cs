@@ -35,7 +35,7 @@ public class PortfoliosController : Controller
         }
     }
 
-    [HttpPost("{orderDirection}/investment")]
+    [HttpPost("invest")]
     public IActionResult Post(InvestmentRequest investmentRequest, OrderDirection orderDirection)
     {
         try
@@ -74,12 +74,12 @@ public class PortfoliosController : Controller
         }
     }
 
-    [HttpGet("/total-balance")]
-    public IActionResult GetByTotalBalance(long portfolioId)
+    [HttpGet("total-balance/{id}")]
+    public IActionResult GetByTotalBalance(long id)
     {
         try
         {
-            var portfolioBalance = _portfolioAppService.GetTotalBalance(portfolioId);
+            var portfolioBalance = _portfolioAppService.GetTotalBalance(id);
             return Ok(portfolioBalance);
         }
         catch (NotFoundException e)

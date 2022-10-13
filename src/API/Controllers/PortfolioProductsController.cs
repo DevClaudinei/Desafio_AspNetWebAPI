@@ -22,7 +22,7 @@ public class PortfolioProductsController : Controller
         return Ok(portfoliosProduct);
     }
 
-    [HttpGet("ById")]
+    [HttpGet("{portfolioId}/{productId}")]
     public IActionResult Get(long portfolioId, long productId)
     {
         try
