@@ -9,7 +9,9 @@ public class PortfolioProfile : Profile
 {
     public PortfolioProfile()
     {
-        CreateMap<Portfolio, PortfolioResult>();
+        CreateMap<Portfolio, PortfolioResult>()
+            .ForMember(dst => dst.Products, src => src.MapFrom(act => act.Products));
+        
         CreateMap<CreatePortfolioRequest, Portfolio>();
     }
 }

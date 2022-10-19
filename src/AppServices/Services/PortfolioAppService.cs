@@ -54,14 +54,6 @@ public class PortfolioAppService : IPortfolioAppService
         var portfoliosFound = _portfolioService.GetAll();
         var portfolioMap = _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
 
-        foreach (var portfolios in portfoliosFound)
-        {
-            foreach (var product in portfolioMap)
-            {
-                product.Products = _mapper.Map<IEnumerable<ProductResult>>(portfolios.Products);
-            }
-        }
-
         return portfolioMap;
     }
 
@@ -69,10 +61,9 @@ public class PortfolioAppService : IPortfolioAppService
     {
         var portfolioFound = _portfolioService.GetById(id);
 
-        if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
+            if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
 
         var portfolioMapp = _mapper.Map<PortfolioResult>(portfolioFound);
-        portfolioMapp.Products = _mapper.Map<IEnumerable<ProductResult>>(portfolioFound.Products);
 
         return portfolioMapp;
     }
@@ -175,5 +166,22 @@ public class PortfolioAppService : IPortfolioAppService
         portfolio.TotalBalance -= netValue;
         _portfolioService.Update(portfolio);
         _customerBankInfoAppService.Deposit(customerBankId, netValue);
+    }
+
+    public IEnumerable<PortfolioResult> GetAllByCustomerId(long id)
+    {
+        var portfoliosFound = _portfolioService.GetAllByCustomerId(id);
+
+        var portfolioMap = _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
+
+        foreach (var portfolios in portfoliosFound)
+        {
+            foreach (var product in portfolioMap)
+            {
+                product.Products = _mapper.Map<IEnumerable<ProductResult>>(portfolios.Products);
+            }
+        }
+
+        return portfolioMap;
     }
 }
