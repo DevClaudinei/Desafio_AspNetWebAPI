@@ -15,4 +15,5 @@ public interface ICustomerBankInfoAppService
     void Withdraw(long id, decimal amount);
     void CanWithdrawAmountFromAccountBalance(decimal netValue, long customerBankInfoId);
     long GetCustomerBankInfoId(long id);
+    CustomerBankInfoResult GetByCustomerId(long id);
 }

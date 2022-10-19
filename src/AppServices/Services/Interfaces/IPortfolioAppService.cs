@@ -13,4 +13,5 @@ public interface IPortfolioAppService
     decimal GetTotalBalance(long portfolioId);
     void Delete(long id);
     long Invest(InvestmentRequest request, OrderDirection orderDirection);
+    IEnumerable<PortfolioResult> GetAllByCustomerId(long id);
 }

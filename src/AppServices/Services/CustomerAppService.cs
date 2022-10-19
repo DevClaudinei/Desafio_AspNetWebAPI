@@ -1,7 +1,5 @@
 using Application.Models.Customer.Requests;
 using Application.Models.Customer.Response;
-using Application.Models.CustomerBackInfo.Response;
-using Application.Models.Portfolio.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -72,46 +70,14 @@ public class CustomerAppService : ICustomerAppService
 
     public void Delete(long id)
     {
-        var customerAccountBalance = _customerBankInfoAppService.GetAll();
-        var customerTotaltBalance = _portfolioAppService.GetAll();
+        var customerBankInfo = _customerBankInfoAppService.GetByCustomerId(id);
+        var customerTotaltBalance = _portfolioAppService.GetAllByCustomerId(id);
         
-        CheckCustomerBankInfoAccountBalance(customerAccountBalance, id);
-        CheckPortfolioTotalBalance(customerTotaltBalance, id);
-       
+        if (customerBankInfo.AccountBalance > 0)
+            throw new BadRequestException($"Customer needs to Withdraw the account balance before being deleted.");
+        if (customerTotaltBalance.Any(x => x.TotalBalance > 0))
+            throw new BadRequestException($"Customer needs to withdraw the balance from the portfolio before being deleted.");
+
         _customerService.Delete(id);
-    }
-
-    private bool CheckPortfolioTotalBalance(IEnumerable<PortfolioResult> portfoliosInfo, long id)
-    {
-        var exclusionOfValidCustomer = false;
-
-        foreach (var item in portfoliosInfo)
-        {
-            if (item.CustomerId != id) continue;
-
-            if (item.CustomerId == id && item.TotalBalance > 0) 
-                throw new BadRequestException($"Customer needs to withdraw their balance before being deleted.");
-
-            if (item.CustomerId == id && item.TotalBalance == 0) exclusionOfValidCustomer = true;
-        }
-
-        return exclusionOfValidCustomer;
-    }
-
-    private bool CheckCustomerBankInfoAccountBalance(IEnumerable<CustomerBankInfoResult> customerBankInfos, long id)
-    {
-        var exclusionOfValidCustomer = false;
-
-        foreach (var item in customerBankInfos)
-        {
-            if (item.CustomerId != id) continue;
-
-            if (item.CustomerId == id && item.AccountBalance > 0)
-                throw new BadRequestException($"Customer needs to Withdraw their balance before being deleted.");
-
-            if (item.CustomerId == id && item.AccountBalance == 0) exclusionOfValidCustomer = true;
-        }
-
-        return exclusionOfValidCustomer;
     }
 }

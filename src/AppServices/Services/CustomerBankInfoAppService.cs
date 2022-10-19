@@ -67,4 +67,13 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
         if (accountBalance < amount) throw new BadRequestException($"Insufficient balance to invest.");
     }
+
+    public CustomerBankInfoResult GetByCustomerId(long id)
+    {
+        var customerBankInfo = _customerBankInfoService.GetByCustomerId(id);
+
+        if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for CustomerId: {id} was not found.");
+
+        return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
+    }
 }
