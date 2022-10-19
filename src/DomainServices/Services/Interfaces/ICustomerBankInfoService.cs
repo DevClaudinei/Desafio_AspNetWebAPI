@@ -13,4 +13,5 @@ public interface ICustomerBankInfoService
     void Deposit(long id, decimal amount);
     void Withdraw(long id, decimal amount);
     long GetIdByCustomerId(long id);
+    CustomerBankInfo GetByCustomerId(long id);
 }

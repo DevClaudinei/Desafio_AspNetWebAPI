@@ -23,8 +23,9 @@ public class PortfolioProductService : BaseService, IPortfolioProductService
     public void AddProduct(Portfolio portfolio, Product product)
     {
         var repository = UnitOfWork.Repository<PortfolioProduct>();
+        var productInThePortfolio = GetById(portfolio.Id, product.Id);
 
-        if (!_portfolioProductService.Any(x => x.ProductId.Equals(product.Id)))
+        if (productInThePortfolio == null)
         {
             var portfolioProduct = new PortfolioProduct(portfolio.Id, product.Id);
 

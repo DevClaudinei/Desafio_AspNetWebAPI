@@ -84,4 +84,12 @@ public class CustomerBankInfoService : BaseService, ICustomerBankInfoService
         repository.Add(customerBankInfo);
         UnitOfWork.SaveChanges();
     }
+
+    public CustomerBankInfo GetByCustomerId(long id)
+    {
+        var query = _customerBankInfoService.SingleResultQuery()
+            .AndFilter(x => x.CustomerId.Equals(id));
+
+        return _customerBankInfoService.SingleOrDefault(query);
+    }
 }

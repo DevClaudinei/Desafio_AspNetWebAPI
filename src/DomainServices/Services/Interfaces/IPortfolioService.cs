@@ -11,4 +11,5 @@ public interface IPortfolioService
     decimal GetTotalBalance(long portfolioId);
     void Update(Portfolio portfolio);
     void Delete(long id);
+    IEnumerable<Portfolio> GetAllByCustomerId(long id);
 }

@@ -72,4 +72,13 @@ public class PortfolioService : BaseService, IPortfolioService
 
         repository.Remove(x => x.Id.Equals(id));
     }
+
+    public IEnumerable<Portfolio> GetAllByCustomerId(long id)
+    {
+        var query = _portfolioService.MultipleResultQuery()
+            .Include(x => x.Include(x => x.Products))
+            .AndFilter(x => x.CustomerId.Equals(id));
+
+        return _portfolioService.Search(query);
+    }
 }
