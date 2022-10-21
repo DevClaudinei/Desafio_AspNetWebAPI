@@ -1,7 +1,6 @@
 ﻿using Application.Models.Enum;
 using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
-using Application.Models.Product.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
 using DomainModels.Entities;
@@ -110,10 +109,8 @@ public class PortfolioAppService : IPortfolioAppService
 
     private Order PrepareOrder(decimal unitPrice, InvestmentRequest request)
     {
-        var order = new Order(unitPrice, request.Quotes);
-
         var investment = _mapper.Map<Order>(request);
-        investment.NetValue = order.NetValue;
+        investment.NetValue = unitPrice * request.Quotes;
 
         return investment;
     }
@@ -171,16 +168,7 @@ public class PortfolioAppService : IPortfolioAppService
     public IEnumerable<PortfolioResult> GetAllByCustomerId(long id)
     {
         var portfoliosFound = _portfolioService.GetAllByCustomerId(id);
-
         var portfolioMap = _mapper.Map<IEnumerable<PortfolioResult>>(portfoliosFound);
-
-        foreach (var portfolios in portfoliosFound)
-        {
-            foreach (var product in portfolioMap)
-            {
-                product.Products = _mapper.Map<IEnumerable<ProductResult>>(portfolios.Products);
-            }
-        }
 
         return portfolioMap;
     }

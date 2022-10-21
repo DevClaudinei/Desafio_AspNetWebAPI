@@ -6,11 +6,6 @@ public class Order
 {
     protected Order() { }
 
-    public Order(decimal unitPrice, int quotes)
-    {
-        NetValue = unitPrice * quotes;
-    }
-
     public Order(int quotes, decimal unitPrice, DateTime convertedAt)
     {
         Quotes = quotes;
