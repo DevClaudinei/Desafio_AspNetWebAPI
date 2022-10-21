@@ -1,101 +1,93 @@
-using System;
-using System.Collections.Generic;
-using DomainModels;
+using DomainModels.Entities;
+using DomainServices.Exceptions;
 using DomainServices.Services;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
+using System.Collections.Generic;
 
 namespace DomainServices;
 
-public class CustomerService : ICustomerService
+public class CustomerService : BaseService, ICustomerService
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepositoryFactory _repositoryFactory;
-    
-    public CustomerService(IUnitOfWork<ApplicationDbContext> unitOfWork, IRepositoryFactory<ApplicationDbContext> repositoryFactory)
+    public CustomerService(
+        IUnitOfWork<ApplicationDbContext> unitOfWork,
+        IRepositoryFactory<ApplicationDbContext> repositoryFactory
+    ) : base(unitOfWork, repositoryFactory) { }
+
+    public long CreateCustomer(Customer customer)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _repositoryFactory = repositoryFactory ?? throw new ArgumentNullException(nameof(repositoryFactory));
+        var unitOfWork = UnitOfWork.Repository<Customer>();
+        VerifyCustomerAlreadyExists(customer);
+
+        unitOfWork.Add(customer);
+        UnitOfWork.SaveChanges();
+
+        return customer.Id;
     }
 
-    public (bool isValid, string message) CreateCustomer(Customer customer)
+    private void VerifyCustomerAlreadyExists(Customer customer)
     {
-        var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
-        
-        if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
-
-        var repository = _unitOfWork.Repository<Customer>();
-
-        repository.Add(customer);
-        _unitOfWork.SaveChanges();
-
-        return (true, customer.Id.ToString());
-    }
-
-    private (bool exists, string errorMessage) VerifyCustomerAlreadyExists(Customer customer)
-    {
-        var messageTemplate = "Customer already exists for {0}: {1}";
-        var repository = _repositoryFactory.Repository<Customer>();
+        var repository = RepositoryFactory.Repository<Customer>();
 
         if (repository.Any(x => x.Email.Equals(customer.Email)))
-        {
-            return (true, string.Format(messageTemplate, "Email", customer.Email));
-        }
+            throw new BadRequestException($"Customer already exists for email: {customer.Email}");
 
         if (repository.Any(x => x.Cpf.Equals(customer.Cpf)))
-        {
-            return (true, string.Format(messageTemplate, "Cpf", customer.Cpf));
-        }
-
-        return default;
+            throw new BadRequestException($"Customer already exists for CPF: {customer.Cpf}");
     }
 
     public IEnumerable<Customer> GetAll()
     {
-        var repository = _repositoryFactory.Repository<Customer>();
+        var repository = RepositoryFactory.Repository<Customer>();
         var query = repository.MultipleResultQuery();
+
         return repository.Search(query); 
     }
 
-    public Customer GetById(Guid id)
+    public Customer GetById(long id)
     {
-        var repository = _repositoryFactory.Repository<Customer>();
+        var repository = RepositoryFactory.Repository<Customer>();
         var customerFound = repository.SingleResultQuery()
             .AndFilter(x => x.Id.Equals(id));
+
         return repository.SingleOrDefault(customerFound);
     }
 
     public IEnumerable<Customer> GetAllByFullName(string fullName)
     {
-        var repository = _repositoryFactory.Repository<Customer>();
+        var repository = RepositoryFactory.Repository<Customer>();
         var query = repository.MultipleResultQuery()
             .AndFilter(x => x.FullName.Contains(fullName));
-        
+
         return repository.Search(query);
     }
 
-    public (bool isValid, string message) Update(Customer customer)
+    private Customer CustomerAlreadyExists(long id)
     {
-        var customerAlreadyExists = VerifyCustomerAlreadyExists(customer);
+        var customerFound = GetById(id);
+        if (customerFound is null) throw new NotFoundException($"Client for Id: {id} not found.");
 
-        if (customerAlreadyExists.exists) return (false, customerAlreadyExists.errorMessage);
-
-        var updatedCustomer = GetById(customer.Id);
-        customer.CreatedAt = updatedCustomer.CreatedAt;
-
-        if (updatedCustomer is null) return (false, $"Cliente não encontrado para o Id: {customer.Id}.");
-
-        var repository = _unitOfWork.Repository<Customer>();
-
-        repository.Update(customer);
-        _unitOfWork.SaveChanges();
-
-        return (true, customer.Id.ToString());
+        return customerFound;
     }
 
-    public bool Delete(Guid id)
+    public void Update(long id, Customer customer)
     {
-        var repository = _unitOfWork.Repository<Customer>();
-        return repository.Remove(x => x.Id.Equals(id)) > 0;
+        var unitOfWork = UnitOfWork.Repository<Customer>();
+        VerifyCustomerAlreadyExists(customer);
+        var updatedCustomer = CustomerAlreadyExists(id);
+        
+        customer.Id = id;
+        customer.CreatedAt = updatedCustomer.CreatedAt;
+
+        unitOfWork.Update(customer);
+        UnitOfWork.SaveChanges();
+    }
+
+    public void Delete(long id)
+    {
+        var unitOfWork = UnitOfWork.Repository<Customer>();
+        CustomerAlreadyExists(id);
+
+        unitOfWork.Remove(x => x.Id.Equals(id));
     }
 }

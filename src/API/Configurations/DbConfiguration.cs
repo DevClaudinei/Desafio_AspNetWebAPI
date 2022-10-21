@@ -1,3 +1,4 @@
+using EntityFrameworkCore.UnitOfWork.Extensions;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ public static class DbConfiguration
             options.UseMySql(configuration.GetConnectionString("DefaultConnection"),
                             ServerVersion.Parse("8.0.29-mysql"),
                             b => b.MigrationsAssembly("Infrastructure.Data"));
-        });
+        }, contextLifetime: ServiceLifetime.Transient);
+        services.AddUnitOfWork<ApplicationDbContext>(ServiceLifetime.Transient);
     }
 }

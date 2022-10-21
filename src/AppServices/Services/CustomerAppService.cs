@@ -1,30 +1,43 @@
+using Application.Models.Customer.Requests;
+using Application.Models.Customer.Response;
+using AppServices.Services.Interfaces;
+using AutoMapper;
+using DomainModels.Entities;
+using DomainServices.Exceptions;
+using DomainServices.Services;
 using System;
 using System.Collections.Generic;
-using Application.Models;
-using AutoMapper;
-using DomainModels;
-using DomainServices.Services;
+using System.Linq;
 
 namespace AppServices.Services;
 
 public class CustomerAppService : ICustomerAppService
 {
-    private readonly ICustomerService _customerService;
     private readonly IMapper _mapper;
-
-    public CustomerAppService(ICustomerService customerService, IMapper mapper)
+    private readonly ICustomerService _customerService;
+    private readonly IPortfolioAppService _portfolioAppService;
+    private readonly ICustomerBankInfoAppService _customerBankInfoAppService;
+    
+    public CustomerAppService(
+        IMapper mapper,
+        ICustomerService customerService,
+        IPortfolioAppService portfolioAppService,
+        ICustomerBankInfoAppService customerBankInfoAppService
+    )
     {
-        _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
+        _portfolioAppService = portfolioAppService ?? throw new ArgumentNullException(nameof(portfolioAppService));
+        _customerBankInfoAppService = customerBankInfoAppService ?? throw new ArgumentNullException(nameof(customerBankInfoAppService));
     }
 
-    public (bool isValid, string message) Create(CreateCustomerRequest createCustomerRequest)
+    public long Create(CreateCustomerRequest createCustomerRequest)
     {
         var customer = _mapper.Map<Customer>(createCustomerRequest);
         var createdCustomer = _customerService.CreateCustomer(customer);
-        if (createdCustomer.isValid) return (true, createdCustomer.message);
 
-        return (false, createdCustomer.message);
+        _customerBankInfoAppService.Create(customer.Id);
+        return createdCustomer;
     }
 
     public IEnumerable<CustomerResult> Get()
@@ -33,31 +46,38 @@ public class CustomerAppService : ICustomerAppService
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
 
-    public CustomerResult GetCustomerById(Guid id)
+    public CustomerResult GetById(long id)
     {
-        var customer = _customerService.GetById(id);
-        if (customer is null) return null;
+        var customerFound = _customerService.GetById(id);
+        if (customerFound is null) throw new NotFoundException($"Customer for Id: {id} was not found.");
 
-        return _mapper.Map<CustomerResult>(customer);
+        return _mapper.Map<CustomerResult>(customerFound);
     }
 
-    public IEnumerable<CustomerResult> GetAllCustomerByName(string fullName)
+    public IEnumerable<CustomerResult> GetByName(string fullName)
     {
-        var customer = _customerService.GetAllByFullName(fullName);
-        if (customer is null) return null;
+        var customersFound = _customerService.GetAllByFullName(fullName);
+        if (!customersFound.Any()) throw new NotFoundException($"Client for name: {fullName} could not be found.");
 
-        return _mapper.Map< IEnumerable<CustomerResult>>(customer);
+        return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }
 
-    public (bool isValid, string message) Update(UpdateCustomerRequest updateCustomerRequest)
+    public void Update(long id, UpdateCustomerRequest updateCustomerRequest)
     {
         var customerToUpdate = _mapper.Map<Customer>(updateCustomerRequest);
-        return _customerService.Update(customerToUpdate);
+        _customerService.Update(id, customerToUpdate);
     }
 
-    public bool Delete(Guid id)
+    public void Delete(long id)
     {
-        var deletedCustomer = _customerService.Delete(id);
-        return deletedCustomer;
+        var customerBankInfo = _customerBankInfoAppService.GetByCustomerId(id);
+        var customerTotaltBalance = _portfolioAppService.GetAllByCustomerId(id);
+        
+        if (customerBankInfo.AccountBalance > 0)
+            throw new BadRequestException($"Customer needs to Withdraw the account balance before being deleted.");
+        if (customerTotaltBalance.Any(x => x.TotalBalance > 0))
+            throw new BadRequestException($"Customer needs to withdraw the balance from the portfolio before being deleted.");
+
+        _customerService.Delete(id);
     }
 }

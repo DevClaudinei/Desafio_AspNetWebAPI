@@ -1,4 +1,3 @@
-using DomainModels;
 using EntityFrameworkCore.AutoHistory.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -31,6 +30,4 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("Infrastructure.Data"));
     }
-
-    public DbSet<Customer> Customers { get; set; }
 }

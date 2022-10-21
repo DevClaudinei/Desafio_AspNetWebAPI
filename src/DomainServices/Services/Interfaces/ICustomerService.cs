@@ -1,20 +1,14 @@
-using System;
+using DomainModels.Entities;
 using System.Collections.Generic;
-using DomainModels;
 
 namespace DomainServices.Services;
 
 public interface ICustomerService
 {
-    (bool isValid, string message) CreateCustomer(Customer customer);
-
+    long CreateCustomer(Customer customer);
     IEnumerable<Customer> GetAll();
-
-    Customer GetById(Guid id);
-
+    Customer GetById(long id);
     IEnumerable<Customer> GetAllByFullName(string fullName);
-
-    (bool isValid, string message) Update(Customer customer);
-
-    bool Delete(Guid id);
+    void Update(long id, Customer customer);
+    void Delete(long id);
 }

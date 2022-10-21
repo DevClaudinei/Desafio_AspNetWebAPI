@@ -1,8 +1,9 @@
-using System;
-using Application.Models;
+using Application.Models.Customer.Requests;
 using AppServices.Services;
 using AutoMapper;
+using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace API.Controllers;
 
@@ -12,7 +13,7 @@ public class CustomersController : ControllerBase
 {
     private readonly ICustomerAppService _appService;
 
-    public CustomersController(ICustomerAppService appService, IMapper mapper)
+    public CustomersController(ICustomerAppService appService)
     {
         _appService = appService ?? throw new ArgumentNullException(nameof(appService));
     }
@@ -20,10 +21,15 @@ public class CustomersController : ControllerBase
     [HttpPost]
     public IActionResult Post(CreateCustomerRequest createCustomerRequest)
     {
-        var createdCustomer = _appService.Create(createCustomerRequest);
-        return createdCustomer.isValid
-            ? Created("~http://localhost:5160/api/Customers", createdCustomer.message)
-            : BadRequest(createdCustomer.message);
+        try
+        {
+            var createdCustomer = _appService.Create(createCustomerRequest);
+            return Created("~http://localhost:5160/api/Customers", createdCustomer);
+        }
+        catch (BadRequestException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet]
@@ -34,39 +40,62 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(Guid id)
+    public IActionResult GetById(long id)
     {
-        var customerFoundId = _appService.GetCustomerById(id);
-        return customerFoundId is null
-            ? NotFound($"Customer para o id: {id} não foi encontrado.")
-            : Ok(customerFoundId);
+        try
+        {
+            var customerFoundId = _appService.GetById(id);
+            return Ok(customerFoundId);
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpGet("name/{fullName}")]
     public IActionResult GetAllByName(string fullName)
     {
-        var customerFoundName = _appService.GetAllCustomerByName(fullName);
-        return customerFoundName is not null
-            ? Ok(customerFoundName)
-            : NotFound($"Cliente para o nome: {fullName} não foi encontrado.");
+        try
+        {
+            var customerFoundName = _appService.GetByName(fullName);
+            return Ok(customerFoundName);
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(Guid id, UpdateCustomerRequest updateCustomerRequest)
+    public IActionResult Put(long id, UpdateCustomerRequest updateCustomerRequest)
     {
-        updateCustomerRequest.Id = id;
-        var updatedCustomer = _appService.Update(updateCustomerRequest);
-        return updatedCustomer.isValid
-            ? Ok()
-            : NotFound(updatedCustomer.message);
+        try
+        {
+            _appService.Update(id, updateCustomerRequest);
+            return Ok();
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(Guid id)
+    public IActionResult Delete(long id)
     {
-        var excludedCustomerById = _appService.Delete(id);
-        return excludedCustomerById
-            ? NoContent()
-            : NotFound($"Cliente não encontrado para o ID: {id}.");
+        try
+        {
+            _appService.Delete(id);
+            return NoContent();
+        }
+        catch (BadRequestException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }
