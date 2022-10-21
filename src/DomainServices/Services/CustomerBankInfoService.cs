@@ -1,6 +1,5 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Services.Interfaces;
-using EntityFrameworkCore.Repository.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
 using System.Collections.Generic;
@@ -9,46 +8,45 @@ namespace DomainServices.Services;
 
 public class CustomerBankInfoService : BaseService, ICustomerBankInfoService
 {
-    private readonly IRepository<CustomerBankInfo> _customerBankInfoService;
-    
     public CustomerBankInfoService(
         IUnitOfWork<ApplicationDbContext> unitOfWork,
         IRepositoryFactory<ApplicationDbContext> repositoryFactory
-    ) : base(unitOfWork, repositoryFactory)
-    {
-        _customerBankInfoService = RepositoryFactory.Repository<CustomerBankInfo>();
-    }
+    ) : base(unitOfWork, repositoryFactory) { }
 
     public long GetIdByCustomerId(long id)
     {
-        var query = _customerBankInfoService.SingleResultQuery()
+        var repository = RepositoryFactory.Repository<CustomerBankInfo>();
+        var query = repository.SingleResultQuery()
             .Select(x => x.Id)
             .AndFilter(x => x.CustomerId.Equals(id));
 
-        return _customerBankInfoService.SingleOrDefault(query);
+        return repository.SingleOrDefault(query);
     }
 
     public IEnumerable<CustomerBankInfo> GetAll()
     {
-        var query = _customerBankInfoService.MultipleResultQuery();
+        var repository = RepositoryFactory.Repository<CustomerBankInfo>();
+        var query = repository.MultipleResultQuery();
 
-        return _customerBankInfoService.Search(query);
+        return repository.Search(query);
     }
 
     public CustomerBankInfo GetByAccount(string account)
     {
-        var query = _customerBankInfoService.SingleResultQuery()
+        var repository = RepositoryFactory.Repository<CustomerBankInfo>();
+        var query = repository.SingleResultQuery()
             .AndFilter(x => x.Account.Equals(account));
 
-        return _customerBankInfoService.SingleOrDefault(query);
+        return repository.SingleOrDefault(query);
     }
 
     public CustomerBankInfo GetById(long id)
     {
-        var query = _customerBankInfoService.SingleResultQuery()
+        var repository = RepositoryFactory.Repository<CustomerBankInfo>();
+        var query = repository.SingleResultQuery()
             .AndFilter(x => x.Id.Equals(id));
 
-        return _customerBankInfoService.SingleOrDefault(query);
+        return repository.SingleOrDefault(query);
     }
 
     public decimal GetAccountBalanceById(long id)
@@ -87,9 +85,10 @@ public class CustomerBankInfoService : BaseService, ICustomerBankInfoService
 
     public CustomerBankInfo GetByCustomerId(long id)
     {
-        var query = _customerBankInfoService.SingleResultQuery()
+        var repository = RepositoryFactory.Repository<CustomerBankInfo>();
+        var query = repository.SingleResultQuery()
             .AndFilter(x => x.CustomerId.Equals(id));
 
-        return _customerBankInfoService.SingleOrDefault(query);
+        return repository.SingleOrDefault(query);
     }
 }

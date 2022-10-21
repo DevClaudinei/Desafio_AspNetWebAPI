@@ -1,7 +1,6 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
-using EntityFrameworkCore.Repository.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -11,21 +10,16 @@ namespace DomainServices.Services;
 
 public class PortfolioService : BaseService, IPortfolioService
 {
-    private readonly IRepository<Portfolio> _portfolioService;
-
     public PortfolioService(
         IUnitOfWork<ApplicationDbContext> unitOfWork,
         IRepositoryFactory<ApplicationDbContext> repositoryFactory
-    ) : base(unitOfWork, repositoryFactory)
-    {
-        _portfolioService = repositoryFactory.Repository<Portfolio>();
-    }
+    ) : base(unitOfWork, repositoryFactory) { }
 
     public long Create(Portfolio portfolio)
     {
-        var repository = UnitOfWork.Repository<Portfolio>();
+        var unitOfWork = UnitOfWork.Repository<Portfolio>();
 
-        repository.Add(portfolio);
+        unitOfWork.Add(portfolio);
         UnitOfWork.SaveChanges();
 
         return portfolio.Id;
@@ -38,47 +32,50 @@ public class PortfolioService : BaseService, IPortfolioService
 
     public Portfolio GetById(long id)
     {
-        var query = _portfolioService.SingleResultQuery()
+        var repository = RepositoryFactory.Repository<Portfolio>();
+        var query = repository.SingleResultQuery()
             .Include(x => x.Include(x => x.Products))
             .AndFilter(x => x.Id.Equals(id));
 
-        return _portfolioService.FirstOrDefault(query);
+        return repository.FirstOrDefault(query);
     }
 
     public IEnumerable<Portfolio> GetAll()
     {
-        var query = _portfolioService.MultipleResultQuery()
+        var repository = RepositoryFactory.Repository<Portfolio>();
+        var query = repository.MultipleResultQuery()
             .Include(x => x.Include(x => x.Products));
 
-        return _portfolioService.Search(query);
+        return repository.Search(query);
     }
 
     public void Update(Portfolio portfolio)
     {
-        var repository = UnitOfWork.Repository<Portfolio>();
+        var unitOfWork = UnitOfWork.Repository<Portfolio>();
         portfolio.Products.Clear();
 
-        repository.Update(portfolio);
+        unitOfWork.Update(portfolio);
         UnitOfWork.SaveChanges();
     }
 
     public void Delete(long id)
     {
-        var repository = UnitOfWork.Repository<Portfolio>();
+        var unitOfWork = UnitOfWork.Repository<Portfolio>();
         var totalBalance = GetTotalBalance(id);
 
         if (totalBalance > 0) 
             throw new BadRequestException($"Unable to delete portfolio, because there is still a balance to withdraw");
 
-        repository.Remove(x => x.Id.Equals(id));
+        unitOfWork.Remove(x => x.Id.Equals(id));
     }
 
     public IEnumerable<Portfolio> GetAllByCustomerId(long id)
     {
-        var query = _portfolioService.MultipleResultQuery()
+        var repository = RepositoryFactory.Repository<Portfolio>();
+        var query = repository.MultipleResultQuery()
             .Include(x => x.Include(x => x.Products))
             .AndFilter(x => x.CustomerId.Equals(id));
 
-        return _portfolioService.Search(query);
+        return repository.Search(query);
     }
 }
