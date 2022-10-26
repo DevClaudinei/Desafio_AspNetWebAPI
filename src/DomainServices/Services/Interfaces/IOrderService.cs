@@ -9,5 +9,4 @@ public interface IOrderService
     IEnumerable<Order> GetAll();
     Order GetById(long id);
     int GetQuantityOfQuotes(long portfolioId, long productId);
-    void Update(long id, Order order);
 }
