@@ -64,7 +64,9 @@ public class ProductService : BaseService, IProductService
     public void Update(Product product)
     {
         var unitOfWork = UnitOfWork.Repository<Product>();
-        Exists(x => x.Id.Equals(product.Id));
+        var exists = Exists(x => x.Id.Equals(product.Id));
+
+        if (!exists) throw new NotFoundException($"Product not found for id: {product.Id}.");
 
         unitOfWork.Update(product);
         UnitOfWork.SaveChanges();

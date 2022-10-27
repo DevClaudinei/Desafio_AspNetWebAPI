@@ -78,6 +78,10 @@ public class PortfolioAppService : IPortfolioAppService
 
     public decimal GetTotalBalance(long id)
     {
+        var portfolioFound = _portfolioService.GetById(id);
+
+        if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
+
         return _portfolioService.GetTotalBalance(id);
     }
 
