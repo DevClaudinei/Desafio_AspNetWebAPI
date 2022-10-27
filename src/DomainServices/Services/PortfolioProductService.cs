@@ -39,7 +39,7 @@ public class PortfolioProductService : BaseService, IPortfolioProductService
     public PortfolioProduct GetById(long portfolioId, long productId)
     {
         var repository = RepositoryFactory.Repository<PortfolioProduct>();
-        var query = repository.MultipleResultQuery()
+        var query = repository.SingleResultQuery()
             .Include(x => x.Include(x => x.Portfolio))
             .Include(x => x.Include(x => x.Product))
             .AndFilter(x => x.Portfolio.Id.Equals(portfolioId))
