@@ -111,7 +111,12 @@ public class CustomerServiceTests
             .Search(query)).Returns(new List<Customer>());
 
         var customersFound = _customerService.GetAll();
+        
         customersFound.Should().BeEmpty();
+        _mockRepositoryFactory.Verify(x => x.Repository<Customer>()
+            .MultipleResultQuery(), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<Customer>()
+            .MultipleResultQuery(), Times.Once());
     }
 
     [Fact]
@@ -122,7 +127,8 @@ public class CustomerServiceTests
 
         _mockRepositoryFactory.Setup(x => x.Repository<Customer>()
             .SingleResultQuery()
-            .AndFilter(It.IsAny<Expression<Func<Customer, bool>>>())).Returns(query);
+            .AndFilter(It.IsAny<Expression<Func<Customer, bool>>>()))
+            .Returns(query);
         _mockRepositoryFactory.Setup(x => x.Repository<Customer>()
             .SingleOrDefault(query)).Returns(customerFake);
 
@@ -144,7 +150,8 @@ public class CustomerServiceTests
 
         _mockRepositoryFactory.Setup(x => x.Repository<Customer>()
             .SingleResultQuery()
-            .AndFilter(It.IsAny<Expression<Func<Customer, bool>>>())).Returns(query);
+            .AndFilter(It.IsAny<Expression<Func<Customer, bool>>>()))
+            .Returns(query);
         _mockRepositoryFactory.Setup(x => x.Repository<Customer>()
             .SingleOrDefault(query));
 
