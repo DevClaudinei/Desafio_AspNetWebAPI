@@ -34,10 +34,10 @@ public class CustomerAppService : ICustomerAppService
     public long Create(CreateCustomerRequest createCustomerRequest)
     {
         var customer = _mapper.Map<Customer>(createCustomerRequest);
-        var createdCustomer = _customerService.CreateCustomer(customer);
+        var customerId = _customerService.CreateCustomer(customer);
 
-        _customerBankInfoAppService.Create(customer.Id);
-        return createdCustomer;
+        _customerBankInfoAppService.Create(customerId);
+        return customerId;
     }
 
     public IEnumerable<CustomerResult> Get()
