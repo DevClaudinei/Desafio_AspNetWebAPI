@@ -17,8 +17,8 @@ namespace AppServices.Tests.Services;
 public class CustomerAppServiceTests
 {
     private readonly IMapper _mapper;
-    private readonly Mock<ICustomerService> _customerService;
     private readonly CustomerAppService _customerAppService;
+    private readonly Mock<ICustomerService> _customerService;
     private readonly Mock<IPortfolioAppService> _portfolioAppService;
     private readonly Mock<ICustomerBankInfoAppService> _customerBankInfoAppService;
 
@@ -148,7 +148,6 @@ public class CustomerAppServiceTests
     [Fact]
     public void Should_GetByName_When_CustomerDoesNotExists()
     {
-
         // Arrange
         var customerFake = CustomerFake.CustomerFakers(2);
         var customer = customerFake.ElementAt(1);
@@ -184,7 +183,7 @@ public class CustomerAppServiceTests
     public void Should_Delete_When_CustomerExists()
     {
         // Arrange
-        var bankInfoFake = CustomerBankInfoResponseModel.CustomerBankInfoFake();
+        var bankInfoFake = CustomerBankInfoResponseModel.BankInfoFake();
         var portfolioFake = PortfolioResponseModel.PortfolioFake(2);
 
         _customerBankInfoAppService.Setup(x => x.GetByCustomerId(bankInfoFake.CustomerId))
@@ -204,7 +203,7 @@ public class CustomerAppServiceTests
     public void Should_Delete_When_AccountBalanceGranThanZero()
     {
         // Arrange
-        var bankInfoFake = CustomerBankInfoResponseModel.CustomerBankInfoFake();
+        var bankInfoFake = CustomerBankInfoResponseModel.BankInfoFake();
         bankInfoFake.AccountBalance = 1;
         var portfolioFake = PortfolioResponseModel.PortfolioFake(2);
 
@@ -227,7 +226,7 @@ public class CustomerAppServiceTests
     public void Should_Delete_When_AnyTotalBalanceGranThanZero()
     {
         // Arrange
-        var bankInfoFake = CustomerBankInfoResponseModel.CustomerBankInfoFake();
+        var bankInfoFake = CustomerBankInfoResponseModel.BankInfoFake();
         var portfolioFake = PortfolioResponseModel.PortfolioFake(2);
         portfolioFake.ElementAt(1).TotalBalance = 1;
 
