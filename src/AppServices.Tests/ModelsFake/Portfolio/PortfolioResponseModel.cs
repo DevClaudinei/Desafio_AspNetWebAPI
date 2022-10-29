@@ -21,28 +21,6 @@ public static class PortfolioResponseModel
                 customerId: 1
             )).Generate(2);
 
-		//var products = ProductResponseModel.ProductFake();
-  //      portfolioResult.Products.Append(products);
-
-		return portfolioResult;
+        return portfolioResult;
 	}
-
-    //public static IEnumerable<PortfolioResult> PortfolioFakers(int quantity)
-    //{
-    //    var id = 1;
-    //    var portfolioResult = new Faker<PortfolioResult>("pt_BR")
-    //        .CustomInstantiator(f => new PortfolioResult(
-    //            id: id++,
-    //            totalBalance: 0,
-    //            customerId: 1
-    //        )).Generate(quantity);
-
-    //    foreach (var portfolioFake in portfolioResult)
-    //    {
-    //        var products = ProductResponseModel.ProductFake();
-    //        portfolioFake.Products.Append(products);
-    //    }
-
-    //    return portfolioResult;
-    //}
 }
