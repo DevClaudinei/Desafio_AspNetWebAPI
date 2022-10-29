@@ -33,8 +33,7 @@ public static class PortfolioProductFake
 			portfolioProductFake.Id = id++;
             portfolioProductFake.Portfolio = PortfolioFake.PortfolioFaker();
             portfolioProductFake.Product = ProductFake.ProductFaker();
-            //yield return portfolioProductFake;
-		}
+        }
 
 		return portfolioProductFakes;
 	}

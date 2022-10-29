@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using DomainModels.Entities;
+using DomainModels.Enum;
 
 namespace DomainServices.Tests.EntitiesFake;
 
@@ -34,7 +35,7 @@ public static class OrderFake
 			orderfake.Id = id++;
             orderfake.NetValue = 1;
             orderfake.Quotes = 1;
-            orderfake.Direction = DomainModels.Enum.OrderDirection.Buy;
+            orderfake.Direction = OrderDirection.Buy;
         }
 
 		return orderFakes;

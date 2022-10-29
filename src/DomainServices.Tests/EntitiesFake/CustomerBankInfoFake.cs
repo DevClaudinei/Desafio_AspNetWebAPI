@@ -13,8 +13,9 @@ public static class CustomerBankInfoFake
 		customerBankInfoFake.Account = Guid.NewGuid().ToString();
 		customerBankInfoFake.AccountBalance = 0;
 		customerBankInfoFake.Id = 1;
+        customerBankInfoFake.CreatedAt = DateTime.UtcNow;
 
-		return customerBankInfoFake;
+        return customerBankInfoFake;
     }
 
 	public static IEnumerable<CustomerBankInfo> CustomerBankInfoFakers(int quantity)
@@ -28,6 +29,7 @@ public static class CustomerBankInfoFake
             customerBankInfo.Account = Guid.NewGuid().ToString();
 			customerBankInfo.AccountBalance = 0;
             customerBankInfo.Id = id++;
+            customerBankInfo.CreatedAt = DateTime.UtcNow;
         }
 
 		return customerBankInfoFakes;
