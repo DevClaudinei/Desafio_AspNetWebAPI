@@ -4,9 +4,15 @@ public class UpdateCustomerBankInfoRequest
 {
     protected UpdateCustomerBankInfoRequest() { }
 
-    public UpdateCustomerBankInfoRequest(decimal accountBalance)
+    public UpdateCustomerBankInfoRequest(
+        string account,
+        decimal accountBalance,
+        long customerId
+    )
     {
+        Account = account;
         AccountBalance = accountBalance;
+        CustomerId = customerId;
     }
 
     public string Account { get; set; }
