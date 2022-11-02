@@ -40,10 +40,9 @@ public class PortfolioProductService : BaseService, IPortfolioProductService
     {
         var repository = RepositoryFactory.Repository<PortfolioProduct>();
         var query = repository.SingleResultQuery()
-            .Include(x => x.Include(x => x.Portfolio))
-            .Include(x => x.Include(x => x.Product))
-            .AndFilter(x => x.Portfolio.Id.Equals(portfolioId))
-            .AndFilter(x => x.ProductId.Equals(productId));
+            .AndFilter(x => x.ProductId.Equals(productId) && x.PortfolioId.Equals(portfolioId))
+            .Include(x => x.Include(x => x.Product), x => x.Include(x => x.Portfolio));
+
 
         return repository.SingleOrDefault(query);
     }

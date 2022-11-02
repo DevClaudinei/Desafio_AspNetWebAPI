@@ -34,8 +34,8 @@ public class PortfolioService : BaseService, IPortfolioService
     {
         var repository = RepositoryFactory.Repository<Portfolio>();
         var query = repository.SingleResultQuery()
-            .Include(x => x.Include(x => x.Products))
-            .AndFilter(x => x.Id.Equals(id));
+            .AndFilter(x => x.Id.Equals(id))
+            .Include(x => x.Include(x => x.Products));
 
         return repository.FirstOrDefault(query);
     }
@@ -73,8 +73,8 @@ public class PortfolioService : BaseService, IPortfolioService
     {
         var repository = RepositoryFactory.Repository<Portfolio>();
         var query = repository.MultipleResultQuery()
-            .Include(x => x.Include(x => x.Products))
-            .AndFilter(x => x.CustomerId.Equals(id));
+            .AndFilter(x => x.CustomerId.Equals(id))
+            .Include(x => x.Include(x => x.Products));
 
         return repository.Search(query);
     }
