@@ -13,7 +13,7 @@ public static class PortfolioFake
 					f.Random.Decimal(0, 0),
 					f.Random.Long(1, 1)
 			)).Generate();
-		portfolioFake.Id = 1;
+		portfolioFake.Id = 1L;
 		portfolioFake.Products = ProductFake.ProductFakersToPortfolio();
 
 		return portfolioFake;
@@ -21,7 +21,7 @@ public static class PortfolioFake
 
 	public static IEnumerable<Portfolio> PortfolioFakers(int quantity)
 	{
-		var id = 1;
+		var id = 1L;
 		var portfolioFakers = new Faker<Portfolio>("pt_BR")
             .CustomInstantiator(f => new Portfolio(
                     f.Random.Decimal(0, 0),
@@ -32,6 +32,7 @@ public static class PortfolioFake
 		{
 			portfolioFake.Id = id++;
             portfolioFake.Products = ProductFake.ProductFakersToPortfolio();
+            portfolioFake.CustomerId = portfolioFake.Id;
         }
 
 		return portfolioFakers;

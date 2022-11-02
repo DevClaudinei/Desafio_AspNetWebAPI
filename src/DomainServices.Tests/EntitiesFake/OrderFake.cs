@@ -35,7 +35,10 @@ public static class OrderFake
 			orderfake.Id = id++;
             orderfake.NetValue = 1;
             orderfake.Quotes = 1;
-            orderfake.Direction = OrderDirection.Buy;
+			if (orderfake.Id % 2 != 0)
+				orderfake.Direction = OrderDirection.Buy;
+            if (orderfake.Id % 2 == 0)
+                orderfake.Direction = OrderDirection.Sell;
         }
 
 		return orderFakes;
