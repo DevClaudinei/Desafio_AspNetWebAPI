@@ -25,111 +25,149 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_CreateCustomerBankInfo_Sucessfully()
+    public void Should_Create_Sucessfully()
     {
+        // Arrange
         var customerBankInfoFake = CustomerFake.CustomerFaker();
         
         _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
             .Add(It.IsAny<CustomerBankInfo>()));
 
+        // Act
         _customerBankInfoService.Create(customerBankInfoFake.Id);
 
+        // Assert
         _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>(), Times.Exactly(1));
         _mockUnitOfWork.Verify(x => x.SaveChanges(true, false), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnCustomerBankInfo_When_IdExist()
+    public void Should_GetById_When_CustomerBankInfoExist()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
-            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>())).Returns(query);
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query)).Returns(customerBankInfoFake);
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()))
+            .Returns(bankInfoFake);
 
-        var customerBankInfoFound = _customerBankInfoService.GetById(customerBankInfoFake.Id);
+        // Act
+        var bankInfoFound = _customerBankInfoService.GetById(bankInfoFake.Id);
         
-        customerBankInfoFound.Id.Should().Be(1);
+        // Assert
+        bankInfoFound.Id.Should().Be(bankInfoFake.Id);
+
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
            .SingleResultQuery()
            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnCustomerBankInfo_When_IdDoesNotExist()
+    public void Should_GetById_When_CustomerBankInfoDoesNotExist()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
-            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>())).Returns(query);
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()));
 
-        var customerBankInfoFound = _customerBankInfoService.GetById(customerBankInfoFake.Id);
+        // Act
+        var bankInfoFound = _customerBankInfoService.GetById(bankInfoFake.Id);
 
-        customerBankInfoFound.Should().BeNull();
+        // Assert
+        bankInfoFound.Should().BeNull();
+
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
            .SingleResultQuery()
            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnCustomerId_When_CustomerExists()
+    public void Should_GetIdByCustomerId_When_CustomerExists()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
-        var query = Mock.Of<IQuery<CustomerBankInfo, long>>();
-
-        _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleResultQuery()
-            .Select(x => x.Id)
-            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>())).Returns(query);
-        _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query)).Returns(customerBankInfoFake.CustomerId);
-
-        var customerBankInfoId = _customerBankInfoService.GetIdByCustomerId(customerBankInfoFake.CustomerId);
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
         
-        customerBankInfoId.Should().Be(customerBankInfoFake.Id);
-    }
-
-    [Fact]
-    public void Should_ReturnCustomerId_When_CustomerDoesNotExists()
-    {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
-        var query = Mock.Of<IQuery<CustomerBankInfo, long>>();
-
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
             .Select(x => x.Id)
-            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>())).Returns(query);
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
+            .Returns(It.IsAny<IQuery<CustomerBankInfo, long>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo, long>>()))
+            .Returns(bankInfoFake.CustomerId);
 
-        var customerBankInfoId = _customerBankInfoService.GetIdByCustomerId(customerBankInfoFake.CustomerId);
-        customerBankInfoId.Should().Be(0);
+        // Act
+        var bankInfoId = _customerBankInfoService.GetIdByCustomerId(bankInfoFake.CustomerId);
+        
+        // Assert
+        bankInfoId.Should().Be(bankInfoFake.Id);
+
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleResultQuery()
+            .Select(x => x.Id)
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo, long>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnAllCustomerBankInfos_Sucessfully()
+    public void Should_GetIdByCustomerId_When_CustomerDoesNotExists()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFakers(5);
-        var query = Mock.Of<IMultipleResultQuery<CustomerBankInfo>>();
-
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .MultipleResultQuery()).Returns(query);
+            .SingleResultQuery()
+            .Select(x => x.Id)
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()));
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .Search(query)).Returns((IList<CustomerBankInfo>)customerBankInfoFake);
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo, long>>()));
+        
+        // Act
+        var bankInfoId = _customerBankInfoService.GetIdByCustomerId(bankInfoFake.CustomerId);
 
-        var customerBankInfoFakesFound = _customerBankInfoService.GetAll();
-        customerBankInfoFakesFound.Should().HaveCount(5);
+        // Assert
+        bankInfoId.Should().Be(0);
+
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleResultQuery()
+            .Select(x => x.Id)
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo, long>>()), Times.Once());
+    }
+
+    [Fact]
+    public void Should_GetAll_When_CustomerBankInfoExists()
+    {
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFakers(5);
+        
+        _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
+            .MultipleResultQuery())
+            .Returns(It.IsAny<IMultipleResultQuery<CustomerBankInfo>>());
+        _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
+            .Search(It.IsAny<IMultipleResultQuery<CustomerBankInfo>>()))
+            .Returns((IList<CustomerBankInfo>)bankInfoFake);
+
+        // Act
+        var bankInfoFakesFound = _customerBankInfoService.GetAll();
+
+        // Assert
+        bankInfoFakesFound.Should().HaveCount(5);
 
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
             .MultipleResultQuery(), Times.Once());
@@ -138,205 +176,274 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_NoReturns_When_NoCustomerBankInfosRegistered()
+    public void Should_GetAll_When_CustomerBankInfoDoesNotExists()
     {
-        var query = Mock.Of<IMultipleResultQuery<CustomerBankInfo>>();
-
+        // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .MultipleResultQuery()).Returns(query);
+            .MultipleResultQuery())
+            .Returns(It.IsAny<IMultipleResultQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .Search(query)).Returns(new List<CustomerBankInfo>());
+            .Search(It.IsAny<IMultipleResultQuery<CustomerBankInfo>>()))
+            .Returns(new List<CustomerBankInfo>());
 
-        var customerBankInfoFakesFound = _customerBankInfoService.GetAll();
-        customerBankInfoFakesFound.Should().BeEmpty();
+        // Act
+        var bankInfoFakesFound = _customerBankInfoService.GetAll();
+
+        // Assert
+        bankInfoFakesFound.Should().BeEmpty();
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .MultipleResultQuery(), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .Search(It.IsAny<IMultipleResultQuery<CustomerBankInfo>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnCustomerBankInfo_When_AccountExist()
+    public void Should_GetByAccount_When_CustomerBankInfoExist()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
-            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>())).Returns(query);
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query)).Returns(customerBankInfoFake);
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()))
+            .Returns(bankInfoFake);
 
-        var customerBankInfoFound = _customerBankInfoService.GetByAccount(customerBankInfoFake.Account);
-        customerBankInfoFound.Account.Should().NotBeNull();
+        // Act
+        var bankInfoFound = _customerBankInfoService.GetByAccount(bankInfoFake.Account);
+
+        // Assert
+        bankInfoFound.Account.Should().Be(bankInfoFake.Account);
 
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
            .SingleResultQuery()
            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnCustomerBankInfo_When_AccountDoesNotExist()
+    public void Should_GetByAccount_When_CustomerBankInfoDoesNotExist()
     {
+        // Arrange
         var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
+        
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
-            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>())).Returns(query);
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()));
 
+        // Act
         var customerBankInfoFound = _customerBankInfoService.GetByAccount(customerBankInfoFake.Account);
+
+        // Assert
         customerBankInfoFound.Should().BeNull();
 
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
            .SingleResultQuery()
            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnTotalBalance_Sucessfully()
+    public void Should_GetAccountBalanceById_Sucessfully()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
-        var query = Mock.Of<IQuery<CustomerBankInfo, decimal>>();
-
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>())
-            .Select(x => x.AccountBalance)).Returns(query);
+            .Select(x => x.AccountBalance)).Returns(It.IsAny<IQuery<CustomerBankInfo, decimal>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo, decimal>>()));
 
-        var accountBalance = _customerBankInfoService.GetAccountBalanceById(customerBankInfoFake.Id);
+        // Act
+        var accountBalance = _customerBankInfoService.GetAccountBalanceById(bankInfoFake.Id);
+
+        // Assert
         accountBalance.Should().Be(0);
+
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleResultQuery()
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>())
+            .Select(x => x.AccountBalance), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo, decimal>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_RealizeDeposit_When_CustomerBankInfoExists()
+    public void Should_Deposit_When_CustomerBankInfoExists()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
         var amount = 0;
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
+        
         _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
             .Update(It.IsAny<CustomerBankInfo>()));
-        _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
-            .Remove(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()));
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query)).Returns(customerBankInfoFake);
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()))
+            .Returns(bankInfoFake);
 
-        _customerBankInfoService.Deposit(customerBankInfoFake.Id, amount);
+        // Act
+        _customerBankInfoService.Deposit(bankInfoFake.Id, amount);
+
+        // Assert
+        _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>()
+            .Update(bankInfoFake, x => x.AccountBalance), Times.Once());
         _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>(), Times.Exactly(1));
-        _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>().Update(customerBankInfoFake, x => x.AccountBalance), Times.Once());
         _mockUnitOfWork.Verify(x => x.SaveChanges(true, false), Times.Once());
     }
 
     [Fact]
-    public void Should_RealizeDeposit_When_CustomerBankInfoDoesNotExists()
+    public void Should_Deposit_When_CustomerBankInfoDoesNotExists()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
         var amount = 0;
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
+        
         _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
             .Update(It.IsAny<CustomerBankInfo>()));
-        _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
-            .Remove(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()));
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()));
 
-        Action act = () => _customerBankInfoService.Deposit(customerBankInfoFake.Id, amount);
-        act.Should().Throw<NotFoundException>($"CustomerBankInfo for id: {customerBankInfoFake.Id} not found.");
-        _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>(), Times.Exactly(1));
+        // Act
+        Action act = () => _customerBankInfoService.Deposit(bankInfoFake.Id, amount);
+
+        // Assert
+        act.Should().Throw<NotFoundException>($"CustomerBankInfo for id: {bankInfoFake.Id} not found.");
+
+        _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>(), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleResultQuery()
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_RealizeWithdraw_When_CustomerBankInfoExists()
+    public void Should_Withdraw_When_CustomerBankInfoExists()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
         var amount = 0;
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
-        _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
-            .Update(It.IsAny<CustomerBankInfo>()));
-        _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
-            .Remove(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()));
+        
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query)).Returns(customerBankInfoFake);
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()))
+            .Returns(bankInfoFake);
+        _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
+            .Update(It.IsAny<CustomerBankInfo>()));
 
-        _customerBankInfoService.Withdraw(customerBankInfoFake.Id, amount);
+        // Act
+        _customerBankInfoService.Withdraw(bankInfoFake.Id, amount);
+
+        // Assert
         _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>(), Times.Exactly(1));
-        _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>().Update(customerBankInfoFake, x => x.AccountBalance), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleResultQuery()
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()), Times.Once());
+        _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>()
+            .Update(bankInfoFake, x => x.AccountBalance), Times.Once());
         _mockUnitOfWork.Verify(x => x.SaveChanges(true, false), Times.Once());
     }
 
     [Fact]
-    public void Should_RealizeWithdraw_When_CustomerBankInfoDoesNotExists()
+    public void Should_Withdraw_When_CustomerBankInfoDoesNotExists()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
         var amount = 0;
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
+        
         _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
             .Update(It.IsAny<CustomerBankInfo>()));
-        _mockUnitOfWork.Setup(x => x.Repository<CustomerBankInfo>()
-            .Remove(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()));
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()));
 
-        Action act = () => _customerBankInfoService.Withdraw(customerBankInfoFake.Id, amount);
-        act.Should().Throw<NotFoundException>($"CustomerBankInfo for id: {customerBankInfoFake.Id} not found.");
+        // Act
+        Action act = () => _customerBankInfoService.Withdraw(bankInfoFake.Id, amount);
+
+        // Assert
+        act.Should().Throw<NotFoundException>($"CustomerBankInfo for id: {bankInfoFake.Id} not found.");
+
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleResultQuery()
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()), Times.Once());
         _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>(), Times.Exactly(1));
     }
 
     [Fact]
-    public void Should_ReturnCustomerBankInfo_When_CustomerExists()
+    public void Should_GetByCustomerId_When_CustomerExists()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query)).Returns(customerBankInfoFake);
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>())).Returns(bankInfoFake);
 
-        var customerBankInfo = _customerBankInfoService.GetByCustomerId(customerBankInfoFake.CustomerId);
-        customerBankInfo.Should().BeEquivalentTo(customerBankInfoFake);
+        // Act
+        var bankInfoFound = _customerBankInfoService.GetByCustomerId(bankInfoFake.CustomerId);
+
+        // Assert
+        bankInfoFound.Should().BeEquivalentTo(bankInfoFake);
+
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleResultQuery()
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnCustomerBankInfo_When_CustomerDoesNotExists()
+    public void Should_GetByCustomerId_When_CustomerDoesNotExists()
     {
-        var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
-        var query = Mock.Of<IQuery<CustomerBankInfo>>();
-
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+        
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IQuery<CustomerBankInfo>>());
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()));
 
-        var customerBankInfo = _customerBankInfoService.GetByCustomerId(customerBankInfoFake.CustomerId);
-        customerBankInfo.Should().BeNull();
+        // Act
+        var bankInfoFound = _customerBankInfoService.GetByCustomerId(bankInfoFake.CustomerId);
+
+        // Assert
+        bankInfoFound.Should().BeNull();
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleResultQuery()
+            .AndFilter(It.IsAny<Expression<Func<CustomerBankInfo, bool>>>()), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
+            .SingleOrDefault(It.IsAny<IQuery<CustomerBankInfo>>()), Times.Once());
     }
 }

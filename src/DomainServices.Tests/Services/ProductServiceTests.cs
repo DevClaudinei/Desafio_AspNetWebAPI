@@ -13,9 +13,9 @@ namespace DomainServices.Tests.Services;
 
 public class ProductServiceTests
 {
+    private readonly ProductService _productService;
     private readonly Mock<IUnitOfWork<ApplicationDbContext>> _mockUnitOfWork;
     private readonly Mock<IRepositoryFactory<ApplicationDbContext>> _mockRepositoryFactory;
-    private readonly ProductService _productService;
 
     public ProductServiceTests()
     {
@@ -29,16 +29,20 @@ public class ProductServiceTests
     [Fact]
     public void Should_Create_When_ProductDoesNotExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
 
-        _mockUnitOfWork.Setup(x => x.Repository<Product>()
-            .Add(It.IsAny<Product>()));
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()));
+        _mockUnitOfWork.Setup(x => x.Repository<Product>()
+            .Add(It.IsAny<Product>()));
 
+        // Act
         var productId = _productService.Create(productFake);
 
+        // Assert
         productId.Should().Be(productFake.Id);
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
         _mockUnitOfWork.Verify(x => x.Repository<Product>().Add(productFake), Times.Once());
@@ -46,156 +50,187 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_Create_When_ProductAlreadyExists()
+    public void Should_NotCreate_When_ProductAlreadyExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
 
-        _mockUnitOfWork.Setup(x => x.Repository<Product>()
-            .Add(It.IsAny<Product>()));
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>())).Returns(true);
-
+        _mockUnitOfWork.Setup(x => x.Repository<Product>()
+            .Add(It.IsAny<Product>()));
+        
+        // Act
         Action act = () => _productService.Create(productFake);
 
+        // Assert
         act.Should().Throw<BadRequestException>($"Product: {productFake.Symbol} are already registered");
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
+        _mockUnitOfWork.Verify(x => x.Repository<Product>()
+            .Add(It.IsAny<Product>()), Times.Never());
+        _mockUnitOfWork.Verify(x => x.SaveChanges(true, false), Times.Never());
     }
 
     [Fact]
-    public void Should_GetAll_Sucessfully()
+    public void Should_GetAll_When_ProductsExists()
     {
+        // Arrange
         var productFakes = ProductFake.ProductFakers(5);
-        var query = Mock.Of<IMultipleResultQuery<Product>>();
-
+        
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
-            .MultipleResultQuery()).Returns(query);
+            .MultipleResultQuery())
+            .Returns(It.IsAny<IMultipleResultQuery<Product>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
-            .Search(query)).Returns((IList<Product>)productFakes);
+            .Search(It.IsAny<IMultipleResultQuery<Product>>()))
+            .Returns((IList<Product>)productFakes);
 
+        // Act
         var productsFound = _productService.GetAll();
 
+        // Assert
         productsFound.Should().HaveCount(5);
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .MultipleResultQuery(), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
-            .Search(query), Times.Once());
+            .Search(It.IsAny<IMultipleResultQuery<Product>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_GetAll_When_ThereIsNoProducts()
+    public void Should_GetAll_When_ProductsDoesNotExists()
     {
-        var query = Mock.Of<IMultipleResultQuery<Product>>();
-
+        // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
-            .MultipleResultQuery()).Returns(query);
+            .MultipleResultQuery())
+            .Returns(It.IsAny<IMultipleResultQuery<Product>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
-            .Search(query)).Returns(new List<Product>());
+            .Search(It.IsAny<IMultipleResultQuery<Product>>()))
+            .Returns(new List<Product>());
 
+        // Act
         var productsFound = _productService.GetAll();
 
+        // Assert
         productsFound.Should().BeEmpty();
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .MultipleResultQuery(), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
-            .Search(query), Times.Once());
+            .Search(It.IsAny<IMultipleResultQuery<Product>>()), Times.Once());
     }
 
     [Fact]
     public void Should_GetBySymbol_When_ProductExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
-        var query = Mock.Of<IQuery<Product>>();
-
+        
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Product, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IMultipleResultQuery<Product>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
-            .SingleOrDefault(query)).Returns(productFake);
+            .SingleOrDefault(It.IsAny<IMultipleResultQuery<Product>>()))
+            .Returns(productFake);
 
+        // Act
         var productFound = _productService.GetBySymbol(productFake.Symbol);
 
+        // Assert
         productFound.Symbol.Should().Be(productFake.Symbol);
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IMultipleResultQuery<Product>>()), Times.Once());
     }
 
     [Fact]
     public void Should_GetBySymbol_When_ProductDoesNotExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
-        var query = Mock.Of<IQuery<Product>>();
-
+        
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Product, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IMultipleResultQuery<Product>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IMultipleResultQuery<Product>>()));
 
+        // Act
         var productFound = _productService.GetBySymbol(productFake.Symbol);
 
+        // Assert
         productFound.Should().BeNull();
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IMultipleResultQuery<Product>>()), Times.Once());
     }
 
     [Fact]
     public void Should_GetById_When_ProductExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
-        var query = Mock.Of<IQuery<Product>>();
-
+        
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Product, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IMultipleResultQuery<Product>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
-            .SingleOrDefault(query)).Returns(productFake);
+            .SingleOrDefault(It.IsAny<IMultipleResultQuery<Product>>()))
+            .Returns(productFake);
 
+        // Act
         var productFound = _productService.GetById(productFake.Id);
 
+        // Assert
         productFound.Id.Should().Be(productFake.Id);
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IMultipleResultQuery<Product>>()), Times.Once());
     }
 
     [Fact]
     public void Should_GetById_When_ProductDoesNotExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
-        var query = Mock.Of<IQuery<Product>>();
-
+        
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Product, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IMultipleResultQuery<Product>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IMultipleResultQuery<Product>>()));
 
+        // Act
         var productFound = _productService.GetById(productFake.Id);
 
+        // Assert
         productFound.Should().BeNull();
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .SingleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IMultipleResultQuery<Product>>()), Times.Once());
     }
 
     [Fact]
     public void Should_Update_When_ProductExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
 
         _mockUnitOfWork.Setup(x => x.Repository<Product>()
@@ -204,8 +239,10 @@ public class ProductServiceTests
             .Any(It.IsAny<Expression<Func<Product, bool>>>()))
             .Returns(true);
 
+        // Act
         _productService.Update(productFake);
 
+        // Assert
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
         _mockUnitOfWork.Verify(x => x.Repository<Product>()
@@ -216,24 +253,32 @@ public class ProductServiceTests
     [Fact]
     public void Should_Update_When_ProductDoesNotExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
 
-        _mockUnitOfWork.Setup(x => x.Repository<Product>()
-            .Update(It.IsAny<Product>()));
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()))
             .Returns(false);
+        _mockUnitOfWork.Setup(x => x.Repository<Product>()
+            .Update(It.IsAny<Product>()));
 
+        // Act
         Action act = () => _productService.Update(productFake);
 
+        // Assert
         act.Should().Throw<NotFoundException>($"Product not found for id: {productFake.Id}.");
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
+        _mockUnitOfWork.Verify(x => x.Repository<Product>()
+            .Update(It.IsAny<Product>()), Times.Never());
+        _mockUnitOfWork.Verify(x => x.SaveChanges(true, false), Times.Never());
     }
 
     [Fact]
     public void Should_Delete_When_ProductExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
 
         _mockUnitOfWork.Setup(x => x.Repository<Product>()
@@ -242,8 +287,10 @@ public class ProductServiceTests
             .Any(It.IsAny<Expression<Func<Product, bool>>>()))
             .Returns(true);
 
+        // Act
         _productService.Delete(productFake.Id);
 
+        // Assert
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
         _mockUnitOfWork.Verify(x => x.Repository<Product>()
@@ -253,18 +300,24 @@ public class ProductServiceTests
     [Fact]
     public void Should_Delete_When_ProductDoesNotExists()
     {
+        // Arrange
         var productFake = ProductFake.ProductFaker();
 
-        _mockUnitOfWork.Setup(x => x.Repository<Product>()
-            .Remove(It.IsAny<Product>()));
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()))
             .Returns(false);
-
+        _mockUnitOfWork.Setup(x => x.Repository<Product>()
+            .Remove(It.IsAny<Product>()));
+        
+        // Act
         Action act = () => _productService.Delete(productFake.Id);
 
+        // Assert
         act.Should().Throw<NotFoundException>($"Product not found for id: {productFake.Id}.");
+
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
+        _mockUnitOfWork.Verify(x => x.Repository<Product>()
+            .Remove(It.IsAny<Product>()), Times.Never());
     }
 }

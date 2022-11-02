@@ -1,6 +1,5 @@
 ﻿using DomainModels.Entities;
 using DomainServices.Services;
-using DomainServices.Services.Interfaces;
 using DomainServices.Tests.EntitiesFake;
 using EntityFrameworkCore.QueryBuilder.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
@@ -13,9 +12,9 @@ namespace DomainServices.Tests.Services;
 
 public class OrderServiceTests
 {
+    private readonly OrderService _orderService;
     private readonly Mock<IUnitOfWork<ApplicationDbContext>> _mockUnitOfWork;
     private readonly Mock<IRepositoryFactory<ApplicationDbContext>> _mockRepositoryFactory;
-    private readonly OrderService _orderService;
 
     public OrderServiceTests()
     {
@@ -25,122 +24,156 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public void Should_CreateOrder_Sucessfully()
+    public void Should_Create_Sucessfully()
     {
+        // Arrange
         var orderFake = OrderFake.OrderFaker();
 
         _mockUnitOfWork.Setup(x => x.Repository<Order>()
             .Add(It.IsAny<Order>()))
-            .Returns(orderFake);
+            .Returns(It.IsAny<Order>());
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
             .Any(It.IsAny<Expression<Func<Order, bool>>>()));
 
+        // Act
         var orderId = _orderService.Create(orderFake);
+
+        // Assert
         orderId.Should().Be(orderFake.Id);
 
-        _mockUnitOfWork.Verify(x => x.Repository<Order>(), Times.Exactly(1));
         _mockUnitOfWork.Verify(x => x.Repository<Order>().Add(orderFake), Times.Once());
         _mockUnitOfWork.Verify(x => x.SaveChanges(true, false), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnAllOrders_Sucessfully()
+    public void Should_GetAll_When_OrdersExists()
     {
+        // Arrange
         var orderFakers = OrderFake.OrderFakers(5);
-        var query = Mock.Of<IMultipleResultQuery<Order>>();
 
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
-            .MultipleResultQuery()).Returns(query);
+            .MultipleResultQuery())
+            .Returns(It.IsAny<IMultipleResultQuery<Order>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
-            .Search(query)).Returns((IList<Order>)orderFakers);
+            .Search(It.IsAny<IMultipleResultQuery<Order>>()))
+            .Returns((IList<Order>)orderFakers);
 
+        // Act
         var ordersFound = _orderService.GetAll();
+
+        // Assert
         ordersFound.Should().HaveCount(5);
 
         _mockRepositoryFactory.Verify(x => x.Repository<Order>()
             .MultipleResultQuery(), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<Order>()
-            .MultipleResultQuery(), Times.Once());
+            .Search(It.IsAny<IMultipleResultQuery<Order>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_NoReturns_When_NoCustomerBankInfosRegistered()
+    public void Should_NotGetAll_When_OrdersDoesNotExists()
     {
-        var query = Mock.Of<IMultipleResultQuery<Order>>();
-
+        // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
-            .MultipleResultQuery()).Returns(query);
+            .MultipleResultQuery())
+            .Returns(It.IsAny<IMultipleResultQuery<Order>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
-            .Search(query)).Returns(new List<Order>());
+            .Search(It.IsAny<IMultipleResultQuery<Order>>()))
+            .Returns(new List<Order>());
 
+        // Act
         var ordersFound = _orderService.GetAll();
+
+        // Assert
         ordersFound.Should().BeEmpty();
+
+        _mockRepositoryFactory.Verify(x => x.Repository<Order>()
+            .MultipleResultQuery(), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<Order>()
+            .Search(It.IsAny<IMultipleResultQuery<Order>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnCustomerBankInfo_When_AccountExist()
+    public void Should_GetById_When_OrderExists()
     {
+        // Arrange
         var orderFake = OrderFake.OrderFaker();
-        var query = Mock.Of<IQuery<Order>>();
-
+        
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
             .SingleResultQuery()
-            .AndFilter(It.IsAny<Expression<Func<Order, bool>>>())).Returns(query);
+            .AndFilter(It.IsAny<Expression<Func<Order, bool>>>()))
+            .Returns(It.IsAny<IQuery<Order>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
-            .SingleOrDefault(query)).Returns(orderFake);
+            .SingleOrDefault(It.IsAny<IQuery<Order>>()))
+            .Returns(orderFake);
 
+        // Act
         var orderFound = _orderService.GetById(orderFake.Id);
+
+        // Assert
         orderFound.Id.Should().Be(orderFake.Id);
 
         _mockRepositoryFactory.Verify(x => x.Repository<Order>()
            .SingleResultQuery()
            .AndFilter(It.IsAny<Expression<Func<Order, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<Order>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IQuery<Order>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnCustomerBankInfo_When_AccountDoesNotExist()
+    public void Should_GetById_When_OrderDoesNotExists()
     {
+        // Arrange
         var orderFake = OrderFake.OrderFaker();
-        var query = Mock.Of<IQuery<Order>>();
-
+        
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
             .SingleResultQuery()
-            .AndFilter(It.IsAny<Expression<Func<Order, bool>>>())).Returns(query);
+            .AndFilter(It.IsAny<Expression<Func<Order, bool>>>()))
+            .Returns(It.IsAny<IQuery<Order>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
-            .SingleOrDefault(query));
+            .SingleOrDefault(It.IsAny<IQuery<Order>>()));
 
+        // Act
         var orderFound = _orderService.GetById(orderFake.Id);
+
+        // Assert
         orderFound.Should().BeNull();
 
         _mockRepositoryFactory.Verify(x => x.Repository<Order>()
            .SingleResultQuery()
            .AndFilter(It.IsAny<Expression<Func<Order, bool>>>()), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<Order>()
-            .SingleOrDefault(query), Times.Once());
+            .SingleOrDefault(It.IsAny<IQuery<Order>>()), Times.Once());
     }
 
     [Fact]
-    public void Should_ReturnGetQuantityOfQuotes_When_RealizeUnivestimentAndProductExistsInThePortfolio()
+    public void Should_GetQuantityOfQuotes_Sucessfully()
     {
+        // Arrange
         var orderFakes = OrderFake.OrderFakers(5);
-        var query = Mock.Of<IQuery<Order>>();
-
+        var orderFake = orderFakes.ElementAt(1);
+        
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
             .MultipleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Order, bool>>>())
             .AndFilter(It.IsAny<Expression<Func<Order, bool>>>()))
-            .Returns(query);
+            .Returns(It.IsAny<IMultipleResultQuery<Order>>());
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
-            .Search(query)).Returns((IList<Order>)orderFakes);
+            .Search(It.IsAny<IQuery<Order>>()))
+            .Returns((IList<Order>)orderFakes);
+        
+        // Act
+        var quantityOfQuotes = _orderService
+            .GetQuantityOfQuotes(orderFake.PortfolioId, orderFake.ProductId);
 
-        var orderFakesFound = _orderService
-            .GetQuantityOfQuotes(orderFakes.ElementAt(1).PortfolioId, orderFakes.ElementAt(1).ProductId);
-        orderFakesFound.Should().BeGreaterThanOrEqualTo(0);
+        // Assert
+        quantityOfQuotes.Should().Be(1);
+
         _mockRepositoryFactory.Verify(x => x.Repository<Order>()
             .MultipleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Order, bool>>>())
             .AndFilter(It.IsAny<Expression<Func<Order, bool>>>()), Times.Once());
+        _mockRepositoryFactory.Verify(x => x.Repository<Order>()
+            .Search(It.IsAny<IQuery<Order>>()), Times.Once());
     }
 }
