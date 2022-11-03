@@ -60,7 +60,7 @@ public class PortfolioAppService : IPortfolioAppService
     {
         var portfolioFound = _portfolioService.GetById(id);
 
-            if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
+        if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
 
         var portfolioMapp = _mapper.Map<PortfolioResult>(portfolioFound);
 
@@ -88,6 +88,8 @@ public class PortfolioAppService : IPortfolioAppService
     public void Delete(long id)
     {
         var portfolio = _portfolioService.GetById(id);
+
+        if (portfolio is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
 
         var portfolioTotalBalance = _portfolioService.GetTotalBalance(id);
         _customerBankInfoAppService.Withdraw(portfolio.CustomerId, portfolioTotalBalance);
