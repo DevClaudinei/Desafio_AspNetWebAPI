@@ -225,4 +225,54 @@ public class CustomerBankInfoAppServiceTests
         act.Should().Throw<BadRequestException>($"Insufficient balance to invest.");
         _customerBankInfoService.Verify(x => x.GetAccountBalanceById(bankInfoFake.Id), Times.Once());
     }
+
+    [Fact]
+    public void Should_GetCustomerId_When_BankInfoExists()
+    {
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+
+        _customerBankInfoService.Setup(x => x.GetByCustomerId(It.IsAny<long>()))
+            .Returns(bankInfoFake);
+
+        // Act
+        var bankInfoFound = _customerBankInfoAppService.GetByCustomerId(bankInfoFake.Id);
+        
+        // Assert
+        bankInfoFound.Id.Should().Be(bankInfoFake.Id);
+
+        _customerBankInfoService.Verify(x => x.GetByCustomerId(It.IsAny<long>()), Times.Once());
+    }
+
+    [Fact]
+    public void Should_NotGetCustomerId_When_BankInfoDoesNotExists()
+    {
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+
+        _customerBankInfoService.Setup(x => x.GetByCustomerId(It.IsAny<long>()));
+
+        // Act
+        Action act = () => _customerBankInfoAppService.GetByCustomerId(bankInfoFake.Id);
+
+        // Assert
+        act.Should().Throw<NotFoundException>($"CustomerBankInfo for CustomerId: {bankInfoFake.Id} was not found.");
+
+        _customerBankInfoService.Verify(x => x.GetByCustomerId(It.IsAny<long>()), Times.Once());
+    }
+
+    [Fact]
+    public void Should_Create_Sucessfully()
+    {
+        // Arrange
+        var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
+
+        _customerBankInfoService.Setup(x => x.Create(It.IsAny<long>()));
+
+        // Act
+        _customerBankInfoAppService.Create(bankInfoFake.CustomerId);
+
+        // Assert
+        _customerBankInfoService.Verify(x => x.Create(It.IsAny<long>()), Times.Once());
+    }
 }

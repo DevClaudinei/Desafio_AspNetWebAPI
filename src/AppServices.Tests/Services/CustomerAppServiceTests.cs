@@ -56,6 +56,7 @@ public class CustomerAppServiceTests
 
         // Assert
         createdCustomer.Should().Be(id);
+
         _customerService.Verify(x => x.CreateCustomer(It.IsAny<Customer>()), Times.Once());
         _customerBankInfoAppService.Verify(x => x.Create(id), Times.Once());
     }
@@ -124,6 +125,7 @@ public class CustomerAppServiceTests
 
         // Assert
         act.Should().Throw<NotFoundException>($"Customer for Id: {customerResult.Id} was not found.");
+
         _customerService.Verify(x => x.GetById(customerResult.Id), Times.Once());
     }
 
@@ -159,6 +161,7 @@ public class CustomerAppServiceTests
 
         // Assert
         act.Should().Throw<NotFoundException>($"Customer for Id: {customer.FullName} was not found.");
+
         _customerService.Verify(x => x.GetAllByFullName(customer.FullName), Times.Once());
     }
 
@@ -218,6 +221,7 @@ public class CustomerAppServiceTests
         // Assert
         act.Should()
             .Throw<BadRequestException>($"Customer needs to Withdraw the account balance before being deleted.");
+
         _customerBankInfoAppService.Verify(x => x.GetByCustomerId(bankInfoFake.CustomerId), Times.Once());
         _portfolioAppService.Verify(x => x.GetAllByCustomerId(bankInfoFake.CustomerId), Times.Once());
     }
@@ -241,6 +245,7 @@ public class CustomerAppServiceTests
         // Assert
         act.Should()
             .Throw<BadRequestException>($"Customer needs to withdraw the balance from the portfolio before being deleted.");
+
         _customerBankInfoAppService.Verify(x => x.GetByCustomerId(bankInfoFake.CustomerId), Times.Once());
         _portfolioAppService.Verify(x => x.GetAllByCustomerId(bankInfoFake.CustomerId), Times.Once());
     }
