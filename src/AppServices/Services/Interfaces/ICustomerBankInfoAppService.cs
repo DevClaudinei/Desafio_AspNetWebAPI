@@ -1,6 +1,4 @@
-﻿using Application.Models.CustomerBackInfo.Requests;
-using Application.Models.CustomerBackInfo.Response;
-using DomainModels.Entities;
+﻿using Application.Models.CustomerBackInfo.Response;
 using System.Collections.Generic;
 
 namespace AppServices.Services.Interfaces;
