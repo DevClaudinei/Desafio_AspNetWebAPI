@@ -17,16 +17,4 @@ public static class ProductResponseModel
 		return productResult;
 	}
 
-    //public static IEnumerable<ProductResult> ProductFakers(int quantity)
-    //{
-    //    var id = 1;
-    //    var productResult = new Faker<ProductResult>("pt_BR")
-    //        .CustomInstantiator(f => new ProductResult(
-    //            id: id++,
-    //            symbol: f.Commerce.ProductName(),
-    //            unitPrice: f.Commerce.Random.Decimal(1)
-    //        )).Generate(quantity);
-
-    //    return productResult;
-    //}
 }

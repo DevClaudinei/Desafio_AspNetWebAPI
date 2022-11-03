@@ -13,6 +13,8 @@ public static class CreateProductModel
                 unitPrice: f.Random.Decimal(1, 100)
             )).Generate();
 
+        createPortfolioFake.Id = 1;
+
         return createPortfolioFake;
     }
 }

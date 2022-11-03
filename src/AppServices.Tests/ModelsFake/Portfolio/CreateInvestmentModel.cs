@@ -16,7 +16,7 @@ public static class CreateInvestmentModel
 				ConvertedAt: f.Date.Recent(),
                 Direction: OrderDirection.Buy
             )).Generate();
-
+        
 		return investmentRequest;
 	}
 
@@ -29,6 +29,20 @@ public static class CreateInvestmentModel
                 Quotes: f.Random.Int(1, 10),
                 ConvertedAt: f.Date.Recent(),
                 Direction: OrderDirection.Sell
+            )).Generate();
+
+        return investmentRequest;
+    }
+
+    public static InvestmentRequest InvestmentInvalid()
+    {
+        var investmentRequest = new Faker<InvestmentRequest>("pt_BR")
+            .CustomInstantiator(f => new InvestmentRequest(
+                ProductId: f.Random.Long(1, 1),
+                PortfolioId: f.Random.Long(1, 1),
+                Quotes: f.Random.Int(1, 10),
+                ConvertedAt: f.Date.Future(),
+                Direction: OrderDirection.Buy
             )).Generate();
 
         return investmentRequest;
