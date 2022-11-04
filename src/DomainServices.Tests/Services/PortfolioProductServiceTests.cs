@@ -106,7 +106,9 @@ public class PortfolioProductServiceTests
         var portfoliosFake = PortfolioProductFake.PortfolioProductFakers(2);
         
         _mockRepositoryFactory.Setup(x => x.Repository<PortfolioProduct>()
-            .MultipleResultQuery())
+            .MultipleResultQuery()
+            .Include(It.IsAny<Func<IQueryable<PortfolioProduct>, IIncludableQueryable<PortfolioProduct, Portfolio>>>())
+            .Include(It.IsAny<Func<IQueryable<PortfolioProduct>, IIncludableQueryable<PortfolioProduct, Product>>>()))
             .Returns(It.IsAny<IMultipleResultQuery<PortfolioProduct>>());
         _mockRepositoryFactory.Setup(x => x.Repository<PortfolioProduct>()
             .Search(It.IsAny<IMultipleResultQuery<PortfolioProduct>>()))
@@ -129,7 +131,9 @@ public class PortfolioProductServiceTests
     {
         // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<PortfolioProduct>()
-            .MultipleResultQuery())
+            .MultipleResultQuery()
+            .Include(It.IsAny<Func<IQueryable<PortfolioProduct>, IIncludableQueryable<PortfolioProduct, Portfolio>>>())
+            .Include(It.IsAny<Func<IQueryable<PortfolioProduct>, IIncludableQueryable<PortfolioProduct, Product>>>()))
             .Returns(It.IsAny<IMultipleResultQuery<PortfolioProduct>>());
         _mockRepositoryFactory.Setup(x => x.Repository<PortfolioProduct>()
             .Search(It.IsAny<IQuery<PortfolioProduct>>()))

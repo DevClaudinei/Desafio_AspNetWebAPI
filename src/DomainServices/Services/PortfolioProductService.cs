@@ -31,7 +31,8 @@ public class PortfolioProductService : BaseService, IPortfolioProductService
     public IEnumerable<PortfolioProduct> GetAll()
     {
         var repository = RepositoryFactory.Repository<PortfolioProduct>();
-        var query = repository.MultipleResultQuery();
+        var query = repository.MultipleResultQuery()
+            .Include(x => x.Include(x => x.Product), x => x.Include(x => x.Portfolio));
 
         return repository.Search(query);
     }

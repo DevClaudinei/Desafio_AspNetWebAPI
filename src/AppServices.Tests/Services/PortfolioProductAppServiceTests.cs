@@ -1,6 +1,4 @@
-﻿using AppServices.Profiles;
-using AppServices.Services;
-using AutoMapper;
+﻿using AppServices.Services;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
 using DomainServices.Tests.EntitiesFake;
@@ -11,38 +9,29 @@ namespace AppServices.Tests.Services;
 
 public class PortfolioProductAppServiceTests
 {
-    private readonly IMapper _mapper;
     private readonly Mock<IPortfolioProductService> _mockPortfolioProductService;
     private readonly PortfolioProductAppService _portfolioProductAppService;
 
     public PortfolioProductAppServiceTests()
     {
-        var config = new MapperConfiguration(opt =>
-        {
-            opt.AddProfile(
-                new PortfolioProductProfile()
-            );
-        });
-        _mapper = config.CreateMapper();
         _mockPortfolioProductService = new Mock<IPortfolioProductService>();
-        _portfolioProductAppService = new PortfolioProductAppService(
-            _mapper, _mockPortfolioProductService.Object
-        );
+        _portfolioProductAppService = new PortfolioProductAppService(_mockPortfolioProductService.Object);
     }
 
     [Fact]
     public void Should_GetAll_When_PortfolioProductsExists()
     {
         // Arrange
-        var portfolioProductFake = PortfolioProductFake.PortfolioProductFakers(2);
+        var portfolioProductFake = PortfolioProductFake.PortfolioProductFakers(1);
 
-        _mockPortfolioProductService.Setup(x => x.GetAll()).Returns(portfolioProductFake);
+        _mockPortfolioProductService.Setup(x => x.GetAll())
+            .Returns(portfolioProductFake);
 
         // Act
         var portfolioProductFound = _portfolioProductAppService.GetAll();
 
         // Assert
-        portfolioProductFound.Should().HaveCount(2);
+        portfolioProductFound.Should().HaveCount(1);
         _mockPortfolioProductService.Verify(x => x.GetAll(), Times.Once());
     }
 
