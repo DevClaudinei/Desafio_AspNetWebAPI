@@ -31,8 +31,6 @@ public static class PortfolioProductFake
 		foreach (var portfolioProductFake in portfolioProductFakes)
 		{
 			portfolioProductFake.Id = id++;
-            portfolioProductFake.Portfolio = PortfolioFake.PortfolioFaker();
-            portfolioProductFake.Product = ProductFake.ProductFaker();
         }
 
 		return portfolioProductFakes;

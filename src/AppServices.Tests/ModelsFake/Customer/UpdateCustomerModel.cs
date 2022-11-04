@@ -13,8 +13,8 @@ public static class UpdateCustomerModel
                 f.Person.FullName,
                 f.Internet.Email(),
                 f.Internet.Email(),
-                f.Person.Cpf(),
-                f.Person.Phone,
+                f.Person.Cpf(false),
+                f.Phone.PhoneNumberFormat(),
                 f.Person.DateOfBirth,
                 f.Random.Bool(),
                 f.Random.Bool(),
@@ -26,6 +26,7 @@ public static class UpdateCustomerModel
             )).Generate();
 
         createCustomerModelFake.EmailConfirmation = createCustomerModelFake.Email;
+        createCustomerModelFake.CellPhone = "(11) 98354-2892";
 
         return createCustomerModelFake;
     }
