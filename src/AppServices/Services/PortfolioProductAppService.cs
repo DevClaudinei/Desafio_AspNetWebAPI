@@ -1,5 +1,4 @@
 ﻿using AppServices.Services.Interfaces;
-using AutoMapper;
 using DomainModels.Entities;
 using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
@@ -9,19 +8,17 @@ namespace AppServices.Services;
 
 public class PortfolioProductAppService : IPortfolioProductAppService
 {
-    private readonly IMapper _mapper;
     private readonly IPortfolioProductService _portfolioProductService;
 
-    public PortfolioProductAppService(IMapper mapper, IPortfolioProductService portfolioProductService)
+    public PortfolioProductAppService(IPortfolioProductService portfolioProductService)
     {
-        _mapper = mapper ?? throw new System.ArgumentNullException(nameof(mapper));
         _portfolioProductService = portfolioProductService ?? throw new System.ArgumentNullException(nameof(portfolioProductService));
     }
 
     public IEnumerable<PortfolioProduct> GetAll()
     {
         var portfolioProducts = _portfolioProductService.GetAll();
-        return _mapper.Map<IEnumerable<PortfolioProduct>>(portfolioProducts);
+        return portfolioProducts;
     }
 
     public PortfolioProduct GetById(long portfolioId, long productId)
