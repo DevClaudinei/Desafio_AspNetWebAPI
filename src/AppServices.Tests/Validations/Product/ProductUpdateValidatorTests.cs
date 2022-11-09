@@ -6,14 +6,14 @@ using FluentAssertions;
 
 namespace AppServices.Tests.Validations.Product;
 
-public class ProductFakeCreateValidator
+public class ProductUpdateValidatorTests
 {
     [Fact]
-    public void Should_Verify_Create_When_Product_Is_Valid()
+    public void Should_verify_Update_When_Product_Is_Valid()
     {
         // Arrange
-        var productFake = CreateProductModel.ProductFake();
-        var validator = new ProductCreateValidation();
+        var productFake = UpdateProductModel.ProductFake();
+        var validator = new ProductUpdateValidator();
 
         // Act
         var result = validator.Validate(productFake);
@@ -24,16 +24,16 @@ public class ProductFakeCreateValidator
     }
 
     [Fact]
-    public void Should_Verify_Create_When_Symbol_Is_Empty()
+    public void Should_Verify_Update_When_Symbol_Is_Empty()
     {
         // Arrange
-        var productFake = new Faker<CreateProductRequest>("pt_BR")
-            .CustomInstantiator(f => new CreateProductRequest(
+        var productFake = new Faker<UpdateProductRequest>("pt_BR")
+            .CustomInstantiator(f => new UpdateProductRequest(
                 symbol: "",
                 unitPrice: f.Random.Decimal(1, 100)
             )).Generate();
 
-        var validator = new ProductCreateValidation();
+        var validator = new ProductUpdateValidator();
 
         // Act
         var result = validator.Validate(productFake);
@@ -44,16 +44,16 @@ public class ProductFakeCreateValidator
     }
 
     [Fact]
-    public void Should_Verify_Create_When_Symbol_Is_Null()
+    public void Should_Verify_Update_When_Symbol_Is_Null()
     {
         // Arrange
-        var productFake = new Faker<CreateProductRequest>("pt_BR")
-            .CustomInstantiator(f => new CreateProductRequest(
+        var productFake = new Faker<UpdateProductRequest>("pt_BR")
+            .CustomInstantiator(f => new UpdateProductRequest(
                 symbol: null,
                 unitPrice: f.Random.Decimal(1, 100)
             )).Generate();
 
-        var validator = new ProductCreateValidation();
+        var validator = new ProductUpdateValidator();
 
         // Act
         var result = validator.Validate(productFake);
@@ -64,16 +64,16 @@ public class ProductFakeCreateValidator
     }
 
     [Fact]
-    public void Should_Verify_Create_When_UnitPrice_Is_Empty()
+    public void Should_Verify_Update_When_UnitPrice_Is_Empty()
     {
         // Arrange
-        var productFake = new Faker<CreateProductRequest>("pt_BR")
-            .CustomInstantiator(f => new CreateProductRequest(
+        var productFake = new Faker<UpdateProductRequest>("pt_BR")
+            .CustomInstantiator(f => new UpdateProductRequest(
                 symbol: f.Commerce.ProductName(),
                 unitPrice: 0
             )).Generate();
 
-        var validator = new ProductCreateValidation();
+        var validator = new ProductUpdateValidator();
 
         // Act
         var result = validator.Validate(productFake);

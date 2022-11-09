@@ -6,7 +6,7 @@ using FluentAssertions;
 
 namespace AppServices.Tests.Validations.Portfolio;
 
-public class PortfolioFakeCreateValidator
+public class PortfolioCreateValidatorTests
 {
     [Fact]
     public void Should_Verify_Create_When_CustomerId_Is_Valid()
