@@ -29,7 +29,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_CustomerBankInfoExists()
+    public void Should_Return_BankInfos_When_Run_GetAll()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFakers(2);
@@ -40,12 +40,12 @@ public class CustomerBankInfoAppServiceTests
         var bankInfoFound = _customerBankInfoAppService.GetAll();
 
         // Assert
-        bankInfoFound.Should().HaveCountGreaterThan(0);
+        bankInfoFound.Should().HaveCount(2);
         _customerBankInfoService.Verify(x => x.GetAll(), Times.Once());
     }
 
     [Fact]
-    public void Should_GetAll_When_CustomerBankInfoDoesNotExists()
+    public void Should_Return_Empty_When_Run_GetAll()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFakers(2);
@@ -61,7 +61,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_GetByAccount_When_CustomerExists()
+    public void Should_Pass_When_Run_GetByAccount()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -78,7 +78,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_GetByAccount_When_CustomerDoesNotExists()
+    public void Should_Fail_When_Run_GetByAccount()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -89,12 +89,12 @@ public class CustomerBankInfoAppServiceTests
         Action act = () => _customerBankInfoAppService.GetByAccount(bankInfoFake.Account);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"CustomerBankInfo for account: {bankInfoFake.Account} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"CustomerBankInfo for account: {bankInfoFake.Account} was not found.");
         _customerBankInfoService.Verify(x => x.GetByAccount(bankInfoFake.Account), Times.Once());
     }
 
     [Fact]
-    public void Should_GetById_When_CustomerExists()
+    public void Should_Pass_When_Run_GetById()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -111,7 +111,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_CustomerDoesNotExists()
+    public void Should_Fail_When_Run_GetById()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -122,12 +122,12 @@ public class CustomerBankInfoAppServiceTests
         Action act = () => _customerBankInfoAppService.GetById(bankInfoFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"CustomerBankInfo for id: {bankInfoFake.Id} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"CustomerBankInfo for id: {bankInfoFake.Id} not found.");
         _customerBankInfoService.Verify(x => x.GetById(bankInfoFake.Id), Times.Once());
     }
 
     [Fact]
-    public void Should_GetCustomerBankInfoId_When_CustomerExists()
+    public void Should_Return_BankInfoId_When_Run_GetCustomerBankInfoId()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -144,7 +144,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_GetCustomerBankInfoId_When_CustomerDoesNotExists()
+    public void Should_Return_Zero_When_Run_GetCustomerBankInfoId()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -192,7 +192,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_CanWithdrawAmountFromAccountBalance_When_AmountLessThanAccountBalance()
+    public void Should_Pass_When_Run_CanWithdrawAmount()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -209,25 +209,25 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_CanWithdrawAmountFromAccountBalance_When_AmountGranThanAccountBalance()
+    public void Should_Fail_When_Run_CanWithdrawAmount_Because_Amount_Gran_Than_AccountBalance()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
         var amount = 1;
 
-        _customerBankInfoService.Setup(x => x.GetAccountBalanceById(bankInfoFake.Id))
-            .Returns(bankInfoFake.AccountBalance);
+        _customerBankInfoService.Setup(x => x.GetAccountBalanceById(It.IsAny<long>()))
+            .Returns(It.IsAny<decimal>());
 
         // Act
         Action act = () => _customerBankInfoAppService.CanWithdrawAmountFromAccountBalance(amount, bankInfoFake.Id);
 
         // Assert
-        act.Should().Throw<BadRequestException>($"Insufficient balance to invest.");
+        act.Should().ThrowExactly<BadRequestException>($"Insufficient balance to invest.");
         _customerBankInfoService.Verify(x => x.GetAccountBalanceById(bankInfoFake.Id), Times.Once());
     }
 
     [Fact]
-    public void Should_GetCustomerId_When_BankInfoExists()
+    public void Should_Pass_When_Run_GetCustomerId()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -240,12 +240,11 @@ public class CustomerBankInfoAppServiceTests
         
         // Assert
         bankInfoFound.Id.Should().Be(bankInfoFake.Id);
-
         _customerBankInfoService.Verify(x => x.GetByCustomerId(It.IsAny<long>()), Times.Once());
     }
 
     [Fact]
-    public void Should_NotGetCustomerId_When_BankInfoDoesNotExists()
+    public void Should_Fail_When_Run_GetCustomerId()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -256,8 +255,7 @@ public class CustomerBankInfoAppServiceTests
         Action act = () => _customerBankInfoAppService.GetByCustomerId(bankInfoFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"CustomerBankInfo for CustomerId: {bankInfoFake.Id} was not found.");
-
+        act.Should().ThrowExactly<NotFoundException>($"CustomerBankInfo for CustomerId: {bankInfoFake.Id} was not found.");
         _customerBankInfoService.Verify(x => x.GetByCustomerId(It.IsAny<long>()), Times.Once());
     }
 

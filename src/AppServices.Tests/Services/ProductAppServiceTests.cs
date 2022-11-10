@@ -49,7 +49,7 @@ public class ProductAppServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_ProductsExist()
+    public void Should_Return_Products_When_Run_GetAll()
     {
         // Arrange
         var productsFakes = ProductFake.ProductFakers(2);
@@ -65,7 +65,7 @@ public class ProductAppServiceTests
     }
 
     [Fact]
-    public void Should_NotGetAll_When_ProductsDoesNotExist()
+    public void Should_Return_Empty_When_Run_GetAll()
     {
         // Arrange
         var productsFakes = ProductFake.ProductFakers(2);
@@ -81,7 +81,7 @@ public class ProductAppServiceTests
     }
 
     [Fact]
-    public void Should_GetBySymbol_When_ProductExists() 
+    public void Should_Pass_When_Run_GetBySymbol() 
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -98,7 +98,7 @@ public class ProductAppServiceTests
     }
 
     [Fact]
-    public void Should_NotGetBySymbol_When_ProductDoesNotExists()
+    public void Should_Fail_When_Run_GetBySymbol()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -109,12 +109,12 @@ public class ProductAppServiceTests
         Action act = () => _productAppService.GetBySymbol(productFake.Symbol);
 
         // Assert
-        act.Should().Throw< NotFoundException>($"Product for the symbol: {productFake.Symbol} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Product for the symbol: {productFake.Symbol} was not found.");
         _mockProductService.Verify(x => x.GetBySymbol(It.IsAny<string>()), Times.Once());
     }
 
     [Fact]
-    public void Should_GetById_When_ProductExists()
+    public void Should_Pass_When_Run_GetById()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -130,7 +130,7 @@ public class ProductAppServiceTests
     }
 
     [Fact]
-    public void Should_NotGetById_When_ProductDoesNotExists()
+    public void Should_Fail_When_Run_GetById()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -141,12 +141,12 @@ public class ProductAppServiceTests
         Action act = () => _productAppService.GetById(productFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Product for the Id: {productFake.Id} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Product for the Id: {productFake.Id} was not found.");
         _mockProductService.Verify(x => x.GetById(It.IsAny<long>()), Times.Once());
     }
 
     [Fact]
-    public void Should_Get_When_ProductExists()
+    public void Should_Return_Product_When_Run_Get()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -163,7 +163,7 @@ public class ProductAppServiceTests
     }
 
     [Fact]
-    public void Should_Get_When_ProductDoesNotExists()
+    public void Should_Return_Empty_When_Run_Get()
     {
         // Arrange
         var productFake = UpdateProductModel.ProductFake();
@@ -174,7 +174,7 @@ public class ProductAppServiceTests
         Action act = () => _productAppService.Get(productFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Product for the Id: {productFake.Id} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Product for the Id: {productFake.Id} was not found.");
         _mockProductService.Verify(x => x.GetById(It.IsAny<long>()), Times.Once());
     }
 

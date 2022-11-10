@@ -44,7 +44,7 @@ public class OrderAppServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_OrdersExists()
+    public void Should_Return_Orders_When_Run_GetAll()
     {
         // Arrange
         var orderResultFake = OrderResponseModel.OrderFakers(2);
@@ -61,7 +61,7 @@ public class OrderAppServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_OrdersDoesNotExists()
+    public void Should_Return_Empty_When_Run_GetAll()
     {
         // Arrange
         var orderResultFake = OrderResponseModel.OrderFakers(2);
@@ -77,7 +77,7 @@ public class OrderAppServiceTests
     }
 
     [Fact]
-    public void Should_GetOrderById_When_OrderExists()
+    public void Should_Pass_When_Run_GetOrderById()
     {
         // Arrange
         var orderFake = OrderFake.OrderFaker();
@@ -93,7 +93,7 @@ public class OrderAppServiceTests
     }
 
     [Fact]
-    public void Should_GetOrderById_When_OrderDoesNotExists()
+    public void Should_Fail_When_Run_GetOrderById()
     {
         // Arrange
         var orderFake = OrderFake.OrderFaker();
@@ -104,7 +104,7 @@ public class OrderAppServiceTests
         Action act = () => _orderAppService.GetOrderById(orderFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Order for id: {orderFake.Id} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Order for id: {orderFake.Id} not found.");
         _orderService.Verify(x => x.GetById(orderFake.Id), Times.Once());
     }
 

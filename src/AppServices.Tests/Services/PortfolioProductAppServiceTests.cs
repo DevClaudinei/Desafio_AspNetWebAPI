@@ -19,7 +19,7 @@ public class PortfolioProductAppServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_PortfolioProductsExists()
+    public void Should_Return_PortfolioProducts_When_Run_GetAll()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFakers(1);
@@ -36,7 +36,7 @@ public class PortfolioProductAppServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_PortfolioProductsDoesNotExists()
+    public void Should_Return_Empty_When_Run_GetAll()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFakers(2);
@@ -52,7 +52,7 @@ public class PortfolioProductAppServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_PortfolioProductExists()
+    public void Should_Pass_When_Run_GetById()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();
@@ -64,12 +64,12 @@ public class PortfolioProductAppServiceTests
         var portfolioProductFound = _portfolioProductAppService.GetById(portfolioProductFake.PortfolioId, portfolioProductFake.ProductId);
 
         // Assert
-        portfolioProductFound.Should().NotBeNull();
+        portfolioProductFound.Id.Should().Be(portfolioProductFake.Id);
         _mockPortfolioProductService.Verify(x => x.GetById(It.IsAny<long>(), It.IsAny<long>()), Times.Once());
     }
 
     [Fact]
-    public void Should_GetById_When_PortfolioProductDoesNotExists()
+    public void Should_Fail_When_Run_GetById()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();
@@ -80,7 +80,7 @@ public class PortfolioProductAppServiceTests
         Action act = () => _portfolioProductAppService.GetById(portfolioProductFake.PortfolioId, portfolioProductFake.ProductId);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"PortfolioProduct with Portfolioid: {portfolioProductFake.PortfolioId} and ProductId: {portfolioProductFake.ProductId} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"PortfolioProduct with Portfolioid: {portfolioProductFake.PortfolioId} and ProductId: {portfolioProductFake.ProductId} not found.");
         _mockPortfolioProductService.Verify(x => x.GetById(It.IsAny<long>(), It.IsAny<long>()), Times.Once());
     }
 

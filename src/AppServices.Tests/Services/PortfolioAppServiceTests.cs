@@ -50,7 +50,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Create_When_CustomerExists()
+    public void Should_Pass_When_Run_Create()
     {
         // Arrange
         var portfolioModelFake = CreatePortfolioModel.PortfolioFake();
@@ -72,7 +72,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Create_When_CustomerDoesNotExists()
+    public void Should_Fail_When_Run_Create()
     {
         // Arrange
         var portfolioModelFake = CreatePortfolioModel.PortfolioFake();
@@ -87,13 +87,13 @@ public class PortfolioAppServiceTests
         Action act = () => _portfolioAppService.Create(portfolioModelFake);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Customer for Id: {portfolioFake.CustomerId} not found");
+        act.Should().ThrowExactly<NotFoundException>($"Customer for Id: {portfolioFake.CustomerId} not found");
         _mockPortfolioService.Verify(x => x.Create(portfolioFake), Times.Never());
         _mockCustomerBankInfoAppService.Verify(x => x.GetCustomerBankInfoId(portfolioFake.CustomerId), Times.Once());
     }
 
     [Fact]
-    public void Should_GetAll_When_CustomersExists()
+    public void Should_Return_Customers_When_Run_GetAll()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFakers(1);
@@ -110,7 +110,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_CustomersDoesNotExists()
+    public void Should_Return_Empty_When_Run_GetAll()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFakers(1);
@@ -126,7 +126,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_GetPortfolioById_When_PortfolioExists()
+    public void Should_Pass_When_Run_GetPortfolioById()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -143,7 +143,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_GetPortfolioById_When_PortfolioDoesNotExists()
+    public void Should_Fail_When_Run_GetPortfolioById()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -154,12 +154,12 @@ public class PortfolioAppServiceTests
         Action act = () => _portfolioAppService.GetPortfolioById(portfolioFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Portfolio for Id: {portfolioFake.Id} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Portfolio for Id: {portfolioFake.Id} not found.");
         _mockPortfolioService.Verify(x => x.GetById(portfolioFake.Id), Times.Once());
     }
 
     [Fact]
-    public void Should_GetTotalBalance_When_PortfolioExists()
+    public void Should_Pass_When_Run_GetTotalBalance()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -176,7 +176,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_GetTotalBalance_When_PortfolioDoesNotExists()
+    public void Should_Fail_When_Run_GetTotalBalance()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -187,12 +187,12 @@ public class PortfolioAppServiceTests
         Action act = () => _portfolioAppService.GetTotalBalance(portfolioFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Portfolio for Id: {portfolioFake.Id} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Portfolio for Id: {portfolioFake.Id} not found.");
         _mockPortfolioService.Verify(x => x.GetById(portfolioFake.Id), Times.Once());
     }
 
     [Fact]
-    public void Should_Delete_When_PortfolioExists()
+    public void Should_Pass_When_Run_Delete()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -215,7 +215,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Delete_When_PortfolioDoesNotExists()
+    public void Should_Fail_When_Run_Delete()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -231,14 +231,14 @@ public class PortfolioAppServiceTests
         Action act = () => _portfolioAppService.Delete(portfolioFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Portfolio for Id: {portfolioFake.Id} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Portfolio for Id: {portfolioFake.Id} not found.");
         _mockPortfolioService.Verify(x => x.GetById(portfolioFake.Id), Times.Once());
         _mockPortfolioService.Verify(x => x.GetTotalBalance(portfolioFake.Id), Times.Never());
         _mockCustomerBankInfoAppService.Verify(x => x.Withdraw(portfolioFake.CustomerId, amount), Times.Never());
     }
 
     [Fact]
-    public void Should_Invest_When_RealizeInvestment()
+    public void Should_Pass_When_Run_Investment()
     {
         // Arrange
         var requestFake = CreateInvestmentModel.InvestmentFake();
@@ -255,7 +255,7 @@ public class PortfolioAppServiceTests
             .Returns(orderFake.Id);
 
         // Act
-        var orderId = _portfolioAppService.Invest(requestFake, requestFake.Direction);
+        var orderId = _portfolioAppService.Invest(requestFake);
 
         // Assert
         orderId.Should().Be(orderFake.Id);
@@ -265,33 +265,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_NotInvest_When_DateIsNotAllowed()
-    {
-        // Arrange
-        var requestFake = CreateInvestmentModel.InvestmentInvalid();
-        var portfolioFake = PortfolioFake.PortfolioFaker();
-        var productFake = ProductFake.ProductFaker();
-        var orderFake = OrderFake.OrderFaker();
-
-        _mockPortfolioService.Setup(x => x.GetById(requestFake.PortfolioId))
-            .Returns(portfolioFake);
-        _mockProductAppService.Setup(x => x.Get(requestFake.ProductId))
-            .Returns(productFake);
-        _mockOrderAppService.Setup(x => x.Create(It.IsAny<Order>()))
-            .Returns(orderFake.Id);
-
-        // Act
-        Action act = () => _portfolioAppService.Invest(requestFake, requestFake.Direction);
-
-        // Assert
-        act.Should().Throw< BadRequestException>("It is not possible to make an investment with a future date.");
-        _mockPortfolioService.Verify(x => x.GetById(requestFake.PortfolioId), Times.Once);
-        _mockProductAppService.Verify(x => x.Get(requestFake.ProductId), Times.Once());
-        _mockOrderAppService.Verify(x => x.Create(It.IsAny<Order>()), Times.Once());
-    }
-
-    [Fact]
-    public void Should_()
+    public void Should_Fail_When_Run_Investment_Because_Portfolio_Does_Not_Exists()
     {
         // Arrange
         var requestFake = CreateInvestmentModel.InvestmentFake();
@@ -306,34 +280,33 @@ public class PortfolioAppServiceTests
             .Returns(orderFake.Id);
 
         // Act
-        Action act = () => _portfolioAppService.Invest(requestFake, requestFake.Direction);
+        Action act = () => _portfolioAppService.Invest(requestFake);
 
         // Assert
-        act.Should().Throw< NotFoundException>($"Portfolio for Id: {requestFake.PortfolioId} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Portfolio for Id: {requestFake.PortfolioId} not found.");
         _mockPortfolioService.Verify(x => x.GetById(requestFake.PortfolioId), Times.Once);
         _mockProductAppService.Verify(x => x.Get(requestFake.ProductId), Times.Never());
         _mockOrderAppService.Verify(x => x.Create(It.IsAny<Order>()), Times.Never());
     }
 
     [Fact]
-    public void Should_Invest_When_RealizeUninvestment()
+    public void Should_Pass_When_Run_Uninvest()
     {
         // Arrange
-        var requestFake = CreateInvestmentModel.UninvestmentFake();
+        var requestFake = CreateUninvestmentModel.UninvestmentFake();
         var portfolioFake = PortfolioFake.PortfolioFaker();
         var productFake = ProductFake.ProductFaker();
         var orderFake = OrderFake.OrderFaker();
-        orderFake.Id = 0;
-
+        
         _mockPortfolioService.Setup(x => x.GetById(requestFake.PortfolioId))
             .Returns(portfolioFake);
         _mockProductAppService.Setup(x => x.Get(requestFake.ProductId))
             .Returns(productFake);
-        _mockOrderAppService.Setup(x => x.Create(orderFake))
+        _mockOrderAppService.Setup(x => x.Create(It.IsAny<Order>()))
             .Returns(orderFake.Id);
 
         // Act
-        var orderId = _portfolioAppService.Invest(requestFake, requestFake.Direction);
+        var orderId = _portfolioAppService.Uninvest(requestFake);
 
         // Assert
         orderId.Should().Be(orderFake.Id);
@@ -343,7 +316,32 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_GetAllByCustomerId_When_PortfolioExists()
+    public void Should_Fail_When_Run_Uninvest_Because_Portfolio_Does_Not_Exists()
+    {
+        // Arrange
+        var requestFake = CreateUninvestmentModel.UninvestmentFake();
+        var portfolioFake = PortfolioFake.PortfolioFaker();
+        var productFake = ProductFake.ProductFaker();
+        var orderFake = OrderFake.OrderFaker();
+        
+        _mockPortfolioService.Setup(x => x.GetById(requestFake.PortfolioId));
+        _mockProductAppService.Setup(x => x.Get(requestFake.ProductId))
+            .Returns(productFake);
+        _mockOrderAppService.Setup(x => x.Create(It.IsAny<Order>()))
+            .Returns(orderFake.Id);
+
+        // Act
+        Action act = () => _portfolioAppService.Uninvest(requestFake);
+
+        // Assert
+        act.Should().ThrowExactly<NotFoundException>($"Portfolio for Id: {requestFake.PortfolioId} not found.");
+        _mockPortfolioService.Verify(x => x.GetById(requestFake.PortfolioId), Times.Once);
+        _mockProductAppService.Verify(x => x.Get(requestFake.ProductId), Times.Never());
+        _mockOrderAppService.Verify(x => x.Create(It.IsAny<Order>()), Times.Never());
+    }
+
+    [Fact]
+    public void Should_Return_Portflios_When_Run_GetAllByCustomerId()
     {
         // Arrange
         var portfoliosFake = PortfolioFake.PortfolioFakers(2);
@@ -361,7 +359,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_GetAllByCustomerId_When_PortfolioDoesNotExists()
+    public void Should_Return_Empty_When_Run_GetAllByCustomerId()
     {
         // Arrange
         var portfoliosFake = PortfolioFake.PortfolioFakers(2);
