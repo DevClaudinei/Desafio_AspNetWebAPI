@@ -34,7 +34,7 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var customersFound = _appService.Get();
+        var customersFound = _appService.GetAll();
         return Ok(customersFound);
     }
 
