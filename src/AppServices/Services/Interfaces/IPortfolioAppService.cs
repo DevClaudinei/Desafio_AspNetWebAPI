@@ -1,5 +1,4 @@
-﻿using Application.Models.Enum;
-using Application.Models.Portfolio.Request;
+﻿using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
 using System.Collections.Generic;
 
@@ -12,6 +11,7 @@ public interface IPortfolioAppService
     PortfolioResult GetPortfolioById(long id);
     decimal GetTotalBalance(long portfolioId);
     void Delete(long id);
-    long Invest(InvestmentRequest request, OrderDirection orderDirection);
+    long Invest(InvestmentRequest request);
+    long Uninvest(UninvestimentRequest request);
     IEnumerable<PortfolioResult> GetAllByCustomerId(long id);
 }
