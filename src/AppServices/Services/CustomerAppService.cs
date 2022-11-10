@@ -40,7 +40,7 @@ public class CustomerAppService : ICustomerAppService
         return customerId;
     }
 
-    public IEnumerable<CustomerResult> Get()
+    public IEnumerable<CustomerResult> GetAll()
     {
         var customersFound = _customerService.GetAll();
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);

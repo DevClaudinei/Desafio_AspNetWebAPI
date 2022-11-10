@@ -97,36 +97,35 @@ public class PortfolioAppService : IPortfolioAppService
         _portfolioService.Delete(id);
     }
 
-    public long Invest(InvestmentRequest request, OrderDirection orderDirection)
+    public long Invest(InvestmentRequest request)
     {
         var portfolioFound = GetById(request.PortfolioId);
         var productFound = _productAppService.Get(request.ProductId);
-        var order = PrepareOrder(productFound.UnitPrice, request);
-        var createdInvestment = _orderAppService.Create(order);
+        var investment = _mapper.Map<Order>(request);
+        investment.NetValue = productFound.UnitPrice * request.Quotes;
 
-        if (orderDirection != OrderDirection.Buy)
-            UninvestimentRealize(order, portfolioFound, productFound);
+        InvestimentRealize(investment, portfolioFound, productFound);
 
-        if (orderDirection == OrderDirection.Buy)
-            InvestimentRealize(order, portfolioFound, productFound);
-
+        var createdInvestment = _orderAppService.Create(investment);
         return createdInvestment;
     }
 
-    private Order PrepareOrder(decimal unitPrice, InvestmentRequest request)
+    public long Uninvest(UninvestimentRequest request)
     {
+        var portfolioFound = GetById(request.PortfolioId);
+        var productFound = _productAppService.Get(request.ProductId);
         var investment = _mapper.Map<Order>(request);
-        investment.NetValue = unitPrice * request.Quotes;
+        investment.NetValue = productFound.UnitPrice * request.Quotes;
 
-        return investment;
+        UninvestimentRealize(investment, portfolioFound, productFound);
+
+        var UnivestmentId = _orderAppService.Create(investment);
+        return UnivestmentId;
     }
 
     private void InvestimentRealize(Order order, Portfolio portfolio, Product product)
     {
         var customerBankId = CheckCustomerAccountBalance(portfolio.CustomerId, order);
-
-        if ((order.ConvertedAt >= DateTime.UtcNow))
-            throw new BadRequestException("It is not possible to make an investment with a future date.");
 
         PostInvestmentUpdates(portfolio, customerBankId, order.NetValue);
         _portfolioProductAppService.AddProduct(portfolio, product);
