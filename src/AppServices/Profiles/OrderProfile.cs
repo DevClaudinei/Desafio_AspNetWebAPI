@@ -11,6 +11,7 @@ public class OrderProfile : Profile
     {
         CreateMap<Order, OrderResult>();
         CreateMap<InvestmentRequest, Order>();
+        CreateMap<UninvestimentRequest, Order>();
         CreateMap<OrderResult, Order>();
     }
 }
