@@ -5,28 +5,24 @@ namespace AppServices.Tests.ModelsFake.Order;
 
 public static class OrderResponseModel
 {
-	public static OrderResult OrderFake()
-	{
-		var orderResult = new Faker<OrderResult>("pt_BR")
-			.CustomInstantiator(f => new OrderResult(
-				id: f.Random.Long(1, 1),
-				quotes: f.Random.Int(1),
-				netValue: f.Random.Decimal(1, 1),
-				convertedAt: f.Date.Recent()
-				)).Generate();
-
-		return orderResult;
-	}
-    
     public static IEnumerable<OrderResult> OrderFakers(int quantity)
     {
+        var id = 1L;
         var orderResult = new Faker<OrderResult>("pt_BR")
             .CustomInstantiator(f => new OrderResult(
-                id: f.Random.Long(1, 1),
+                id: f.Random.Long(0, 0),
                 quotes: f.Random.Int(1),
                 netValue: f.Random.Decimal(1, 1),
-                convertedAt: f.Date.Recent()
+                convertedAt: f.Date.Recent(),
+                direction: Application.Models.Enum.OrderDirection.Buy
                 )).Generate(quantity);
+
+        foreach (var order in orderResult)
+        {
+            order.Id += id;
+            if (order.Id % 2 != 0)
+                order.Direction = Application.Models.Enum.OrderDirection.Sell;
+        }
 
         return orderResult;
     }

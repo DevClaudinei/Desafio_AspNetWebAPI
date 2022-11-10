@@ -24,7 +24,7 @@ public static class ProductResponseModel
                 id: 1,
                 symbol: f.Commerce.ProductName(),
                 unitPrice: f.Commerce.Random.Decimal(1)
-            )).Generate(1);
+            )).Generate(quantity);
 
         return productResult;
     }

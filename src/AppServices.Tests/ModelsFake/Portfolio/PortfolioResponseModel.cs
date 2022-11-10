@@ -19,7 +19,7 @@ public static class PortfolioResponseModel
                         unitPrice: x.Commerce.Random.Decimal(1)
                 )).Generate(1),
                 customerId: 1
-            )).Generate(2);
+            )).Generate(quantity);
 
         return portfolioResult;
 	}
