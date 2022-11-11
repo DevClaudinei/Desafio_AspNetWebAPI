@@ -18,17 +18,4 @@ public static class CustomerBankInfoResponseModel
 
 		return customerBankInfoResult;
 	}
-
-    public static IEnumerable<CustomerBankInfoResult> BankInfoFakers(int quantity)
-    {
-        var customerBankInfosFake = new Faker<CustomerBankInfoResult>("pt_BR")
-            .CustomInstantiator(f => new CustomerBankInfoResult(
-                id: 1,
-                account: f.Random.Guid().ToString(),
-                accountBalance: 0,
-                customerId: 1
-            )).Generate(quantity);
-
-        return customerBankInfosFake;
-    }
 }
