@@ -13,6 +13,7 @@ public static class PortfolioProductFake
 					f.Random.Long(1,1)
 			)).Generate();
 
+		portfolioProductFake.Id = 1;
 		portfolioProductFake.Portfolio = PortfolioFake.PortfolioFaker();
 		portfolioProductFake.Product = ProductFake.ProductFaker();
 

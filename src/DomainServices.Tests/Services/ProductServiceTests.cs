@@ -27,7 +27,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_Create_When_ProductDoesNotExists()
+    public void Should_Pass_When_Executing_Create()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -50,7 +50,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_NotCreate_When_ProductAlreadyExists()
+    public void Should_Fail_When_Executing_Create()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -64,7 +64,7 @@ public class ProductServiceTests
         Action act = () => _productService.Create(productFake);
 
         // Assert
-        act.Should().Throw<BadRequestException>($"Product: {productFake.Symbol} are already registered");
+        act.Should().ThrowExactly<BadRequestException>($"Product: {productFake.Symbol} are already registered");
 
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
@@ -74,7 +74,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_ProductsExists()
+    public void Should_Return_Porducts_When_Executing_GetAll()
     {
         // Arrange
         var productFakes = ProductFake.ProductFakers(5);
@@ -99,7 +99,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_ProductsDoesNotExists()
+    public void Should_Return_Empty_When_Executing_GetAll()
     {
         // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<Product>()
@@ -122,7 +122,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_GetBySymbol_When_ProductExists()
+    public void Should_Return_Product_When_Executing_GetBySymbol()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -149,7 +149,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_GetBySymbol_When_ProductDoesNotExists()
+    public void Should_Return_Null_When_Executing_GetBySymbol()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -175,7 +175,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_ProductExists()
+    public void Should_Return_Product_When_Executing_GetById()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -202,7 +202,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_ProductDoesNotExists()
+    public void Should_Return_Null_When_Executing_GetById()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -228,7 +228,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_Update_When_ProductExists()
+    public void Should_Pass_When_Executing_Update()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -251,7 +251,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_Update_When_ProductDoesNotExists()
+    public void Should_Fail_When_Executing_Update()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -266,7 +266,7 @@ public class ProductServiceTests
         Action act = () => _productService.Update(productFake);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Product not found for id: {productFake.Id}.");
+        act.Should().ThrowExactly<NotFoundException>($"Product not found for id: {productFake.Id}.");
 
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());
@@ -276,7 +276,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_Delete_When_ProductExists()
+    public void Should_Pass_When_Executing_Delete()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -298,7 +298,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public void Should_Delete_When_ProductDoesNotExists()
+    public void Should_Fail_When_Executing_Delete()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
@@ -313,7 +313,7 @@ public class ProductServiceTests
         Action act = () => _productService.Delete(productFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Product not found for id: {productFake.Id}.");
+        act.Should().ThrowExactly<NotFoundException>($"Product not found for id: {productFake.Id}.");
 
         _mockRepositoryFactory.Verify(x => x.Repository<Product>()
             .Any(It.IsAny<Expression<Func<Product, bool>>>()), Times.Once());

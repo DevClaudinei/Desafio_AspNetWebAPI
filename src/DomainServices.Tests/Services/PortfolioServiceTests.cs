@@ -76,7 +76,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_PortfolioExists()
+    public void Should_Return_Portfolio_When_Executing_GetById()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -105,7 +105,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_NotGetById_When_PortfolioDoesNotExists()
+    public void Should_Return_Null_When_Executing_GetById()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -133,7 +133,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_PortfoliosExists()
+    public void Should_Return_Portfolios_When_Executing_GetAll()
     {
         // Arrange
         var portfoliosFakes = PortfolioFake.PortfolioFakers(1);
@@ -160,7 +160,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_NotGetAll_When_PortfolioDoesNotExists()
+    public void Should_Return_Null_When_Executing_GetAll()
     {
         // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<Portfolio>()
@@ -202,7 +202,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_Delete_When_PortfolioExists()
+    public void Should_Pass_When_Executing_Delete()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -232,7 +232,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_NotDelete_When_PortfolioHasBalanceGranThanZero()
+    public void Should_Fail_When_Executing_Delete_Because_Has_Balance_Gran_Than_Zero()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -263,7 +263,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_GetAllByCustomerId_When_PortfolioExists()
+    public void Should_Return_Portfolios_When_Executing_GetAllByCustomerId()
     {
         // Arrange
         var portfoliosFake = PortfolioFake.PortfolioFakers(2);
@@ -293,7 +293,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_NotGetAllByCustomerId_When_PortfolioDoesNotExists()
+    public void Should_Return_Null_When_Executing_GetAllByCustomerId()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();

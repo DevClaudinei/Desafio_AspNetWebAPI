@@ -46,7 +46,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_OrdersExists()
+    public void Should_Return_Orders_When_Executing_GetAll()
     {
         // Arrange
         var orderFakers = OrderFake.OrderFakers(5);
@@ -71,7 +71,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public void Should_NotGetAll_When_OrdersDoesNotExists()
+    public void Should_Return_Empty_When_Executing_GetAll()
     {
         // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<Order>()
@@ -94,7 +94,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_OrderExists()
+    public void Should_Return_Order_When_Executng_GetById()
     {
         // Arrange
         var orderFake = OrderFake.OrderFaker();
@@ -121,7 +121,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_OrderDoesNotExists()
+    public void Should_Return_Empty_When_Executng_GetById()
     {
         // Arrange
         var orderFake = OrderFake.OrderFaker();

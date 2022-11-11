@@ -42,7 +42,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_CustomerBankInfoExist()
+    public void Should_Pass_When_Executing_GetById()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -69,7 +69,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_CustomerBankInfoDoesNotExist()
+    public void Should_Fail_When_Executing_GetById()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -95,7 +95,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetIdByCustomerId_When_CustomerExists()
+    public void Should_Pass_When_Executing_GetIdByCustomerId()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -124,7 +124,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetIdByCustomerId_When_CustomerDoesNotExists()
+    public void Should_Fail_When_Executing_GetIdByCustomerId()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -151,7 +151,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_CustomerBankInfoExists()
+    public void Should_Return_BankInfos_When_Executing_GetAll()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFakers(5);
@@ -176,7 +176,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_CustomerBankInfoDoesNotExists()
+    public void Should_Return_Empty_When_Executing_GetAll()
     {
         // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<CustomerBankInfo>()
@@ -198,7 +198,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetByAccount_When_CustomerBankInfoExist()
+    public void Should_Pass_When_Executing_GetByAccount()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -225,7 +225,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetByAccount_When_CustomerBankInfoDoesNotExist()
+    public void Should_Fail_When_Executing_GetByAccount()
     {
         // Arrange
         var customerBankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -278,7 +278,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Deposit_When_CustomerBankInfoExists()
+    public void Should_Pass_When_Executing_Deposit()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -305,7 +305,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Deposit_When_CustomerBankInfoDoesNotExists()
+    public void Should_Fail_When_Executing_Deposit()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -324,7 +324,7 @@ public class CustomerBankInfoServiceTests
         Action act = () => _customerBankInfoService.Deposit(bankInfoFake.Id, amount);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"CustomerBankInfo for id: {bankInfoFake.Id} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"CustomerBankInfo for id: {bankInfoFake.Id} not found.");
 
         _mockUnitOfWork.Verify(x => x.Repository<CustomerBankInfo>(), Times.Once());
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
@@ -335,7 +335,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Withdraw_When_CustomerBankInfoExists()
+    public void Should_Pass_When_Executing_Withdraw()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -367,7 +367,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Withdraw_When_CustomerBankInfoDoesNotExists()
+    public void Should_Fail_When_Executing_Withdraw()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -386,7 +386,7 @@ public class CustomerBankInfoServiceTests
         Action act = () => _customerBankInfoService.Withdraw(bankInfoFake.Id, amount);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"CustomerBankInfo for id: {bankInfoFake.Id} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"CustomerBankInfo for id: {bankInfoFake.Id} not found.");
 
         _mockRepositoryFactory.Verify(x => x.Repository<CustomerBankInfo>()
             .SingleResultQuery()
@@ -397,7 +397,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetByCustomerId_When_CustomerExists()
+    public void Should_Pass_When_Executing_GetByCustomerId()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -423,7 +423,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetByCustomerId_When_CustomerDoesNotExists()
+    public void Should_Fail_When_Executing_GetByCustomerId()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();

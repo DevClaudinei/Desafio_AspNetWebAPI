@@ -7,7 +7,6 @@ using FluentAssertions;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using System;
 using System.Linq.Expressions;
 
 namespace DomainServices.Tests.Services;
@@ -29,7 +28,7 @@ public class PortfolioProductServiceTests
     }
 
     [Fact]
-    public void Should_AddProduct_When_ProductDoesNotExistInPortfolioProduct()
+    public void Should_Pass_When_Executing_AddProduct_Because_Product_Does_Not_Exists_In_PortfolioProduct()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();
@@ -64,7 +63,7 @@ public class PortfolioProductServiceTests
     }
 
     [Fact]
-    public void Should_NotAddProduct_When_ProductExistInPortfolioProduct()
+    public void Should_Fail_When_Executing_AddProduct_Because_Product_Exists_In_PortfolioProduct()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();
@@ -100,7 +99,7 @@ public class PortfolioProductServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_ThereAreProductsInThePortfolio()
+    public void Should_Return_PortfolioProducts_When_Executing_GetAll()
     {
         // Arrange
         var portfoliosFake = PortfolioProductFake.PortfolioProductFakers(2);
@@ -118,7 +117,7 @@ public class PortfolioProductServiceTests
         var portfolioProductFound = _portfolioProductService.GetAll();
 
         // Assert
-        portfolioProductFound.Should().HaveCountGreaterThan(0);
+        portfolioProductFound.Should().HaveCount(2);
 
         _mockRepositoryFactory.Verify(x => x.Repository<PortfolioProduct>()
             .MultipleResultQuery(), Times.Once());
@@ -127,7 +126,7 @@ public class PortfolioProductServiceTests
     }
 
     [Fact]
-    public void Should_NotGetAll_When_ThereAreNoProductsInThePortfolio()
+    public void Should_Return_Empty_When_Executing_GetAll()
     {
         // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<PortfolioProduct>()
@@ -152,7 +151,7 @@ public class PortfolioProductServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_ThereAreProductsInThePortfolio()
+    public void Should_Return_PortfolioProduct_When_Executing_GetById()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();
@@ -172,7 +171,7 @@ public class PortfolioProductServiceTests
             .GetById(portfolioProductFake.PortfolioId, portfolioProductFake.ProductId);
 
         // Assert
-        portfolioProductFound.Should().NotBeNull();
+        portfolioProductFound.Id.Should().Be(portfolioProductFake.Id);
         
         _mockRepositoryFactory.Verify(x => x.Repository<PortfolioProduct>()
             .SingleResultQuery()
@@ -182,7 +181,7 @@ public class PortfolioProductServiceTests
     }
 
     [Fact]
-    public void Should_NotGetById_When_ThereAreNoProductsInThePortfolio()
+    public void Should_Return_Null_When_Executing_GetById()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();

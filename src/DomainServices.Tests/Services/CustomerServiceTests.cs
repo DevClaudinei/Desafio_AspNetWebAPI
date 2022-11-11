@@ -24,7 +24,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_CreateCustomer_Sucessfully()
+    public void Should_Pass_When_Executing_CreateCustomer()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -48,7 +48,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_CreateCustomer_When_EmailAlreadyExists()
+    public void Should_Fail_When_Executing_CreateCustomer_Because_EmailAlreadyExists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -63,7 +63,7 @@ public class CustomerServiceTests
         Action act = () => _customerService.CreateCustomer(customerFake);
 
         // Assert
-        act.Should().Throw<BadRequestException>($"Customer already exists for email: {customerFake.Email}");
+        act.Should().ThrowExactly<BadRequestException>($"Customer already exists for email: {customerFake.Email}");
 
         _mockRepositoryFactory.Verify(x => x.Repository<Customer>()
             .Any(It.IsAny<Expression<Func<Customer, bool>>>()), Times.Exactly(1));
@@ -71,7 +71,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_CreateCustomer_When_CpfAlreadyExists()
+    public void Should_Fail_When_Executing_CreateCustomer_Because_CpfAlreadyExists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -86,7 +86,7 @@ public class CustomerServiceTests
         Action act = () => _customerService.CreateCustomer(customerFake);
 
         // Assert
-        act.Should().Throw<BadRequestException>($"Customer already exists for CPF: {customerFake.Cpf}");
+        act.Should().ThrowExactly<BadRequestException>($"Customer already exists for CPF: {customerFake.Cpf}");
 
         _mockRepositoryFactory.Verify(x => x.Repository<Customer>()
             .Any(It.IsAny<Expression<Func<Customer, bool>>>()), Times.Exactly(2));
@@ -94,7 +94,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_CustomersExists()
+    public void Should_Return_Customers_When_Executing_GetAll()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFakers(5);
@@ -119,7 +119,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_GetAll_When_CustomersDoesNotExists()
+    public void Should_Return_Empty_When_Executing_GetAll()
     {
         // Arrange
         _mockRepositoryFactory.Setup(x => x.Repository<Customer>()
@@ -142,7 +142,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_CustomerExists()
+    public void Should_Pass_When_Run_GetById()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -169,7 +169,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_GetById_When_CustomerDoesNotExists()
+    public void Should_Return_Null_When_Executing_GetById()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -195,11 +195,13 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_GetAllByFullName_When_CustomersExists()
+    public void Should_Return_Customers_When_Executing_GetAllByFullName()
     {
         // Arrange
-        var customerFake = CustomerFake.CustomerFakers(5);
-        
+        var customerFake = CustomerFake.CustomerFakers(2);
+        var customer = customerFake.ElementAt(1);
+
+
         _mockRepositoryFactory.Setup(x => x.Repository<Customer>()
             .MultipleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Customer, bool>>>()))
@@ -209,7 +211,7 @@ public class CustomerServiceTests
             .Returns((IList<Customer>)customerFake);
 
         // Act
-        var customerFound = _customerService.GetAllByFullName(customerFake.ElementAt(1).FullName);
+        var customerFound = _customerService.GetAllByFullName(customer.FullName);
 
         // Assert
         customerFound.Should().HaveCountGreaterThanOrEqualTo(1);
@@ -222,7 +224,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_GetAllByFullName_When_CustomersDoesNotExists()
+    public void Should_Return_Empty_When_Executing_GetAllByFullName()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFakers(5);
@@ -248,7 +250,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Update_When_CustomerExists()
+    public void Should_Pass_When_Executing_Update()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -281,7 +283,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Update_When_CustomerDoesNotExists()
+    public void Should_Pass_When_Executing_Update_Because_Customer_Does_Not_Exists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -301,7 +303,7 @@ public class CustomerServiceTests
         Action act = () => _customerService.Update(customerFake.Id, customerFake);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Client for Id: {customerFake.Id} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Client for Id: {customerFake.Id} not found.");
 
         _mockRepositoryFactory.Verify(x => x.Repository<Customer>()
             .Any(It.IsAny<Expression<Func<Customer, bool>>>()), Times.Exactly(2));
@@ -316,7 +318,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Update_When_CpfAlreadyExists()
+    public void Should_Pass_When_Executing_Update_Because_CpfAlreadyExists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -332,7 +334,7 @@ public class CustomerServiceTests
         Action act = () => _customerService.Update(customerFake.Id, customerFake);
 
         // Assert
-        act.Should().Throw<BadRequestException>($"Customer already exists for CPF: {customerFake.Cpf}");
+        act.Should().ThrowExactly<BadRequestException>($"Customer already exists for CPF: {customerFake.Cpf}");
 
         _mockRepositoryFactory.Verify(x => x.Repository<Customer>()
             .Any(It.IsAny<Expression<Func<Customer, bool>>>()), Times.Exactly(2));
@@ -342,7 +344,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Update_When_EmailAlreadyExists()
+    public void Should_Pass_When_Executing_Update_Because_EmailAlreadyExists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -358,7 +360,7 @@ public class CustomerServiceTests
         Action act = () => _customerService.Update(customerFake.Id, customerFake);
 
         // Assert
-        act.Should().Throw<BadRequestException>($"Customer already exists for email: {customerFake.Email}");
+        act.Should().ThrowExactly<BadRequestException>($"Customer already exists for email: {customerFake.Email}");
 
         _mockRepositoryFactory.Verify(x => x.Repository<Customer>()
             .Any(It.IsAny<Expression<Func<Customer, bool>>>()), Times.Exactly(1));
@@ -368,7 +370,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Delete_When_CustomerExists()
+    public void Should_Pass_When_Executing_Delete()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -397,7 +399,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Delete_When_CustomerDoesNotExists()
+    public void Should_Fail_When_Executing_Delete_Because_Customer_Does_Not_Exists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -415,7 +417,7 @@ public class CustomerServiceTests
         Action act = () => _customerService.Delete(customerFake.Id);
 
         // Assert
-        act.Should().Throw<NotFoundException>($"Client for Id: {customerFake.Id} not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Client for Id: {customerFake.Id} not found.");
 
         _mockRepositoryFactory.Verify(x => x.Repository<Customer>()
             .SingleResultQuery()
