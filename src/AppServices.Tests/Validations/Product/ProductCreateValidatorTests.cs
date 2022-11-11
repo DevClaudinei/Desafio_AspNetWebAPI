@@ -2,29 +2,28 @@
 using AppServices.Tests.ModelsFake.Product;
 using AppServices.Validations.Product;
 using Bogus;
-using FluentAssertions;
+using FluentValidation.TestHelper;
 
 namespace AppServices.Tests.Validations.Product;
 
 public class ProductCreateValidatorTests
 {
     [Fact]
-    public void Should_Verify_Create_When_Product_Is_Valid()
+    public void Should_Pass_When_Run_ProductCreateValidator_Because_Product_Is_Valid()
     {
         // Arrange
         var productFake = CreateProductModel.ProductFake();
         var validator = new ProductCreateValidator();
 
         // Act
-        var result = validator.Validate(productFake);
+        var result = validator.TestValidate(productFake);
 
         // Assert
-        result.IsValid.Should().BeTrue();
-        result.Errors.Should().BeEmpty();
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
-    public void Should_Verify_Create_When_Symbol_Is_Empty()
+    public void Should_Fail_When_Run_ProductCreateValidator_Because_Symbol_Is_Empty()
     {
         // Arrange
         var productFake = new Faker<CreateProductRequest>("pt_BR")
@@ -36,15 +35,14 @@ public class ProductCreateValidatorTests
         var validator = new ProductCreateValidator();
 
         // Act
-        var result = validator.Validate(productFake);
+        var result = validator.TestValidate(productFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldHaveValidationErrorFor(x => x.Symbol);
     }
 
     [Fact]
-    public void Should_Verify_Create_When_Symbol_Is_Null()
+    public void Should_Fail_When_Run_ProductCreateValidator_Because_Symbol_Is_Null()
     {
         // Arrange
         var productFake = new Faker<CreateProductRequest>("pt_BR")
@@ -56,15 +54,14 @@ public class ProductCreateValidatorTests
         var validator = new ProductCreateValidator();
 
         // Act
-        var result = validator.Validate(productFake);
+        var result = validator.TestValidate(productFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(2);
+        result.ShouldHaveValidationErrorFor(x => x.Symbol);
     }
 
     [Fact]
-    public void Should_Verify_Create_When_UnitPrice_Is_Empty()
+    public void Should_Fail_When_Run_ProductCreateValidator_Because_UnitPrice_Is_Empty()
     {
         // Arrange
         var productFake = new Faker<CreateProductRequest>("pt_BR")
@@ -72,14 +69,13 @@ public class ProductCreateValidatorTests
                 symbol: f.Commerce.ProductName(),
                 unitPrice: 0
             )).Generate();
-
+        
         var validator = new ProductCreateValidator();
 
         // Act
-        var result = validator.Validate(productFake);
+        var result = validator.TestValidate(productFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(2);
+        result.ShouldHaveValidationErrorFor(x => x.UnitPrice);
     }
 }

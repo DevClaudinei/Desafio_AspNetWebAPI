@@ -1,7 +1,5 @@
-﻿using Application.Models.Enum;
-using AppServices.Tests.ModelsFake.Portfolio;
+﻿using AppServices.Tests.ModelsFake.Portfolio;
 using AppServices.Validations.Portfolio;
-using FluentAssertions;
 using FluentValidation.TestHelper;
 
 namespace AppServices.Tests.Validations.Portfolio;

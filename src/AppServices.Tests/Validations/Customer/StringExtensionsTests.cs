@@ -10,7 +10,7 @@ namespace AppServices.Tests.Validations.Customer;
 public class StringExtensionsTests
 {
     [Fact]
-    public void Should_Return_True_When_Document_Without_Mask()
+    public void Should_Pass_When_Run_IsValidDocument_When_Document_Has_No_Mask()
     {
         // Arrange
         var customerFake = CreateCustomerModel.CustomerFaker();
@@ -23,7 +23,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_True_When_Document_With_Mask()
+    public void Should_Fail_When_Run_IsValidDocument_Because_Document_Has_Mask()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -42,7 +42,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_True_When_Cellphone_With_Format_Correct()
+    public void Should_Pass_When_Run_IsValidDocument_Because_Cellphone_Has_Format_Correct()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -61,7 +61,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_False_When_Cellphone_With_Format_Incorrect()
+    public void Should_Fail_When_Run_IsCellphone_Because_Cellphone_Has_Format_Incorrect()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -80,7 +80,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_True_When_PostalCode_With_Format_Correct()
+    public void Should_Pass_When_Run_IsPostalCode_Because_PostalCode_Has_Format_Correct()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -99,7 +99,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_False_When_PostalCode_With_Format_Incorrect()
+    public void Should_Fail_When_Run_IsPostalCode_Because_PostalCode_Has_Format_Incorrect()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -118,7 +118,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_True_When_Customer_Has_Reached_AdultHood()
+    public void Should_Pass_When_Run_HasReachedAdulthood_Because_Customer_Has_Reached_AdultHood()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -137,7 +137,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_False_When_Customer_Has_Not_Reached_AdultHood()
+    public void Should_Fail_When_Run_HasReachedAdulthood_Because_Has_Not_Reached_AdultHood()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -156,7 +156,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_True_When_FullName_Does_Not_Contains_Empty_Space()
+    public void Should_Pass_When_Run_ContainsEmptySpace_Because_FullName_Does_Not_Contains_Empty_Space()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -175,7 +175,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_False_When_FullName_Contains_Empty_Space()
+    public void Should_Fail_When_Run_ContainsEmptySpace_Because_FullName_Contains_Empty_Space()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -194,7 +194,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_True_When_FullName_Contains_Any_Symbol_Or_Special_Character()
+    public void Should_Pass_When_Run_AnySymbolOrSpecialCharacter_Because_FullName_Contains_Any_Symbol_Or_Special_Character()
     {
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
             .CustomInstantiator(f => new CreateCustomerRequest(
@@ -212,7 +212,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_False_When_FullName_Does_Not_Contains_Any_Symbol_Or_Special_Character()
+    public void Should_Fail_When_Run_AnySymbolOrSpecialCharacter_Because_FullName_Does_Not_Contains_Any_Symbol_Or_Special_Character()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -231,7 +231,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_True_When_FullName_HasAtLeastTwoCharactersForEachWord()
+    public void Should_Pass_When_Run_HasAtLeastTwoCharactersForEachWord_Because_FullName_HasAtLeastTwoCharactersForEachWord()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -250,7 +250,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void Should_Return_False_When_FullName_HasNotAtLeastTwoCharactersForEachWord()
+    public void Should_Fail_When_Run_HasAtLeastTwoCharactersForEachWord_Because_FullName_HasNotAtLeastTwoCharactersForEachWord()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")

@@ -3,28 +3,28 @@ using AppServices.Tests.ModelsFake.Product;
 using AppServices.Validations.Product;
 using Bogus;
 using FluentAssertions;
+using FluentValidation.TestHelper;
 
 namespace AppServices.Tests.Validations.Product;
 
 public class ProductUpdateValidatorTests
 {
     [Fact]
-    public void Should_verify_Update_When_Product_Is_Valid()
+    public void Should_Pass_When_Run_ProductUpdateValidator_Because_Product_Is_Valid()
     {
         // Arrange
         var productFake = UpdateProductModel.ProductFake();
         var validator = new ProductUpdateValidator();
 
         // Act
-        var result = validator.Validate(productFake);
+        var result = validator.TestValidate(productFake);
 
         // Assert
-        result.IsValid.Should().BeTrue();
-        result.Errors.Should().BeEmpty();
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
-    public void Should_Verify_Update_When_Symbol_Is_Empty()
+    public void Should_Fail_When_Run_ProductUpdateValidator_Because_Symbol_Is_Empty()
     {
         // Arrange
         var productFake = new Faker<UpdateProductRequest>("pt_BR")
@@ -36,15 +36,14 @@ public class ProductUpdateValidatorTests
         var validator = new ProductUpdateValidator();
 
         // Act
-        var result = validator.Validate(productFake);
+        var result = validator.TestValidate(productFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldHaveValidationErrorFor(x => x.Symbol);
     }
 
     [Fact]
-    public void Should_Verify_Update_When_Symbol_Is_Null()
+    public void Should_Fail_When_Run_ProductUpdateValidator_Because_Symbol_Is_Null()
     {
         // Arrange
         var productFake = new Faker<UpdateProductRequest>("pt_BR")
@@ -56,15 +55,14 @@ public class ProductUpdateValidatorTests
         var validator = new ProductUpdateValidator();
 
         // Act
-        var result = validator.Validate(productFake);
+        var result = validator.TestValidate(productFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(2);
+        result.ShouldHaveValidationErrorFor(x => x.Symbol);
     }
 
     [Fact]
-    public void Should_Verify_Update_When_UnitPrice_Is_Empty()
+    public void Should_Pass_When_Run_ProductUpdateValidator_Because_UnitPrice_Is_Empty()
     {
         // Arrange
         var productFake = new Faker<UpdateProductRequest>("pt_BR")
@@ -76,10 +74,9 @@ public class ProductUpdateValidatorTests
         var validator = new ProductUpdateValidator();
 
         // Act
-        var result = validator.Validate(productFake);
+        var result = validator.TestValidate(productFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(2);
+        result.ShouldHaveValidationErrorFor(x => x.UnitPrice);
     }
 }

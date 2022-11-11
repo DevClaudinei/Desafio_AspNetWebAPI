@@ -2,29 +2,28 @@
 using AppServices.Tests.ModelsFake.Portfolio;
 using AppServices.Validations.Portfolio;
 using Bogus;
-using FluentAssertions;
+using FluentValidation.TestHelper;
 
 namespace AppServices.Tests.Validations.Portfolio;
 
 public class PortfolioCreateValidatorTests
 {
     [Fact]
-    public void Should_Verify_Create_When_CustomerId_Is_Valid()
+    public void Should_Pass_When_Run_PortfolioCreateValidator_When_CustomerId_Is_Valid()
     {
         // Arrange
         var portfolioFake = CreatePortfolioModel.PortfolioFake();
         var validator = new PortfolioCreateValidator();
 
         // Act
-        var result = validator.Validate(portfolioFake);
+        var result = validator.TestValidate(portfolioFake);
 
         // Assert
-        result.IsValid.Should().BeTrue();
-        result.Errors.Should().BeEmpty();
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
-    public void Should_Verify_Create_When_CustomerId_Equal_Zero()
+    public void Should_Pass_When_Run_PortfolioCreateValidator_When_CustomerId_Equal_Zero()
     {
         // Arrange
         var portfolioFake = new Faker<CreatePortfolioRequest>("pt_BR")
@@ -35,10 +34,9 @@ public class PortfolioCreateValidatorTests
         var validator = new PortfolioCreateValidator();
 
         // Act
-        var result = validator.Validate(portfolioFake);
+        var result = validator.TestValidate(portfolioFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(2);
+        result.ShouldHaveValidationErrorFor(x => x.CustomerId);
     }
 }

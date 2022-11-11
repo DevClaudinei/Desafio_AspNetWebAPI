@@ -4,28 +4,28 @@ using AppServices.Validations.Customer;
 using Bogus;
 using Bogus.Extensions.Brazil;
 using FluentAssertions;
+using FluentValidation.TestHelper;
 
 namespace AppServices.Tests.Validations.Customer;
 
 public class CustomerCreateValidatorTests
 {
     [Fact]
-    public void Should_Verify_Customer_Is_Valid_To_Create()
+    public void Should_Pass_When_Run_CustomerCreateValidator()
     {
         // Arrange
         var customerFake = CreateCustomerModel.CustomerFaker();
         var validator = new CustomerCreateValidator();
 
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeTrue();
-        result.Errors.Should().BeEmpty();
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_FullName_Is_Empty()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_FullName_Is_Empty()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -39,15 +39,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
         
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(4);
+        result.ShouldHaveValidationErrorFor(x => x.FullName);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_FullName_Does_Not_Have_LastName()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_FullName_Does_Not_Have_LastName()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -61,15 +60,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
 
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldHaveValidationErrorFor(x => x.FullName);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_FullName_Contais_Invalid_Characters()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_FullName_Contais_Invalid_Characters()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -83,15 +81,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
         
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldHaveValidationErrorFor(x => x.FullName);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_FullName_Contains_Unnecessary_White_Spaces()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_FullName_Contains_Unnecessary_White_Spaces()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -105,15 +102,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
 
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(2);
+        result.ShouldHaveValidationErrorFor(x => x.FullName);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_LastName_Format_Is_Invalid()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_LastName_Format_Is_Invalid()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -127,15 +123,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
         
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldHaveValidationErrorFor(x => x.FullName);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_Email_Is_Empty()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_Email_Is_Empty()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -149,15 +144,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
         
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(3);
+        result.ShouldHaveValidationErrorFor(x => x.Email);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_Email_Is_Different_From_Emailconfirmation()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_Email_Is_Different_From_Emailconfirmation()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -171,15 +165,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
 
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldNotHaveValidationErrorFor(x => x.Email);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_Cpf_Format_Is_Invalid()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_Cpf_Format_Is_Invalid()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -193,15 +186,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
 
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldHaveValidationErrorFor(x => x.Cpf);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_Cellphone_Format_Is_Invalid()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_Cellphone_Format_Is_Invalid()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -215,15 +207,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
 
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldHaveValidationErrorFor(x => x.Cellphone);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_Has_Not_Reached_Adult_hood()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_Has_Not_Reached_Adult_hood()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -237,15 +228,14 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
 
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldHaveValidationErrorFor(x => x.DateOfBirth);
     }
 
     [Fact]
-    public void Should_Verify_Customer_When_PostalCode_Format_Is_Invalid()
+    public void Should_Fail_When_Run_CustomerCreateValidator_Because_PostalCode_Format_Is_Invalid()
     {
         // Arrange
         var customerFake = new Faker<CreateCustomerRequest>("pt_BR")
@@ -259,10 +249,9 @@ public class CustomerCreateValidatorTests
         var validator = new CustomerCreateValidator();
 
         // Act
-        var result = validator.Validate(customerFake);
+        var result = validator.TestValidate(customerFake);
 
         // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
+        result.ShouldHaveValidationErrorFor(x => x.PostalCode);
     }
 }
