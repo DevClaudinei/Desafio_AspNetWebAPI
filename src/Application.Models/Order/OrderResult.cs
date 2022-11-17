@@ -14,7 +14,7 @@ public class OrderResult
         Direction = direction;
     }
 
-    public long Id { get; set; }
+    public long Id { get; init; }
     public int Quotes { get; set; }
     public decimal NetValue { get; set; }
     public DateTime ConvertedAt { get; set; }
