@@ -1,5 +1,4 @@
-﻿using Application.Models.Enum;
-using Application.Models.Portfolio.Request;
+﻿using Application.Models.Portfolio.Request;
 using AppServices.Services.Interfaces;
 using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +26,7 @@ public class PortfoliosController : Controller
         }
         catch (NotFoundException e)
         {
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
         catch(BadRequestException e)
         {
@@ -45,7 +44,7 @@ public class PortfoliosController : Controller
         }
         catch (NotFoundException e)
         {
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
         catch (BadRequestException e)
         {
@@ -63,7 +62,7 @@ public class PortfoliosController : Controller
         }
         catch (NotFoundException e)
         {
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
         catch (BadRequestException e)
         {
@@ -102,7 +101,7 @@ public class PortfoliosController : Controller
         }
         catch (NotFoundException e)
         {
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
     }
 
