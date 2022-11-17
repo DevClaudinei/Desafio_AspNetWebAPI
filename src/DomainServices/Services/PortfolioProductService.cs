@@ -44,7 +44,6 @@ public class PortfolioProductService : BaseService, IPortfolioProductService
             .AndFilter(x => x.ProductId.Equals(productId) && x.PortfolioId.Equals(portfolioId))
             .Include(x => x.Include(x => x.Product), x => x.Include(x => x.Portfolio));
 
-
         return repository.SingleOrDefault(query);
     }
 
