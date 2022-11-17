@@ -27,7 +27,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public void Should_Create_Sucessfully()
+    public void Should_Create_Order_Sucessfully()
     {
         // Arrange
         var orderFake = OrderFake.OrderFaker();
@@ -121,7 +121,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public void Should_Return_Empty_When_Executng_GetById()
+    public void Should_Return_Null_When_Executng_GetById()
     {
         // Arrange
         var orderFake = OrderFake.OrderFaker();
@@ -145,7 +145,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public void Should_GetQuantityOfQuotes_Sucessfully()
+    public void Should_GetQuantityOfQuotes_In_Order_Sucessfully()
     {
         // Arrange
         var orderFakes = OrderFake.OrderFakers(5);

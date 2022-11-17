@@ -29,7 +29,7 @@ public class OrderAppServiceTests
     }
 
     [Fact]
-    public void Should_Create_Sucessfully()
+    public void Should_Create_Order_Sucessfully()
     {
         // Arrange
         var orderFake = OrderFake.OrderFaker();
@@ -109,7 +109,7 @@ public class OrderAppServiceTests
     }
 
     [Fact]
-    public void Should_GetQuantityOfQuotes_Sucessfully()
+    public void Should_GetQuantityOfQuotes_In_Order_Sucessfully()
     {
         // Arrange
         var orderFake = OrderFake.OrderFaker();

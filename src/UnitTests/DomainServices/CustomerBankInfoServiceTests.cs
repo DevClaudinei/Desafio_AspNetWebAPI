@@ -28,7 +28,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Create_Sucessfully()
+    public void Should_Create_CustomerBankInfo_Sucessfully()
     {
         // Arrange
         var customerBankInfoFake = CustomerFake.CustomerFaker();
@@ -146,7 +146,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Return_BankInfos_When_Executing_GetAll()
+    public void Should_Return_CustomerBankInfos_When_Executing_GetAll()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFakers(5);
@@ -243,7 +243,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_GetAccountBalanceById_Sucessfully()
+    public void Should_GetAccountBalanceById_On_CustomerBankInfo_Sucessfully()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -270,7 +270,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Deposit()
+    public void Should_Pass_When_Executing_Deposit_On_CustomerBankInfo()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -298,7 +298,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Deposit()
+    public void Should_Fail_When_Executing_Deposit_On_CustomerBankInfo()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -329,7 +329,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Withdraw()
+    public void Should_Pass_When_Executing_Withdraw_From_CustomerBankInfo()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -363,7 +363,7 @@ public class CustomerBankInfoServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Withdraw()
+    public void Should_Fail_When_Executing_Withdraw_From_CustomerBankInfo()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();

@@ -52,7 +52,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Create()
+    public void Should_Pass_When_Executing_Create_Portfolio()
     {
         // Arrange
         var portfolioModelFake = CreatePortfolioModel.PortfolioFake();
@@ -74,7 +74,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Create()
+    public void Should_Fail_When_Executing_Create_Portfolio()
     {
         // Arrange
         var portfolioModelFake = CreatePortfolioModel.PortfolioFake();
@@ -92,7 +92,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Return_Customers_When_Executing_GetAll()
+    public void Should_Return_Portfolios_When_Executing_GetAll()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFakers(1);
@@ -194,7 +194,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Delete()
+    public void Should_Pass_When_Executing_Delete_A_Portfolio()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -218,7 +218,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Delete()
+    public void Should_Fail_When_Executing_Delete_A_Portfolio()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -235,7 +235,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Investment()
+    public void Should_Pass_When_Executing_Investment_In_A_Portfolio()
     {
         // Arrange
         var requestFake = CreateInvestmentModel.InvestmentFake();
@@ -263,7 +263,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Investment_Because_Portfolio_Does_Not_Exists()
+    public void Should_Fail_When_Executing_Investment_In_A_Portfolio()
     {
         // Arrange
         var requestFake = CreateInvestmentModel.InvestmentFake();
@@ -283,7 +283,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Uninvest()
+    public void Should_Pass_When_Executing_Uninvest_In_A_Portfolio()
     {
         // Arrange
         var requestFake = CreateUninvestmentModel.UninvestmentFake();
@@ -311,7 +311,7 @@ public class PortfolioAppServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Uninvest_Because_Portfolio_Does_Not_Exists()
+    public void Should_Fail_When_Executing_Uninvest_In_A_Portfolio()
     {
         // Arrange
         var requestFake = CreateUninvestmentModel.UninvestmentFake();

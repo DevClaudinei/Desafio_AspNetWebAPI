@@ -31,7 +31,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_Create_Sucessfully()
+    public void Should_Create_Portfolio_Sucessfully()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -51,7 +51,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_GetTotalBalance_Sucessfully()
+    public void Should_GetTotalBalance_On_Portfolio_Sucessfully()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -184,7 +184,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_Update_Sucessfully()
+    public void Should_Update_Portfolio_Sucessfully()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -201,7 +201,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Delete()
+    public void Should_Pass_When_Executing_Delete_A_Portfolio()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();
@@ -232,7 +232,7 @@ public class PortfolioServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Delete_Because_Has_Balance_Greater_Than_Zero()
+    public void Should_Fail_When_Executing_Delete_A_Portfolio_Because_Has_Balance_Greater_Than_Zero()
     {
         // Arrange
         var portfolioFake = PortfolioFake.PortfolioFaker();

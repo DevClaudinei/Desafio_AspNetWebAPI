@@ -31,7 +31,7 @@ public class PortfolioProductServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_AddProduct_Because_Product_Does_Not_Exists_In_PortfolioProduct()
+    public void Should_Pass_When_Executing_AddProduct_On_PortfolioProduct_Because_Product_Does_Not_Exists_In_PortfolioProduct()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();
@@ -62,7 +62,7 @@ public class PortfolioProductServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_AddProduct_Because_Product_Exists_In_PortfolioProduct()
+    public void Should_Fail_When_Executing_AddProduct_On_PortfolioProduct_Because_Product_Exists_In_PortfolioProduct()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();
@@ -207,7 +207,7 @@ public class PortfolioProductServiceTests
     }
 
     [Fact]
-    public void Should_RemoveProduct_Sucessfully()
+    public void Should_RemoveProduct_On_PortfolioProduct_Sucessfully()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();

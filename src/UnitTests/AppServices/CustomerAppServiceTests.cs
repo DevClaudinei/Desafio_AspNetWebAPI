@@ -43,7 +43,7 @@ public class CustomerAppServiceTests
     }
 
     [Fact]
-    public void Should_Create_Sucessfully()
+    public void Should_Create_Customer_Sucessfully()
     {
         // Arrange
         var createCustomerRequest = CreateCustomerModel.CustomerFaker();
@@ -65,7 +65,7 @@ public class CustomerAppServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_GetAll()
+    public void Should_Return_Customers_When_Executing_GetAll()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFakers(2);
@@ -82,7 +82,7 @@ public class CustomerAppServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_GetAll()
+    public void Should_Return_Empty_When_Executing_GetAll()
     {
         // Arrange
         _customerService.Setup(x => x.GetAll()).Returns(new List<Customer>());
@@ -160,13 +160,13 @@ public class CustomerAppServiceTests
         Action act = () => _customerAppService.GetByName(customerFake.FullName);
 
         // Assert
-        act.Should().ThrowExactly<NotFoundException>($"Customer for Id: {customerFake.FullName} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Client for name: {customerFake.FullName} could not be found.");
 
         _customerService.Verify(x => x.GetAllByFullName(customerFake.FullName), Times.Once());
     }
 
     [Fact]
-    public void Should_Update_Sucessfully()
+    public void Should_Update_Customer_Sucessfully()
     {
         // Arrange
         var updateCustomer = UpdateCustomerModel.CustomerFaker();
@@ -182,7 +182,7 @@ public class CustomerAppServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Delete()
+    public void Should_Pass_When_Executing_Delete_A_Customer()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoResponseModel.BankInfoFake();
@@ -202,7 +202,7 @@ public class CustomerAppServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Delete_Because_AccountBalanceGreaterThanZero()
+    public void Should_Fail_When_Executing_Delete_A_Customer_Because_Account_Balance_Is_Greater_Than_Zero()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoResponseModel.BankInfoFake();
@@ -225,7 +225,7 @@ public class CustomerAppServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Delete_Because_AnyTotalBalanceGreaterThanZero()
+    public void Should_Fail_When_Executing_Delete_A_Customer_Because_Any_Total_Balance_Is_GreaterThanZero()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoResponseModel.BankInfoFake();

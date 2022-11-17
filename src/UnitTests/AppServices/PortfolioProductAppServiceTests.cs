@@ -89,7 +89,7 @@ public class PortfolioProductAppServiceTests
     }
 
     [Fact]
-    public void Should_AddProduct_Sucessfully()
+    public void Should_AddProduct_In_PortfolioProduct_Sucessfully()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();
@@ -104,7 +104,7 @@ public class PortfolioProductAppServiceTests
     }
 
     [Fact]
-    public void Should_RemoveProduct_Sucessfully()
+    public void Should_RemoveProduct_In_PortfolioProduct_Sucessfully()
     {
         // Arrange
         var portfolioProductFake = PortfolioProductFake.PortfolioProductFaker();

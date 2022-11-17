@@ -30,7 +30,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_Return_BankInfos_When_Executing_GetAll()
+    public void Should_Return_CustomerBankInfos_When_Executing_GetAll()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFakers(2);
@@ -166,7 +166,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_Deposit_Sucessfully()
+    public void Should_Deposit_On_CustomerBankInfo_Sucessfully()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -182,7 +182,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_Withdraw_Sucessfully()
+    public void Should_Withdraw_From_CustomerBankInfo_Sucessfully()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();
@@ -266,7 +266,7 @@ public class CustomerBankInfoAppServiceTests
     }
 
     [Fact]
-    public void Should_Create_Sucessfully()
+    public void Should_Create_CustomerBankIfo_Sucessfully()
     {
         // Arrange
         var bankInfoFake = CustomerBankInfoFake.CustomerBankInfoFaker();

@@ -138,7 +138,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_GetById()
+    public void Should_Return_Customer_When_Executing_GetById()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -241,7 +241,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Update()
+    public void Should_Pass_When_Executing_Update_Customer()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -277,7 +277,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Update_Because_Customer_Does_Not_Exists()
+    public void Should_Fail_When_Executing_Update_Customer_Because_Customer_Does_Not_Exists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -310,7 +310,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Update_Because_CpfAlreadyExists()
+    public void Should_Fail_When_Executing_Update_Customer_Because_CpfAlreadyExists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -329,7 +329,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Update_Because_EmailAlreadyExists()
+    public void Should_Fail_When_Executing_Update_Customer_Because_EmailAlreadyExists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -348,7 +348,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Pass_When_Executing_Delete()
+    public void Should_Pass_When_Executing_Delete_A_Customer()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();
@@ -376,7 +376,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public void Should_Fail_When_Executing_Delete_Because_Customer_Does_Not_Exists()
+    public void Should_Fail_When_Executing_Delete_A_Customer_Because_Customer_Does_Not_Exists()
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFaker();

@@ -34,7 +34,7 @@ public class ProductAppServiceTests
     }
 
     [Fact]
-    public void Should_Create_Sucessfully()
+    public void Should_Create_Product_Sucessfully()
     {
         // Arrange
         var productModel = CreateProductModel.ProductFake();
@@ -185,7 +185,7 @@ public class ProductAppServiceTests
     }
 
     [Fact]
-    public void Should_Update_Sucessfully()
+    public void Should_Update_Product_Sucessfully()
     {
         // Arrange
         var productFake = UpdateProductModel.ProductFake();
@@ -200,7 +200,7 @@ public class ProductAppServiceTests
     }
 
     [Fact]
-    public void Should_Delete_Sucessfully()
+    public void Should_Delete_Product_Sucessfully()
     {
         // Arrange
         var productFake = ProductFake.ProductFaker();
