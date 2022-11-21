@@ -58,10 +58,8 @@ public class CustomerBankInfoService : BaseService, ICustomerBankInfoService
     public void Deposit(long id, decimal amount)
     {
         var repository = UnitOfWork.Repository<CustomerBankInfo>();
-        var customerBankInfo = GetById(id);
-
-        if (customerBankInfo is null) 
-            throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
+        var customerBankInfo = GetById(id)
+            ?? throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
 
         customerBankInfo.AccountBalance += amount;
 
@@ -72,10 +70,8 @@ public class CustomerBankInfoService : BaseService, ICustomerBankInfoService
     public void Withdraw(long id, decimal amount)
     {
         var repository = UnitOfWork.Repository<CustomerBankInfo>();
-        var customerBankInfo = GetById(id);
-
-        if (customerBankInfo is null)
-            throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
+        var customerBankInfo = GetById(id)
+            ?? throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
 
         customerBankInfo.AccountBalance -= amount;
 

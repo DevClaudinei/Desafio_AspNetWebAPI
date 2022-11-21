@@ -1,5 +1,4 @@
-﻿using Application.Models.Enum;
-using Application.Models.Portfolio.Request;
+﻿using Application.Models.Portfolio.Request;
 using Application.Models.Portfolio.Response;
 using AppServices.Services.Interfaces;
 using AutoMapper;
@@ -58,9 +57,8 @@ public class PortfolioAppService : IPortfolioAppService
 
     public PortfolioResult GetPortfolioById(long id)
     {
-        var portfolioFound = _portfolioService.GetById(id);
-
-        if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
+        var portfolioFound = _portfolioService.GetById(id)
+            ?? throw new NotFoundException($"Portfolio for Id: {id} not found.");
 
         var portfolioMapp = _mapper.Map<PortfolioResult>(portfolioFound);
 
@@ -69,27 +67,23 @@ public class PortfolioAppService : IPortfolioAppService
 
     private Portfolio GetById(long id)
     {
-        var portfolioFound = _portfolioService.GetById(id);
-
-        if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
+        var portfolioFound = _portfolioService.GetById(id)
+            ?? throw new NotFoundException($"Portfolio for Id: {id} not found.");
 
         return portfolioFound;
     }
 
     public decimal GetTotalBalance(long id)
     {
-        var portfolioFound = _portfolioService.GetById(id);
-
-        if (portfolioFound is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
+        GetById(id);
 
         return _portfolioService.GetTotalBalance(id);
     }
 
     public void Delete(long id)
     {
-        var portfolio = _portfolioService.GetById(id);
-
-        if (portfolio is null) throw new NotFoundException($"Portfolio for Id: {id} not found.");
+        var portfolio = _portfolioService.GetById(id)
+            ?? throw new NotFoundException($"Portfolio for Id: {id} not found.");
 
         var portfolioTotalBalance = _portfolioService.GetTotalBalance(id);
         _customerBankInfoAppService.Withdraw(portfolio.CustomerId, portfolioTotalBalance);
