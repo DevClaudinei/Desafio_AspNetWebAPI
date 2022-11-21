@@ -6,15 +6,16 @@ namespace UnitTests.Validations.Portfolio;
 
 public class UninvestmentCreateValidatorTests
 {
+    private readonly UninvestmentCreateValidator _uninvestmentCreateValidator = new UninvestmentCreateValidator();
+
     [Fact]
     public void Should_Pass_When_Executing_InvestmentCreateValidator()
     {
         // Arrange
         var investmentFake = CreateUninvestmentModel.UninvestmentFake();
-        var validator = new UninvestmentCreateValidator();
-
+        
         // Act
-        var result = validator.TestValidate(investmentFake);
+        var result = _uninvestmentCreateValidator.TestValidate(investmentFake);
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.ConvertedAt);
@@ -25,10 +26,9 @@ public class UninvestmentCreateValidatorTests
     {
         // Arrange
         var investmentFake = CreateUninvestmentModel.UninvestmentInvalid();
-        var validator = new UninvestmentCreateValidator();
-
+        
         // Act
-        var result = validator.TestValidate(investmentFake);
+        var result = _uninvestmentCreateValidator.TestValidate(investmentFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.ConvertedAt);

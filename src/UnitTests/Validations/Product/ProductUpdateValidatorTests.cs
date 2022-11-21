@@ -6,15 +6,16 @@ namespace UnitTests.Validations.Product;
 
 public class ProductUpdateValidatorTests
 {
+    private readonly ProductUpdateValidator _productUpdateValidator = new ProductUpdateValidator();
+
     [Fact]
     public void Should_Pass_When_Executing_ProductUpdateValidator_Because_Product_Is_Valid()
     {
         // Arrange
         var productFake = UpdateProductModel.ProductFake();
-        var validator = new ProductUpdateValidator();
-
+        
         // Act
-        var result = validator.TestValidate(productFake);
+        var result = _productUpdateValidator.TestValidate(productFake);
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
@@ -27,10 +28,8 @@ public class ProductUpdateValidatorTests
         var productFake = UpdateProductModel.ProductFake();
         productFake.Symbol = "";
 
-        var validator = new ProductUpdateValidator();
-
         // Act
-        var result = validator.TestValidate(productFake);
+        var result = _productUpdateValidator.TestValidate(productFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Symbol);
@@ -43,10 +42,8 @@ public class ProductUpdateValidatorTests
         var productFake = UpdateProductModel.ProductFake();
         productFake.Symbol = null;
 
-        var validator = new ProductUpdateValidator();
-
         // Act
-        var result = validator.TestValidate(productFake);
+        var result = _productUpdateValidator.TestValidate(productFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Symbol);
@@ -59,10 +56,8 @@ public class ProductUpdateValidatorTests
         var productFake = UpdateProductModel.ProductFake();
         productFake.UnitPrice = 0;
 
-        var validator = new ProductUpdateValidator();
-
         // Act
-        var result = validator.TestValidate(productFake);
+        var result = _productUpdateValidator.TestValidate(productFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.UnitPrice);

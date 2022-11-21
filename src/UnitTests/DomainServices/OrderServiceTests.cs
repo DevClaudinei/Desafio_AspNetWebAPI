@@ -121,7 +121,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public void Should_Return_Null_When_Executng_GetById()
+    public void Should_Return_Null_When_Executing_GetById()
     {
         // Arrange
         var orderFake = OrderFake.OrderFaker();

@@ -7,15 +7,16 @@ namespace UnitTests.Validations.Customer;
 
 public class CustomerCreateValidatorTests
 {
+    private readonly CustomerCreateValidator _customerCreateValidator = new CustomerCreateValidator();
+
     [Fact]
     public void Should_Pass_When_Executing_CustomerCreateValidator()
     {
         // Arrange
         var customerFake = CreateCustomerModel.CustomerFaker();
-        var validator = new CustomerCreateValidator();
-
+        
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
@@ -28,10 +29,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.FullName = "";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.FullName);
@@ -44,10 +43,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.FullName = "José";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.FullName);
@@ -60,10 +57,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.FullName = "Jo@o Conceição";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.FullName);
@@ -76,10 +71,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.FullName = "Solange  Braga";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.FullName);
@@ -92,10 +85,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.FullName = "Maria A Santos";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.FullName);
@@ -108,10 +99,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.Email = "";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Email);
@@ -124,10 +113,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.EmailConfirmation = "clr@gpx.com";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Email);
@@ -140,10 +127,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.Cpf = "008.216.795-89";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Cpf);
@@ -156,10 +141,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.Cellphone = "(11)995479812";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Cellphone);
@@ -172,10 +155,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.DateOfBirth = DateTime.UtcNow.AddYears(-18);
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.DateOfBirth);
@@ -188,10 +169,8 @@ public class CustomerCreateValidatorTests
         var customerFake = CreateCustomerModel.CustomerFaker();
         customerFake.PostalCode = "48280000";
 
-        var validator = new CustomerCreateValidator();
-
         // Act
-        var result = validator.TestValidate(customerFake);
+        var result = _customerCreateValidator.TestValidate(customerFake);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.PostalCode);
