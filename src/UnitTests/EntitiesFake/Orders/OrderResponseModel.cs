@@ -15,14 +15,8 @@ public static class OrderResponseModel
                 quotes: f.Random.Int(1),
                 netValue: f.Random.Decimal(1, 1),
                 convertedAt: f.Date.Recent(),
-                direction: OrderDirection.Buy
+                direction: f.PickRandom<OrderDirection>()
                 )).Generate(quantity);
-
-        foreach (var order in orderResult)
-        {
-            if (order.Id % 2 != 0)
-                order.Direction = OrderDirection.Sell;
-        }
 
         return orderResult;
     }

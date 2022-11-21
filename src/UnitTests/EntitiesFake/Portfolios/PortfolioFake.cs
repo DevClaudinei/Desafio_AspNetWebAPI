@@ -16,8 +16,7 @@ public static class PortfolioFake
                     customerId: f.Random.Long(1, 1)
             )).Generate();
         portfolioFake.Id = 1L;
-        portfolioFake.Products = ProductFake.ProductFakersToPortfolio();
-
+        portfolioFake.Products = (ICollection<Product>)ProductFake.ProductFakers(1);
         return portfolioFake;
     }
 
