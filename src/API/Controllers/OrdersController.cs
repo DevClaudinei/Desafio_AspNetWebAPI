@@ -19,15 +19,8 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            try
-            {
-                var order = _orderAppService.GetAll();
-                return Ok(order);
-            }
-            catch
-            {
-                return NoContent();
-            }
+            var order = _orderAppService.GetAll();
+            return Ok(order);
         }
 
         [HttpGet("{id}")]

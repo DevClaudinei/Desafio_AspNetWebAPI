@@ -16,21 +16,14 @@ public class CustomerBankInfosController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetAll()
     {
-        try
-        {
-            var customersBankInfoFound = _customerBankInfoAppService.GetAll();
-            return Ok(customersBankInfoFound);
-        }
-        catch
-        {
-            return NoContent();
-        }
+        var customersBankInfoFound = _customerBankInfoAppService.GetAll();
+        return Ok(customersBankInfoFound);
     }
     
     [HttpGet("{id}")]
-    public IActionResult Get(long id)
+    public IActionResult GetById(long id)
     {
         try
         {

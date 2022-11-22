@@ -52,7 +52,7 @@ public class PortfoliosController : Controller
         }
     }
 
-    [HttpPost("uninvest")]
+    [HttpPost("withdraw")]
     public IActionResult Post(UninvestimentRequest uninvestimentRequest)
     {
         try
@@ -71,17 +71,10 @@ public class PortfoliosController : Controller
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetAll()
     {
-        try
-        {
-            var portfoliosFound = _portfolioAppService.GetAll();
-            return Ok(portfoliosFound);
-        }
-        catch
-        {
-            return NoContent();
-        }
+        var portfoliosFound = _portfolioAppService.GetAll();
+        return Ok(portfoliosFound);
     }
 
     [HttpGet("{id}")]

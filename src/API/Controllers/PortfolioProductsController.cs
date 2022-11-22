@@ -16,17 +16,10 @@ public class PortfolioProductsController : Controller
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetAll()
     {
-        try
-        {
-            var portfoliosProduct = _portfolioProductAppService.GetAll();
-            return Ok(portfoliosProduct);
-        }
-        catch
-        {
-            return NoContent();
-        }
+        var portfoliosProduct = _portfolioProductAppService.GetAll();
+        return Ok(portfoliosProduct);
     }
 
     [HttpGet("{portfolioId}/{productId}")]

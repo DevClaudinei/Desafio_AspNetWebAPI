@@ -34,15 +34,8 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        try
-        {
-            var customersFound = _appService.GetAll();
-            return Ok(customersFound);
-        }
-        catch
-        {
-            return NoContent();
-        }
+        var customersFound = _appService.GetAll();
+        return Ok(customersFound);
     }
 
     [HttpGet("{id}")]
