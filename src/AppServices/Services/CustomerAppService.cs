@@ -49,7 +49,7 @@ public class CustomerAppService : ICustomerAppService
     public CustomerResult GetById(long id)
     {
         var customerFound = _customerService.GetById(id)
-            ?? throw new NotFoundException($"Customer for Id: {id} was not found.");
+            ?? throw new NotFoundException($"Customer for Id: {id} could not be found.");
 
         return _mapper.Map<CustomerResult>(customerFound);
     }

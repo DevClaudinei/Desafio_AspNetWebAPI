@@ -21,7 +21,7 @@ public class ProductService : BaseService, IProductService
         var unitOfWork = UnitOfWork.Repository<Product>();
         
         if (Exists(x => x.Symbol.Equals(product.Symbol)))
-            throw new BadRequestException($"Product: {product.Symbol} are already registered");
+            throw new BadRequestException($"Product: {product.Symbol} already exists");
 
         unitOfWork.Add(product);
         UnitOfWork.SaveChanges();
