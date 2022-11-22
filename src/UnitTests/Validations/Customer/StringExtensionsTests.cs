@@ -187,4 +187,17 @@ public class StringExtensionsTests
         // Assert
         result.Should().BeFalse();
     }
+
+    [Fact]
+    public void Should_Return_Index_Value_When_Executing_ToIntAt_Sucessfully()
+    {
+        // Arrange
+        var cpf = "00821679589";
+        
+        // Act
+        var result = cpf.ToIntAt(2);
+
+        // Assert
+        result.Should().Be(8);
+    }
 }

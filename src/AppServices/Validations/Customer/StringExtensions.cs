@@ -30,7 +30,7 @@ public static class StringExtensions
         return firstDigitChecker.Equals(document.ToIntAt(^2)) && secondDigitChecker.Equals(document.ToIntAt(^1));
     }
 
-    private static int ToIntAt(this string cpf, Index index)
+    public static int ToIntAt(this string cpf, Index index)
     {
         var indexValue = index.IsFromEnd
             ? cpf.Length - index.Value
