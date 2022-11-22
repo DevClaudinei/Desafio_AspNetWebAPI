@@ -73,8 +73,15 @@ public class PortfoliosController : Controller
     [HttpGet]
     public IActionResult Get()
     {
-        var portfoliosFound = _portfolioAppService.GetAll();
-        return Ok(portfoliosFound);
+        try
+        {
+            var portfoliosFound = _portfolioAppService.GetAll();
+            return Ok(portfoliosFound);
+        }
+        catch
+        {
+            return NoContent();
+        }
     }
 
     [HttpGet("{id}")]

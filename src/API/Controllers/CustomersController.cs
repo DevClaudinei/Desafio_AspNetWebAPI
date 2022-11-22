@@ -97,7 +97,7 @@ public class CustomersController : ControllerBase
         }
         catch (BadRequestException e)
         {
-            return NotFound(e.Message);
+            return BadRequest(e.Message);
         }
         catch (NotFoundException e)
         {

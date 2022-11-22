@@ -19,8 +19,15 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var order = _orderAppService.GetAll();
-            return Ok(order);
+            try
+            {
+                var order = _orderAppService.GetAll();
+                return Ok(order);
+            }
+            catch
+            {
+                return NoContent();
+            }
         }
 
         [HttpGet("{id}")]
@@ -33,7 +40,7 @@ namespace API.Controllers
             }
             catch (NotFoundException e)
             {
-                return BadRequest(e.Message);
+                return NotFound(e.Message);
             }
         }
     }

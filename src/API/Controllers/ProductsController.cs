@@ -33,8 +33,15 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var productsFound = _productAppService.GetAll();
-        return Ok(productsFound);
+        try
+        {
+            var productsFound = _productAppService.GetAll();
+            return Ok(productsFound);
+        }
+        catch
+        {
+            return NoContent();
+        }
     }
 
     [HttpGet("{id}")]

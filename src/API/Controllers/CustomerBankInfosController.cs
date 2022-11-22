@@ -18,8 +18,15 @@ public class CustomerBankInfosController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var customersBankInfoFound = _customerBankInfoAppService.GetAll();
-        return Ok(customersBankInfoFound);
+        try
+        {
+            var customersBankInfoFound = _customerBankInfoAppService.GetAll();
+            return Ok(customersBankInfoFound);
+        }
+        catch
+        {
+            return NoContent();
+        }
     }
     
     [HttpGet("{id}")]
@@ -64,7 +71,7 @@ public class CustomerBankInfosController : ControllerBase
         }
         catch (NotFoundException e)
         {
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
     }
 
@@ -82,7 +89,7 @@ public class CustomerBankInfosController : ControllerBase
         }
         catch (NotFoundException e)
         {
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
     }
 }

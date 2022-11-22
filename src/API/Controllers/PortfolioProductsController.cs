@@ -18,8 +18,15 @@ public class PortfolioProductsController : Controller
     [HttpGet]
     public IActionResult Get()
     {
-        var portfoliosProduct = _portfolioProductAppService.GetAll();
-        return Ok(portfoliosProduct);
+        try
+        {
+            var portfoliosProduct = _portfolioProductAppService.GetAll();
+            return Ok(portfoliosProduct);
+        }
+        catch
+        {
+            return NoContent();
+        }
     }
 
     [HttpGet("{portfolioId}/{productId}")]
@@ -32,7 +39,7 @@ public class PortfolioProductsController : Controller
         }
         catch (NotFoundException e)
         {
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
     }
 }
