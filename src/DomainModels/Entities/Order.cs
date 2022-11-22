@@ -2,6 +2,7 @@ using DomainModels.Enum;
 using System;
 
 namespace DomainModels.Entities;
+
 public class Order
 {
     protected Order() { }
