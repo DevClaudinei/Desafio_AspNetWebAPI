@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using Application.Models.Customer.Requests;
 using Application.Models.Customer.Response;
+using System.Collections.Generic;
 
 namespace AppServices.Services;
 

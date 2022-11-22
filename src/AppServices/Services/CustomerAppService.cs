@@ -48,16 +48,16 @@ public class CustomerAppService : ICustomerAppService
 
     public CustomerResult GetById(long id)
     {
-        var customerFound = _customerService.GetById(id);
-        if (customerFound is null) throw new NotFoundException($"Customer for Id: {id} was not found.");
+        var customerFound = _customerService.GetById(id)
+            ?? throw new NotFoundException($"Customer for Id: {id} was not found.");
 
         return _mapper.Map<CustomerResult>(customerFound);
     }
 
     public IEnumerable<CustomerResult> GetByName(string fullName)
     {
-        var customersFound = _customerService.GetAllByFullName(fullName);
-        if (!customersFound.Any()) throw new NotFoundException($"Client for name: {fullName} could not be found.");
+        var customersFound = _customerService.GetAllByFullName(fullName)
+            ?? throw new NotFoundException($"Client for name: {fullName} could not be found.");
 
         return _mapper.Map<IEnumerable<CustomerResult>>(customersFound);
     }

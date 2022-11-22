@@ -23,9 +23,8 @@ public class PortfolioProductAppService : IPortfolioProductAppService
 
     public PortfolioProduct GetById(long portfolioId, long productId)
     {
-        var portfolioProduct = _portfolioProductService.GetById(portfolioId, productId);
-        if (portfolioProduct is null)
-            throw new NotFoundException($"PortfolioProduct with Portfolioid: {portfolioId} and ProductId: {productId} not found.");
+        var portfolioProduct = _portfolioProductService.GetById(portfolioId, productId)
+            ?? throw new NotFoundException($"PortfolioProduct with Portfolioid: {portfolioId} and ProductId: {productId} not found.");
 
         return portfolioProduct;
     }

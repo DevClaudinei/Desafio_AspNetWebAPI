@@ -41,8 +41,7 @@ public class PortfolioAppService : IPortfolioAppService
         var portfolio = _mapper.Map<Portfolio>(createPortfolioRequest);
         var customerBankInfoId = _customerBankInfoAppService.GetCustomerBankInfoId(createPortfolioRequest.CustomerId);
 
-        if (customerBankInfoId < 1)
-            throw new NotFoundException($"Customer for Id: {portfolio.CustomerId} not found");
+        if (customerBankInfoId < 1) throw new NotFoundException($"Customer for Id: {portfolio.CustomerId} not found");
 
         return _portfolioService.Create(portfolio);
     }
