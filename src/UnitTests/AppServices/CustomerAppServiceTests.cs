@@ -230,7 +230,7 @@ public class CustomerAppServiceTests
         // Arrange
         var bankInfoFake = CustomerBankInfoResponseModel.BankInfoFake();
         var portfolioFake = PortfolioResponseModel.PortfolioFake(2);
-        portfolioFake.ElementAt(1).TotalBalance = 1;
+        portfolioFake.First().TotalBalance = 1;
 
         _customerBankInfoAppService.Setup(x => x.GetByCustomerId(bankInfoFake.CustomerId)).Returns(bankInfoFake);
 

@@ -149,7 +149,7 @@ public class OrderServiceTests
     {
         // Arrange
         var orderFakes = OrderFake.OrderFakers(5);
-        var orderFake = orderFakes.ElementAt(1);
+        var orderFake = orderFakes.First();
 
         _mockRepositoryFactory.Setup(x => x.Repository<Order>().MultipleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Order, bool>>>())

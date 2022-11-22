@@ -335,7 +335,7 @@ public class PortfolioAppServiceTests
     {
         // Arrange
         var portfoliosFake = PortfolioFake.PortfolioFakers(2);
-        var portfoliofake = portfoliosFake.ElementAt(1);
+        var portfoliofake = portfoliosFake.First();
 
         _mockPortfolioService.Setup(x => x.GetAllByCustomerId(portfoliofake.Id)).Returns(portfoliosFake);
 
@@ -353,7 +353,7 @@ public class PortfolioAppServiceTests
     {
         // Arrange
         var portfoliosFake = PortfolioFake.PortfolioFakers(2);
-        var portfoliofake = portfoliosFake.ElementAt(1);
+        var portfoliofake = portfoliosFake.First();
 
         _mockPortfolioService.Setup(x => x.GetAllByCustomerId(portfoliofake.Id));
 

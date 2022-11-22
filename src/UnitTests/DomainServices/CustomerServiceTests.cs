@@ -193,7 +193,7 @@ public class CustomerServiceTests
     {
         // Arrange
         var customerFake = CustomerFake.CustomerFakers(2);
-        var customer = customerFake.ElementAt(1);
+        var customer = customerFake.First();
 
         _mockRepositoryFactory.Setup(x => x.Repository<Customer>().MultipleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Customer, bool>>>())).Returns(It.IsAny<IQuery<Customer>>());
@@ -228,7 +228,7 @@ public class CustomerServiceTests
             .Search(It.IsAny<IQuery<Customer>>())).Returns(new List<Customer>());
 
         // Act
-        var customersFound = _customerService.GetAllByFullName(customerFake.ElementAt(1).FullName);
+        var customersFound = _customerService.GetAllByFullName(customerFake.First().FullName);
 
         // Assert
         customersFound.Should().BeEmpty();

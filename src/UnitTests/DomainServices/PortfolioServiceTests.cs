@@ -268,7 +268,7 @@ public class PortfolioServiceTests
     {
         // Arrange
         var portfoliosFake = PortfolioFake.PortfolioFakers(2);
-        var portfolioFake = portfoliosFake.ElementAt(1);
+        var portfolioFake = portfoliosFake.First();
 
         _mockRepositoryFactory.Setup(x => x.Repository<Portfolio>().MultipleResultQuery()
             .AndFilter(It.IsAny<Expression<Func<Portfolio, bool>>>())
