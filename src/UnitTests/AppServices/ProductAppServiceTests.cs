@@ -111,7 +111,7 @@ public class ProductAppServiceTests
         Action act = () => _productAppService.GetBySymbol(productFake.Symbol);
 
         // Assert
-        act.Should().ThrowExactly<NotFoundException>($"Product for the symbol: {productFake.Symbol} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Product for the symbol: {productFake.Symbol} could not be found.");
 
         _mockProductService.Verify(x => x.GetBySymbol(It.IsAny<string>()), Times.Once());
     }
@@ -145,7 +145,7 @@ public class ProductAppServiceTests
         Action act = () => _productAppService.GetById(productFake.Id);
 
         // Assert
-        act.Should().ThrowExactly<NotFoundException>($"Product for the Id: {productFake.Id} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Product for the Id: {productFake.Id} could not be found.");
 
         _mockProductService.Verify(x => x.GetById(It.IsAny<long>()), Times.Once());
     }
@@ -179,7 +179,7 @@ public class ProductAppServiceTests
         Action act = () => _productAppService.Get(productFake.Id);
 
         // Assert
-        act.Should().ThrowExactly<NotFoundException>($"Product for the Id: {productFake.Id} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Product for the Id: {productFake.Id} could not be found.");
 
         _mockProductService.Verify(x => x.GetById(It.IsAny<long>()), Times.Once());
     }

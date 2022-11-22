@@ -125,7 +125,7 @@ public class CustomerAppServiceTests
         Action act = () => _customerAppService.GetById(customerFake.Id);
 
         // Assert
-        act.Should().ThrowExactly<NotFoundException>($"Customer for Id: {customerFake.Id} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"Customer for Id: {customerFake.Id} could not be found.");
 
         _customerService.Verify(x => x.GetById(customerFake.Id), Times.Once());
     }
@@ -160,7 +160,7 @@ public class CustomerAppServiceTests
         Action act = () => _customerAppService.GetByName(customerFake.FullName);
 
         // Assert
-        act.Should().ThrowExactly<NotFoundException>($"Client for name: {customerFake.FullName} could not be found.");
+        act.Should().ThrowExactly<NotFoundException>($"Customer for name: {customerFake.FullName} could not be found.");
 
         _customerService.Verify(x => x.GetAllByFullName(customerFake.FullName), Times.Once());
     }

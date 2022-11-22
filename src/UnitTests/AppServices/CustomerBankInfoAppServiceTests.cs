@@ -92,7 +92,7 @@ public class CustomerBankInfoAppServiceTests
         Action act = () => _customerBankInfoAppService.GetByAccount(bankInfoFake.Account);
 
         // Assert
-        act.Should().ThrowExactly<NotFoundException>($"CustomerBankInfo for account: {bankInfoFake.Account} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"CustomerBankInfo for account: {bankInfoFake.Account} could not be found.");
 
         _customerBankInfoService.Verify(x => x.GetByAccount(bankInfoFake.Account), Times.Once());
     }
@@ -260,7 +260,7 @@ public class CustomerBankInfoAppServiceTests
         Action act = () => _customerBankInfoAppService.GetByCustomerId(bankInfoFake.Id);
 
         // Assert
-        act.Should().ThrowExactly<NotFoundException>($"CustomerBankInfo for CustomerId: {bankInfoFake.Id} was not found.");
+        act.Should().ThrowExactly<NotFoundException>($"CustomerBankInfo for CustomerId: {bankInfoFake.Id} could not be found.");
 
         _customerBankInfoService.Verify(x => x.GetByCustomerId(It.IsAny<long>()), Times.Once());
     }
