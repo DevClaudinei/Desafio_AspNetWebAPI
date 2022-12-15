@@ -19,9 +19,9 @@ public class ProductService : BaseService, IProductService
     public long Create(Product product)
     {
         var unitOfWork = UnitOfWork.Repository<Product>();
-        var exists = Exists(x => x.Symbol.Equals(product.Symbol));
         
-        if (exists) throw new BadRequestException($"Product: {product.Symbol} are already registered");
+        if (Exists(x => x.Symbol.Equals(product.Symbol)))
+            throw new BadRequestException($"Product: {product.Symbol} already exists");
 
         unitOfWork.Add(product);
         UnitOfWork.SaveChanges();
@@ -64,7 +64,9 @@ public class ProductService : BaseService, IProductService
     public void Update(Product product)
     {
         var unitOfWork = UnitOfWork.Repository<Product>();
-        Exists(x => x.Id.Equals(product.Id));
+
+        if (!Exists(x => x.Id.Equals(product.Id))) 
+            throw new NotFoundException($"Product not found for id: {product.Id}.");
 
         unitOfWork.Update(product);
         UnitOfWork.SaveChanges();

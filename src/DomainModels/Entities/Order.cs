@@ -2,16 +2,10 @@ using DomainModels.Enum;
 using System;
 
 namespace DomainModels.Entities;
+
 public class Order
 {
     protected Order() { }
-
-    public Order(int quotes, decimal unitPrice, DateTime convertedAt)
-    {
-        Quotes = quotes;
-        NetValue = unitPrice * quotes;
-        ConvertedAt = convertedAt;
-    }
 
     public Order(long portfolioId, long productId)
     {

@@ -27,5 +27,4 @@ public abstract class BaseService
 
         return repository.SingleOrDefault(query);
     }
-   
 }

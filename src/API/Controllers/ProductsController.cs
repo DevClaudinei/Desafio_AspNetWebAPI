@@ -31,14 +31,14 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetAll()
     {
         var productsFound = _productAppService.GetAll();
         return Ok(productsFound);
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(long id)
+    public IActionResult GetById(long id)
     {
         try
         {
@@ -52,7 +52,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("symbol/{symbol}")]
-    public IActionResult Get(string symbol)
+    public IActionResult GetBySymbol(string symbol)
     {
         try
         {

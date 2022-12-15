@@ -3,6 +3,7 @@ using FluentValidation;
 using FluentValidation.Validators;
 
 namespace AppServices.Validations.Customer;
+
 public class CustomerUpdateValidator : AbstractValidator<UpdateCustomerRequest>
 {
     public CustomerUpdateValidator()

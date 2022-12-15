@@ -33,7 +33,7 @@ namespace API.Controllers
             }
             catch (NotFoundException e)
             {
-                return BadRequest(e.Message);
+                return NotFound(e.Message);
             }
         }
     }

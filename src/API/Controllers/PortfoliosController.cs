@@ -1,5 +1,4 @@
-﻿using Application.Models.Enum;
-using Application.Models.Portfolio.Request;
+﻿using Application.Models.Portfolio.Request;
 using AppServices.Services.Interfaces;
 using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +26,7 @@ public class PortfoliosController : Controller
         }
         catch (NotFoundException e)
         {
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
         catch(BadRequestException e)
         {
@@ -36,16 +35,34 @@ public class PortfoliosController : Controller
     }
 
     [HttpPost("invest")]
-    public IActionResult Post(InvestmentRequest investmentRequest, OrderDirection orderDirection)
+    public IActionResult Post(InvestmentRequest investmentRequest)
     {
         try
         {
-            var investmentCustomer = _portfolioAppService.Invest(investmentRequest, orderDirection);
+            var investmentCustomer = _portfolioAppService.Invest(investmentRequest);
             return Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer);
         }
         catch (NotFoundException e)
         {
+            return NotFound(e.Message);
+        }
+        catch (BadRequestException e)
+        {
             return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("withdraw")]
+    public IActionResult Post(UninvestimentRequest uninvestimentRequest)
+    {
+        try
+        {
+            var investmentCustomer = _portfolioAppService.Uninvest(uninvestimentRequest);
+            return Created("~http://localhost:5160/api/PortfolioProducts", investmentCustomer);
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(e.Message);
         }
         catch (BadRequestException e)
         {
@@ -54,7 +71,7 @@ public class PortfoliosController : Controller
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetAll()
     {
         var portfoliosFound = _portfolioAppService.GetAll();
         return Ok(portfoliosFound);
@@ -84,7 +101,7 @@ public class PortfoliosController : Controller
         }
         catch (NotFoundException e)
         {
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
     }
 

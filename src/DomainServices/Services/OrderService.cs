@@ -66,16 +66,4 @@ public class OrderService : BaseService, IOrderService
 
         return quantity;
     }
-
-    public void Update(long id, Order order)
-    {
-        var unitOfWork = UnitOfWork.Repository<Order>();
-        var repository = RepositoryFactory.Repository<Order>();
-
-        if (repository.Any(x => x.Id.Equals(order.Id)))
-        {
-            unitOfWork.Update(order);
-            UnitOfWork.SaveChanges();
-        }
-    }
 }

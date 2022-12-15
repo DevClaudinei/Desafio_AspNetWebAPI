@@ -1,6 +1,5 @@
 using Application.Models.Customer.Requests;
 using AppServices.Services;
-using AutoMapper;
 using DomainServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -33,9 +32,9 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetAll()
     {
-        var customersFound = _appService.Get();
+        var customersFound = _appService.GetAll();
         return Ok(customersFound);
     }
 
@@ -91,7 +90,7 @@ public class CustomersController : ControllerBase
         }
         catch (BadRequestException e)
         {
-            return NotFound(e.Message);
+            return BadRequest(e.Message);
         }
         catch (NotFoundException e)
         {

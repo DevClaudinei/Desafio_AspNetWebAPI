@@ -35,24 +35,24 @@ public class ProductAppService : IProductAppService
 
     public ProductResult GetBySymbol(string symbol)
     {
-        var product = _productService.GetBySymbol(symbol);
-        if (product is null) throw new NotFoundException($"Product for the symbol: {symbol} was not found.");
+        var product = _productService.GetBySymbol(symbol)
+            ?? throw new NotFoundException($"Product for the symbol: {symbol} could not be found.");
 
         return _mapper.Map<ProductResult>(product);
     }
 
     public ProductResult GetById(long id)
     {
-        var product = _productService.GetById(id);
-        if (product is null) throw new NotFoundException($"Product for the Id: {id} was not found.");
+        var product = _productService.GetById(id)
+            ?? throw new NotFoundException($"Product for the Id: {id} could not be found.");
 
         return _mapper.Map<ProductResult>(product);
     }
 
     public Product Get(long id)
     {
-        var product = _productService.GetById(id);
-        if (product is null) throw new NotFoundException($"Product for the Id: {id} was not found.");
+        var product = _productService.GetById(id)
+            ?? throw new NotFoundException($"Product for the Id: {id} could not be found.");
 
         return product;
     }

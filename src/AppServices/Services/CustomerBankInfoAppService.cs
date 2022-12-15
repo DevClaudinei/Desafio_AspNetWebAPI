@@ -27,16 +27,16 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public CustomerBankInfoResult GetByAccount(string account)
     {
-        var customerBankInfo = _customerBankInfoService.GetByAccount(account);
-        if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for account: {account} was not found.");
+        var customerBankInfo = _customerBankInfoService.GetByAccount(account)
+            ?? throw new NotFoundException($"CustomerBankInfo for account: {account} could not be found.");
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
 
     public CustomerBankInfoResult GetById(long id)
     {
-        var customerBankInfo = _customerBankInfoService.GetById(id);
-        if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
+        var customerBankInfo = _customerBankInfoService.GetById(id)
+            ?? throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }
@@ -70,9 +70,8 @@ public class CustomerBankInfoAppService : ICustomerBankInfoAppService
 
     public CustomerBankInfoResult GetByCustomerId(long id)
     {
-        var customerBankInfo = _customerBankInfoService.GetByCustomerId(id);
-
-        if (customerBankInfo is null) throw new NotFoundException($"CustomerBankInfo for CustomerId: {id} was not found.");
+        var customerBankInfo = _customerBankInfoService.GetByCustomerId(id)
+            ?? throw new NotFoundException($"CustomerBankInfo for CustomerId: {id}  could not be found.");
 
         return _mapper.Map<CustomerBankInfoResult>(customerBankInfo);
     }

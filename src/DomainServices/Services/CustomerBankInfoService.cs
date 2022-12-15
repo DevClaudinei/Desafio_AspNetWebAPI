@@ -1,4 +1,5 @@
 ﻿using DomainModels.Entities;
+using DomainServices.Exceptions;
 using DomainServices.Services.Interfaces;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
 using Infrastructure.Data;
@@ -57,7 +58,9 @@ public class CustomerBankInfoService : BaseService, ICustomerBankInfoService
     public void Deposit(long id, decimal amount)
     {
         var repository = UnitOfWork.Repository<CustomerBankInfo>();
-        var customerBankInfo = GetById(id);
+        var customerBankInfo = GetById(id)
+            ?? throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
+
         customerBankInfo.AccountBalance += amount;
 
         repository.Update(customerBankInfo, x => x.AccountBalance);
@@ -67,7 +70,9 @@ public class CustomerBankInfoService : BaseService, ICustomerBankInfoService
     public void Withdraw(long id, decimal amount)
     {
         var repository = UnitOfWork.Repository<CustomerBankInfo>();
-        var customerBankInfo = GetById(id);
+        var customerBankInfo = GetById(id)
+            ?? throw new NotFoundException($"CustomerBankInfo for id: {id} not found.");
+
         customerBankInfo.AccountBalance -= amount;
 
         repository.Update(customerBankInfo, x => x.AccountBalance);

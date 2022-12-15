@@ -10,4 +10,4 @@ public interface IOrderAppService
     IEnumerable<OrderResult> GetAll();
     OrderResult GetOrderById(long id);
     int GetQuantityOfQuotes(long portfolioId, long productId);
-    }
+}

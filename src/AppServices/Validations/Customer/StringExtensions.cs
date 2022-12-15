@@ -1,7 +1,7 @@
+using FluentValidation;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using FluentValidation;
 
 namespace AppServices.Validations.Customer;
 

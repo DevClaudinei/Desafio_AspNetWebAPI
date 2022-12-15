@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace AppServices.Validations.Product;
 
-public class ProductCreateValidation : AbstractValidator<CreateProductRequest>
+public class ProductCreateValidator : AbstractValidator<CreateProductRequest>
 {
-    public ProductCreateValidation()
+    public ProductCreateValidator()
     {
         RuleFor(x => x.Symbol)
             .NotEmpty()
